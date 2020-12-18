@@ -1,0 +1,19 @@
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+}
+
+.answers {
+    width: 300px;
+}
+
+.right {
+    border-color: lightgreen;
+}
+
+.wrong {
+    border-color: red;
+}
+

@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+
+html, body {
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin: 0;
+    font-family: 'Monda', sans-serif;
+}
+
+#root {
+    height: inherit;
+    overflow-y: hidden;
+}
+
+input {
+    font-family: 'Monda', sans-serif;
+}
