@@ -1,14 +1,15 @@
 import { Loadable } from "models/Loadable"
-import { QuizItem, Session } from "models/Session"
+import { CourseSession } from "models/CourseSession"
+import { CourseItem } from "models/CourseItem"
 import { Course } from "models/Course"
 
 export type State = {
     isLoading: boolean;
-    session: Loadable<Session>;
+    session: Loadable<CourseSession>;
     hasSubmit: boolean;
     hasSelected: boolean;
     selectedAnswerId?: string;
-    item: Loadable<QuizItem>;
+    item: Loadable<CourseItem>;
     completed: number;
     course: Loadable<Course & { dataset?: any[] }>;
     courses: Loadable<Course[]>;

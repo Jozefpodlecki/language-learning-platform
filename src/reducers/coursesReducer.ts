@@ -2,12 +2,12 @@ import * as actions from "actions/coursesReducer";
 import { ActionType, getType } from "typesafe-actions";
 import { Loadable, unload } from "models/Loadable";
 import { Course } from "models/Course";
-import { Session } from "models/Session";
+import { CourseSession } from "models/CourseSession";
 
 type Action = ActionType<typeof actions>;
 
 type State = {
-    session: Loadable<Session>;
+    session: Loadable<CourseSession>;
     courses: Loadable<Course[]>;
 }
 

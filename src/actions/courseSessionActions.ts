@@ -1,5 +1,6 @@
 import { Course } from "models/Course";
-import { Answer, MCQItem, QuizItem, Session } from "models/Session";
+import { CourseSession } from "models/CourseSession";
+import { CourseItem } from "models/CourseItem";
 import { createAction, createAsyncAction } from "typesafe-actions";
 
 type SendAnswerPayload = {
@@ -21,13 +22,13 @@ export const nextItem = createAsyncAction(
     "nextItem.request",
     "nextItem.success",
     "nextItem.error"
-)<void, Session, void>();
+)<void, CourseSession, void>();
 
 export const startSession = createAsyncAction(
     "startSession.request",
     "startSession.success",
     "startSession.error"
-)<void, Session, void>();
+)<void, CourseSession, void>();
 
 export const quitSession = createAsyncAction(
     "quitSession.request",
@@ -45,7 +46,7 @@ export const sendAnswer = createAsyncAction(
     "sendAnswer.request",
     "sendAnswer.success",
     "sendAnswer.error"
-)<SendAnswerPayload, QuizItem, void>();
+)<SendAnswerPayload, CourseItem, void>();
 
 export const selectAnswer = createAction("selectAnswer")<{
     answerId: string;

@@ -1,4 +1,4 @@
-import { Answer, MCQItem, RecordAudioItem } from "models/Session";
+import { Answer, MCQItem, RecordAudioItem } from "models/CourseItem";
 import { Radical } from "models/Radical";
 import { v4 as uuidv4 } from "uuid";
 

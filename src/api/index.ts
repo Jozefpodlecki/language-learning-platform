@@ -2,7 +2,7 @@ import _radicals from "../assets/data/radicals.json";
 import _courses from "../assets/data/courses.json";
 import { Course } from "models/Course";
 import { v4 as uuidv4 } from "uuid";
-import { MCQItem, Session } from "models/Session";
+import { MCQItem, CourseSession } from "models/CourseSession";
 import { random, generateRecordAudioItem, generateItems } from "appUtils";
 
 type PageCriteria = {

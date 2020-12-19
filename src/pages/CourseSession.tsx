@@ -1,21 +1,21 @@
-import * as actions from "store/actions";
+import * as actions from "actions";
 import { useDispatch } from "react-redux";
 import { useSelector } from "hooks/useSelector";
 import Loader from "react-loader-spinner";
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useMemo } from "react";
 
 import style from "./courseSession.scss";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import RecordAudio from "./RecordAudio";
 import { useHistory, useParams } from "react-router";
 import { finishSession, getCourseAsync, getSession, moveNext } from "api";
+import ProgressBar from "components/ProgressBar";
 
 const CourseSession: FunctionComponent = () => {
     const dispatch = useDispatch();
     const state = useSelector((state) => state.courseSession);
     const { 
         item,
-        completed,
         course,
         session, 
         hasSubmit } = state;
@@ -24,6 +24,9 @@ const CourseSession: FunctionComponent = () => {
         sessionId: string;
     }>();
     const history = useHistory();
+    const completed = useMemo(
+        () => session.isLoading === true ? 0 : session.completedCount / session.itemCount * 100,
+    [session]);
     
     useEffect(() => {
         if (course.isLoading === true) {
@@ -78,8 +81,10 @@ const CourseSession: FunctionComponent = () => {
         </div>
     }
 
+    let content;
+
     if(item.type === "multiple choice question") {
-        return <MultipleChoiceQuestion
+        content =  <MultipleChoiceQuestion
             {...item}
             sessionId={sessionId}
             title={course.name}
@@ -90,13 +95,22 @@ const CourseSession: FunctionComponent = () => {
     }
 
     if(item.type === "record audio") {
-        return <RecordAudio
+        content = <RecordAudio
             {...item}
             title={course.name}
             completed={completed}
             hasSubmit={hasSubmit}
         />
     }
+
+    return  <div className={`${style.session} ${item.isCompleted ? item.isCorrect ? style.right : style.wrong : "" }`}>
+        {content}
+        <div className={style.progress}>
+            <ProgressBar
+                width={20}
+                completed={completed}/>
+        </div>
+    </div>
 };
 
 export default CourseSession;

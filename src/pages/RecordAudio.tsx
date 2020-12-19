@@ -1,13 +1,13 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
-import * as actions from "store/actions";
+import * as actions from "actions";
 import style from "./recordAudio.scss";
-import ProgressBar from "components/ProgressBar";
-import { RecordAudioItem } from "models/Session";
+import { RecordAudioItem } from "models/CourseItem";
 import { faCheck, faMicrophone, faMicrophoneSlash, faRunning, faStop, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { resolve } from "path";
 import { useDispatch } from "react-redux";
+import ActionButton from "./ActionButton";
 
 type Props = RecordAudioItem & { 
     title: string,
@@ -134,64 +134,52 @@ const RecordAudio: FunctionComponent<Props> = ({
         }))
     }
 
-    return  <div className={`${style.session} ${isCompleted ? isCorrect ? style.right : style.wrong : "" }`}>
-        <div className={style.quiz}>
-            <div className={style.title}>{title}</div>
-            <div className={style.item}>
-                <div className={style.text}>
-                    <div className={style.question}>{question}</div>
-                    <div className={style.description}>{description}</div>
-                </div>
-                <div>
-                    {isPlaying ? <div className={style.actionButton} onClick={onStopPlayAudio}>
-                        <div>Stop</div>
-                        <div className={style.actionIcon}>
-                            <FontAwesomeIcon icon={faStop}/>
-                        </div>
-                    </div> : <div className={style.actionButton} onClick={onPlayAudio}>
-                        <div>Play</div>
-                        <div className={style.actionIcon}>
-                            <FontAwesomeIcon icon={faVolumeUp}/>
-                        </div>
-                    </div>}
-                    {isRecording ? <div className={style.actionButton} onClick={onStopRecordAudio}>
-                        <div>Stop</div>
-                        <div className={style.actionIcon}>
-                            <FontAwesomeIcon icon={faStop}/>
-                        </div>
-                    </div> : <div className={style.actionButton} onClick={onRecordAudio}>
-                        <div>Record</div>
-                        <div className={style.actionIcon}>
-                            <FontAwesomeIcon icon={faMicrophone}/>
-                        </div>
-                    </div>}
-                </div>
+    return  <div className={style.quiz}>
+        <div className={style.title}>{title}</div>
+        <div className={style.item}>
+            <div className={style.text}>
+                <div className={style.question}>{question}</div>
+                <div className={style.description}>{description}</div>
             </div>
-            <div className={style.actions}>
-                <div className={style.actionButton} onClick={onQuit}>
-                    <div>Quit</div>
+            <div>
+                {isPlaying ? <div className={style.actionButton} onClick={onStopPlayAudio}>
+                    <div>Stop</div>
                     <div className={style.actionIcon}>
-                        <FontAwesomeIcon icon={faRunning}/>
+                        <FontAwesomeIcon icon={faStop}/>
                     </div>
-                </div>
-                <div className={style.actionButton} onClick={onSkipAudio}>
-                    <div>I can't speak</div>
+                </div> : <div className={style.actionButton} onClick={onPlayAudio}>
+                    <div>Play</div>
                     <div className={style.actionIcon}>
-                        <FontAwesomeIcon icon={faMicrophoneSlash}/>
+                        <FontAwesomeIcon icon={faVolumeUp}/>
                     </div>
-                </div>
-                <div className={`${style.actionButton} ${ hasSpoken ? "" : style.actionButtonDisabled}`} onClick={onCheck}>
-                    <div>Check</div>
-                    <div className={style.actionIcon}>
-                        <FontAwesomeIcon icon={faCheck}/>
-                    </div>
-                </div>
+                </div>}
+                {isRecording ? <ActionButton
+                    value="Stop"
+                    onClick={onStopRecordAudio}
+                    icon={faStop}/> : 
+                <ActionButton
+                    value="Record"
+                    onClick={onRecordAudio}
+                    icon={faMicrophone} />}
             </div>
         </div>
-        <div className={style.progress}>
-            <ProgressBar
-                width={20}
-                completed={completed}/>
+        <div className={style.actions}>
+            <ActionButton
+                value="Quit"
+                onClick={onQuit}
+                icon={faRunning}
+            />
+            <ActionButton
+                value="I can't speak"
+                onClick={onSkipAudio}
+                icon={faMicrophoneSlash}
+            />
+            <ActionButton
+                disabled={hasSpoken}
+                value="Check"
+                onClick={onCheck}
+                icon={faCheck}
+            />
         </div>
     </div>
 };

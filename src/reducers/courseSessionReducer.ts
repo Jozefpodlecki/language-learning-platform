@@ -2,22 +2,32 @@ import * as actions from "actions/courseSessionActions";
 import { ActionType, getType } from "typesafe-actions";
 import { Loadable, unload } from "models/Loadable";
 import { Course } from "models/Course";
-import { QuizItem, Session } from "models/Session";
+import { CourseSession } from "models/CourseSession";
+import { CourseItem } from "models/CourseItem";
 
 export type Action = ActionType<typeof actions>;
 
 type State = {
-    session: Loadable<Session>;
+    session: Loadable<CourseSession>;
     hasSubmit: boolean;
     hasSelected: boolean;
     selectedAnswerId?: string;
-    item: Loadable<QuizItem>;
-    completed: number;
+    item: Loadable<CourseItem>;
     course: Loadable<Course>;
 }
 
-const initialState = {
-    
+const initialState: State = {
+    session: {
+        isLoading: true,
+    },
+    hasSelected: false,
+    hasSubmit: false,
+    item: {
+        isLoading: true,
+    },
+    course: {
+        isLoading: true,
+    },
 }
 
 export default (
@@ -59,25 +69,15 @@ export default (
         }
     }
 
-    if(action.type === getType(actions.nextItem.request)) {
-        return {
-            ...state,
-            isLoading: true,
-        }
-    }
-
     if(action.type === getType(actions.nextItem.success)) {
         const session = unload(action.payload);
 
-        const completed = session.completedCount / session.itemCount * 100;
         const item = unload(session.items.find(pr => pr.id === session.currentItemId));
 
         return {
             ...state,
             session,
             item,
-            completed,
-            isLoading: false,
         }
     }
 
@@ -90,20 +90,12 @@ export default (
         }
     }
 
-    if(action.type === getType(actions.quitSession.request)) {
-        return {
-            ...state,
-            isLoading: true,
-        }
-    }
-
     if(action.type === getType(actions.quitSession.success)) {
         return {
             ...state,
             session: {
                 isLoading: true,
             },
-            isLoading: false,
         }
     }
 
@@ -160,14 +152,11 @@ export default (
         const session = unload(action.payload);
 
         const item = unload(session.items.find(pr => pr.id === session.currentItemId));
-        const completed = session.completedCount / session.itemCount * 100;
 
         return {
             ...state,
             session,
             item,
-            completed,
-            isLoading: false,
             hasSubmit: false
         }
     }
