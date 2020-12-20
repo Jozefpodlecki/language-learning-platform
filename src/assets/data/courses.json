@@ -3,6 +3,7 @@
         "id": "1",
         "name": "Chinese Radicals",
         "languageId": "zh",
+        "thumbnailUrl": "./chineseRadicals.png",
         "datasetUrl": "./radicals.json"
     }
 ]

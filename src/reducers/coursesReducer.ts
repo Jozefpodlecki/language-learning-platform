@@ -1,4 +1,4 @@
-import * as actions from "actions/coursesReducer";
+import * as actions from "actions/coursesActions";
 import { ActionType, getType } from "typesafe-actions";
 import { Loadable, unload } from "models/Loadable";
 import { Course } from "models/Course";
@@ -11,8 +11,13 @@ type State = {
     courses: Loadable<Course[]>;
 }
 
-const initialState = {
-
+const initialState: State = {
+    courses: {
+        isLoading: true,
+    },
+    session: {
+        isLoading: true,
+    }
 }
 
 export default (
@@ -24,7 +29,6 @@ export default (
     if(action.type === getType(actions.getCourses.request)) {
         return {
             ...state,
-            isLoading: true,
         }
     }
 
@@ -33,7 +37,6 @@ export default (
 
         return {
             ...state,
-            isLoading: false,
             courses,
         }
     }
@@ -47,7 +50,6 @@ export default (
 
         return {
             ...state,
-            isLoading: false,
             session: unload(session),
         }
     }

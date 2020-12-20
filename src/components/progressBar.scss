@@ -7,4 +7,6 @@
 .bar {
     background: linear-gradient(180deg, #a8ff78, #6be585);
     border-radius: 50px;
+    transition: height .5s;
+    height: 0%;
 }

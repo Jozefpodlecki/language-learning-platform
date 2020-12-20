@@ -7,7 +7,7 @@ import { faCheck, faMicrophone, faMicrophoneSlash, faRunning, faStop, faVolumeUp
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { resolve } from "path";
 import { useDispatch } from "react-redux";
-import ActionButton from "./ActionButton";
+import ActionButton from "../components/ActionButton";
 
 type Props = RecordAudioItem & { 
     title: string,

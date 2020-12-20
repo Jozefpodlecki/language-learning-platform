@@ -10,5 +10,6 @@ export type CourseSession = {
     itemCount: number;
     currentItemId: string;
     courseId: string;
+    correctPercentage: number;
 }
 

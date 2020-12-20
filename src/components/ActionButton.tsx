@@ -7,7 +7,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 type Props = { 
     disabled?: boolean;
     value: string;
-    icon: IconProp;
+    icon?: IconProp;
     onClick(): void;
 };
 
@@ -19,12 +19,12 @@ const ActionButton: FunctionComponent<Props> = ({
 }) => {
 
     return <div
-        className={`${style.button} ${ disabled ? "" : style.disabled}`}
+        className={`${style.button} ${ disabled ? style.disabled : ""}`}
         onClick={onClick}>
         <div>{value}</div>
-        <div className={style.icon}>
+        {icon ? <div className={style.icon}>
             <FontAwesomeIcon icon={icon}/>
-        </div>
+        </div> : null}
     </div>
 };
 

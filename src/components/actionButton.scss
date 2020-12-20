@@ -1,6 +1,7 @@
 
 .button {
     cursor: pointer;
+    user-select: none;
     padding: 10px 20px;
     border: 1px dashed gray;
     display: flex;

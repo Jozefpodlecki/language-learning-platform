@@ -10,17 +10,17 @@ export type Entity = {
     value: string;
 }
 
+export type Answer = Entity & {
+    isCorrect: boolean;
+    isSelected: boolean;
+}
+
 export type MCQItem = BaseItem & {
     id: string;
     type: "multiple choice question";
     question: Entity;
     answers: Answer[];
     rightAnswer: Answer;
-}
-
-export type Answer = Entity & {
-    isCorrect: boolean;
-    isSelected: boolean;
 }
 
 export type RecordAudioItem = BaseItem & {
@@ -45,13 +45,20 @@ export type FillTableItem = BaseItem &{
     question: string;
 }
 
+export type MatchPairsItem = BaseItem &{
+    type: "match pairs";
+    items: any[];
+    items1: any[];
+}
+
 export type MemoryGameItem = BaseItem &{
     type: "memory game";
     items: MemoryGameItemItem[];
 }
 
-export type MemoryGameItemItem = BaseItem &{
+export type MemoryGameItemItem = {
     id: string;
+    value: string;
     matchId: string;
 }
 
@@ -59,3 +66,5 @@ export type CourseItem = MCQItem
     | RecordAudioItem
     | AudioToSentenceItem
     | TranscribeItem
+    | FillTableItem
+    | MemoryGameItem

@@ -4,22 +4,21 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
 import { createSession, getCourses, getLastSession } from "api";
 
-import style from "./courses.scss";
-import { faGraduationCap, faInfo } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import style from "./index.scss";
 import { useHistory } from "react-router";
+import Navbar from "../Navbar";
+import Item from "./Item";
 
 const Courses: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
-        isLoading,
         courses,
         session,
     } = useSelector((state) => state.courses);
     const history = useHistory();
 
     useEffect(() => {
-        if (isLoading) {
+        if (session.isLoading || courses.isLoading) {
             dispatch(actions.getCourses.request());
             
             getCourses({
@@ -34,27 +33,27 @@ const Courses: FunctionComponent = () => {
                     dispatch(actions.getLastSession.success(session));
                 })
         }
-    }, [isLoading]);
+    }, [session, courses]);
 
     const {
         hasUncompletedSession,
-        courseId,
+        uncompletedCourseId,
         sessionLink,
     } = useMemo(() => {
         
         if(session.isLoading === true) {
             return {
                 hasUncompletedSession: false,
-                courseId: "-1",
+                uncompletedCourseId: "-1",
             }
         }
         
-        const courseId = session.courseId;
+        const uncompletedCourseId = session.courseId;
         const hasUncompletedSession = !session.completedOn;
-        const sessionLink = `/course/${courseId}/session/${session.id}`;
+        const sessionLink = `/course/${uncompletedCourseId}/session/${session.id}`;
 
         return {
-            courseId,
+            uncompletedCourseId,
             hasUncompletedSession,
             sessionLink
         }
@@ -90,26 +89,21 @@ const Courses: FunctionComponent = () => {
     }
 
     return <div className={style.courses}>
-        <div className={style.header}>
-            Courses
-        </div>
-        <div>
-            {courses.map(({id, name}) => <div
-                className={style.course}
-                key={id}>
-                <div className={style.title}>{name}</div>
-                <div className={style.actions}>
-                    <div className={`${style.button} ${hasUncompletedSession ? style.disabled : ""}`} onClick={() => onAbout(id)}>
-                        <div>About</div>
-                        <div className={style.buttonIcon}><FontAwesomeIcon icon={faInfo}/></div>
-                    </div>
-                    <div className={`${style.button} ${hasUncompletedSession ? style.disabled : ""}`} onClick={() => onPractice(id)}>
-                        <div>Practice</div>
-                        <div className={style.buttonIcon}><FontAwesomeIcon icon={faGraduationCap}/></div>
-                    </div>
-                </div>
-            </div>)}
-        </div>
+        <Navbar/>
+        <main>
+            <header className={style.header}>
+                Courses
+            </header>
+            <div>
+                {courses.map((course) => <Item
+                    key={course.id}
+                    {...course}
+                    disabled={hasUncompletedSession && course.id === uncompletedCourseId}
+                    onAbout={onAbout}
+                    onPractice={onPractice}
+                    />)}
+            </div>
+        </main>
         {hasUncompletedSession ? <div className={style.continuePopup}>
             <div className={style.button} onClick={onContinue}>
                 <div>Continue your last course</div>

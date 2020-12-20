@@ -1,18 +1,21 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useCallback, useEffect } from "react";
 import * as actions from "actions";
-import style from "./multipleChoiceQuestion.scss";
+import style from "./index.scss";
 import { MCQItem } from "models/CourseItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faRunning } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck, faRunning } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
-import { sendAnswer } from "api";
+import { moveNext, sendAnswer } from "api";
 import { useSelector } from "hooks/useSelector";
+import Answer from "./Answer";
+import ActionButton from "components/ActionButton";
 
 type Props = MCQItem & {
     sessionId: string;
     title: string,
     hasSubmit: boolean;
     completed: number;
+    remainingSeconds: number;
     onQuit(): void;
 };
 
@@ -22,21 +25,59 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
     title,
     question,
     hasSubmit,
+    isCompleted,
+    isCorrect,
+    rightAnswer,
     answers,
     onQuit,
+    remainingSeconds,
 }) => {
     const dispatch = useDispatch();
     const {
         hasSelected,
         selectedAnswerId,
     } = useSelector((state) => state.courseSession);
-    
-    const onClick = (answerId: string) => {
+
+    const onKeyDown = (event: KeyboardEvent) => {
+        const key = event.key;
+        const answerIndex = Number(key);
+        if(Number.isNaN(answerIndex)) {
+            if(hasSelected && key === "Enter") {
+                sendAnswer(sessionId, selectedAnswerId)
+                    .then(item => {
+                        dispatch(actions.sendAnswer.success(item))
+                    })
+            }
+        }
+        else {
+            const answer = answers.find((pr, index) => answerIndex === index + 1)
+
+            if(!answer) {
+                return;
+            }
+
+            dispatch(actions.selectAnswer({
+                answerId: answer.id,
+                itemId: id,
+            }));
+        }
+    }
+
+    useEffect(() => {
+
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", onKeyDown);
+        }
+    }, [hasSelected]);
+
+    const onClick = useCallback((answerId: string) => {
         dispatch(actions.selectAnswer({
             answerId,
             itemId: id,
         }))
-    }
+    }, []);
 
     const onCheck = () => {
         if(!hasSelected) {
@@ -49,39 +90,52 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
             })
     }
 
+    const onNextOne = () => {
+        dispatch(actions.nextItem.request())
+
+        moveNext(sessionId)
+            .then(session => {
+                debugger;
+                actions.nextItem.success(session);
+            });
+    }
+
     return <div className={style.quiz}>
         <div className={style.title}>{title}</div>
         <div className={style.item}>
-            <div className={style.question}>{question}</div>
+            {isCompleted ? isCorrect ? 
+                <div className={style.answer}>Right!</div> :
+                <div className={style.answer}>
+                    <div>Wrong!</div>
+                    <div>The right answer is {rightAnswer.value}</div>
+                </div> : null}
+            <div className={style.question}>{question.value}</div>
             <div className={style.answers}>
-                {answers.map(({ id, isSelected, isCorrect, value }, index) => <div
-                    className={`${style.answer}
-                        ${ isSelected ? style.selected : "" }
-                        ${ hasSubmit ? isCorrect ? style.right : style.wrong : "" }`}
-                    onClick={() => onClick(id)}
-                    key={index}>
-                        <div className={style.answerText}>{value}</div>
-                        <div className={style.answerKey}>{index}</div>
-                    </div>)}
+                {answers.map((answer, index) => <Answer
+                    {...answer}
+                    key={answer.id}
+                    index={index}
+                    hasSubmit={hasSubmit}
+                    onClick={onClick}/>)}
             </div>
         </div>
         <div className={style.actions}>
-            <div className={style.actionButton} onClick={onQuit}>
-                <div>Quit</div>
-                <div className={style.actionIcon}>
-                    <FontAwesomeIcon icon={faRunning}/>
-                </div>
-            </div>
-            <div className={style.actionButton}>
-                <div>Next one</div>
-            </div>
-            <div className={`${style.actionButton} ${ hasSelected ? "" : style.actionButtonDisabled}`}
-                onClick={onCheck}>
-                <div>Check</div>
-                <div className={style.actionIcon}>
-                    <FontAwesomeIcon icon={faCheck}/>
-                </div>
-            </div>
+            <ActionButton
+                value="Quit"
+                onClick={onQuit}
+                icon={faRunning}/>
+            {isCompleted ? <ActionButton
+                value={`Next item in ${remainingSeconds}`}
+                onClick={onNextOne}
+                icon={faArrowRight}/> : <ActionButton
+                value="Next item"
+                onClick={onNextOne}
+                icon={faArrowRight}/>}
+            {isCompleted ? null : <ActionButton
+                disabled={!hasSelected}
+                value="Check"
+                onClick={onCheck}
+                icon={faCheck}/>}
         </div>
     </div>
 };

@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import Courses from "./Courses";
+import Courses from ".";
 import React from "react";
 
 describe("Courses spec", () => {

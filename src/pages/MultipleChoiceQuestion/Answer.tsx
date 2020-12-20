@@ -35,7 +35,7 @@ const Answer: FunctionComponent<Props> = ({
         onClick={_onClick}
         key={id}>
             <div className={style.text}>{value}</div>
-            <div className={style.key}>{index}</div>
+            <div className={style.key}>{index + 1}</div>
         </div>
 };
 

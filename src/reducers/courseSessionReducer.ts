@@ -69,6 +69,15 @@ export default (
         }
     }
 
+    if(action.type === getType(actions.nextItem.request)) {
+        return {
+            ...state,
+            item: {
+                isLoading: true,
+            }
+        }
+    }
+
     if(action.type === getType(actions.nextItem.success)) {
         const session = unload(action.payload);
 

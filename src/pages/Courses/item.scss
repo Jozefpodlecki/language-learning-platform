@@ -1,15 +1,3 @@
-.courses {
-    height: inherit;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.header {
-    font-size: 50px;
-    text-align: center;
-}
-
 .course {
     padding: 15px;
     width: 300px;
@@ -25,7 +13,9 @@
 .actions {
     display: flex;
     justify-content: space-around;
+    margin-top: 20px;
 }
+
 
 .button {
     cursor: pointer;
@@ -49,10 +39,4 @@
 .disabled {
     background: gray;
     cursor: not-allowed;
-}
-
-.continuePopup {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
 }

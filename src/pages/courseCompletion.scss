@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+.header {
+    text-align: center;
+    font-size: 40px;
+}
+
+.stats {
+    flex: 1;
+}
+
+.visual {
+    width: 500px;
+    margin: auto;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}

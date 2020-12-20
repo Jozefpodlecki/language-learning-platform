@@ -1,0 +1,17 @@
+.courses {
+    height: inherit;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    font-size: 50px;
+    text-align: center;
+}
+
+.continuePopup {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}

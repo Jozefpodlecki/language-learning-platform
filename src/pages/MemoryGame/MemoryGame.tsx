@@ -18,9 +18,10 @@ const MemoryGame: FunctionComponent<Props> = ({
     }
 
     return <div>
-        {items.map(pr => <Item onClick={onClick}
-
-        </Item>)}
+        <div className={style.memoryGame}>
+            {items.map(pr => <Item onClick={onClick}/>)}
+        </div>
+        
     </div>
 }
 
