@@ -1,12 +1,16 @@
-import { combineReducers } from "redux";
+import { combineReducers, ReducersMapObject } from "redux";
 import courseAboutReducer from "./courseAboutReducer";
 import courseSessionReducer from "./courseSessionReducer";
 import coursesReducer from "./coursesReducer";
+import userReducer from "./userReducer";
 
 export const rootReducer = combineReducers({
-    courseSession: courseSessionReducer,
-    courses: coursesReducer,
-    course: courseAboutReducer,
+    user: userReducer,
+    pages: combineReducers({
+        courseSession: courseSessionReducer,
+        courses: coursesReducer,
+        course: courseAboutReducer,
+    })
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

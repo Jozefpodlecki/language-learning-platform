@@ -20,6 +20,7 @@ export type MCQItem = BaseItem & {
     type: "multiple choice question";
     question: Entity;
     answers: Answer[];
+    answer?: Answer;
     rightAnswer: Answer;
 }
 

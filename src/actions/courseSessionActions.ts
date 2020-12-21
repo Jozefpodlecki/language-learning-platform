@@ -3,10 +3,6 @@ import { CourseSession } from "models/CourseSession";
 import { CourseItem } from "models/CourseItem";
 import { createAction, createAsyncAction } from "typesafe-actions";
 
-type SendAnswerPayload = {
-    answerId: string;
-}
-
 type SendAudioPayload = {
     audioUrl?: string;
     transcript?: string;
@@ -46,7 +42,7 @@ export const sendAnswer = createAsyncAction(
     "sendAnswer.request",
     "sendAnswer.success",
     "sendAnswer.error"
-)<SendAnswerPayload, CourseItem, void>();
+)<void, CourseItem, void>();
 
 export const selectAnswer = createAction("selectAnswer")<{
     answerId: string;

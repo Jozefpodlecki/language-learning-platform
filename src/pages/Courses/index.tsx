@@ -12,9 +12,16 @@ import Item from "./Item";
 const Courses: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
-        courses,
-        session,
-    } = useSelector((state) => state.courses);
+        user: {
+            user
+        },
+        pages: {
+            courses: {
+                courses,
+                session,
+            }
+        }
+    } = useSelector((state) => state);
     const history = useHistory();
 
     useEffect(() => {
@@ -71,7 +78,10 @@ const Courses: FunctionComponent = () => {
     const onPractice = (courseId: string) => {
         dispatch(actions.startSession.request());
         
-        createSession(courseId)
+        createSession(
+            user.id,
+            courseId,
+            false)
             .then(session => {
                 dispatch(actions.startSession.success(session));
                 history.push(`/course/${courseId}/session/${session.id}`);
@@ -94,7 +104,7 @@ const Courses: FunctionComponent = () => {
             <header className={style.header}>
                 Courses
             </header>
-            <div>
+            <div className={style.list}>
                 {courses.map((course) => <Item
                     key={course.id}
                     {...course}

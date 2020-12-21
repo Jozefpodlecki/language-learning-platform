@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { CourseSession } from "models/CourseSession";
 import { random, generateRecordAudioItem, generateMCQItems } from "appUtils";
-import { MCQItem } from "models/CourseItem";
+import { Answer, MCQItem } from "models/CourseItem";
 import { getCourseDatasetAsync } from "./course";
 
 const getSessionsFromLocalStorage = () => (JSON.parse(localStorage.getItem("session")) || []) as CourseSession[];
@@ -24,7 +24,10 @@ export const getLastSession = async () => {
     return Promise.resolve(session);
 }
 
-export const createSession = async (courseId: string) => {
+export const createSession = async (
+    userId: string,
+    courseId: string,
+    isExam: boolean) => {
     const sessions = getSessionsFromLocalStorage();
 
     const itemCount = random(5, 10);
@@ -38,6 +41,8 @@ export const createSession = async (courseId: string) => {
         courseId,
         items: [],
         correctPercentage: 0,
+        isExam,
+        createdById: userId,
     }
 
     const dataset = await getCourseDatasetAsync(courseId);
@@ -57,18 +62,20 @@ export const createSession = async (courseId: string) => {
     return session;
 }
 
-export const sendAnswer = (sessionId: string, answerId: string) => {
+export const sendAnswer = (sessionId: string, answer: Answer) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find(pr => pr.id === sessionId);
 
     const item = session.items.find(pr => pr.type === "multiple choice question" 
-        && pr.answers.some(npr => npr.id === answerId)) as MCQItem;
+        && pr.answers.some(npr => npr.id === answer.id)) as MCQItem;
 
-    const isCorrect = answerId === item.rightAnswer.id;
+    const isCorrect = answer.id === item.rightAnswer.id;
     item.isCorrect = isCorrect;
     item.isCompleted = true;
-    
+    item.answer = answer;
+
+    session.completedCount++;
     session.correctPercentage += isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
@@ -95,7 +102,7 @@ export const moveNext = (sessionId: string) => {
 
     const item = items[index];
     session.currentItemId = item.id;
-    session.completedCount++;
+    session.modifiedOn = new Date();
 
     setSessionsToLocalStorage(sessions);
 

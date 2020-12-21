@@ -7,7 +7,9 @@ import style from "./navbar.scss";
 
 const Navbar: FunctionComponent = () => {
     return <nav className={style.navbar}>
-        <div className={style.logo}>Language Learning Platform</div>
+        <Link className={style.logo} to="/">
+            Language Learning Platform
+        </Link>
         <div className={style.right}>
             <Link className={style.userIcon} to="/profile">
                 <FontAwesomeIcon icon={faUser}/>

@@ -8,6 +8,12 @@ import App from "./App";
 import "i18n";
 import store from "store/store";
 
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(duration);
+dayjs.extend(relativeTime)
+
 const root = document.getElementById(process.env.root);
 
 ReactDOM.render(

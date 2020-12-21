@@ -12,6 +12,7 @@
             "DOM"
         ],
         "jsx": "react",
+        "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "incremental": true

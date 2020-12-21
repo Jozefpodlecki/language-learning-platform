@@ -14,12 +14,18 @@ import CourseCompletion from "./CourseCompletion";
 
 const CourseSession: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const state = useSelector((state) => state.courseSession);
-    const { 
-        item,
-        course,
-        session, 
-        hasSubmit } = state;
+    const {
+        pages: {
+            courseSession: {
+                item,
+                course,
+                session, 
+                hasSubmit,
+                hasSelected,
+                selectedAnswerId,
+            }
+        }
+    } = useSelector((state) => state);
     const { courseId, sessionId } = useParams<{
         courseId: string;
         sessionId: string;
@@ -140,6 +146,8 @@ const CourseSession: FunctionComponent = () => {
                 remainingSeconds={remainingSeconds}
                 completed={completed}
                 hasSubmit={hasSubmit}
+                hasSelected={hasSelected}
+                selectedAnswerId={selectedAnswerId}
                 onQuit={onQuit}
             />
         }

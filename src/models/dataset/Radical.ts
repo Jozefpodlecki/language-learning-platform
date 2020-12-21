@@ -1,4 +1,4 @@
-export interface Radical {
+export interface ChineseRadical {
     id: string;
     radical: string;
     meaning: string;

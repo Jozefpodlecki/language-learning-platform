@@ -1,9 +1,16 @@
 [
     {
-        "id": "1",
+        "id": "f7ac9a82-4d60-49f9-ba39-3808202047d1",
         "name": "Chinese Radicals",
         "languageId": "zh",
         "thumbnailUrl": "./chineseRadicals.png",
         "datasetUrl": "./radicals.json"
+    },
+    {
+        "id": "30d3c394-1ba0-4412-bf6b-e8e46595fbc3",
+        "name": "HSK 1",
+        "languageId": "zh",
+        "thumbnailUrl": "./hsk1.jpg",
+        "datasetUrl": "./hsk1.json"
     }
 ]

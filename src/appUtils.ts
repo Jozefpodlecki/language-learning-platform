@@ -1,15 +1,26 @@
 import { Answer, MCQItem, MemoryGameItem, MemoryGameItemItem, RecordAudioItem } from "models/CourseItem";
-import { Radical } from "models/Radical";
+import { ChineseRadical } from "models/dataset/Radical";
 import MemoryGame from "pages/MemoryGame/MemoryGame";
 import { v4 as uuidv4 } from "uuid";
 
 export const random = (from: number, to: number) => Math.floor(Math.random() * (to - from) + from);
 
+export const hasBuiltInSpeechSynthesis = !!window.speechSynthesis;
+
+export const playAudioWithSpeechSynthesis = (language: string, text: string) => new Promise((resolve, reject) => {
+    const speechSynthesis = window.speechSynthesis;
+    const speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
+    speechSynthesisUtterance.lang = language;
+    speechSynthesisUtterance.addEventListener("end", resolve);
+
+    speechSynthesis.speak(speechSynthesisUtterance);
+});
+
 export const getRandomAnswers = (
     rightIndex: number,
     rightAnswer: Answer,
     wrongAnswerCount: number,
-    items: Radical[]) => {
+    items: ChineseRadical[]) => {
     const answers: Answer[] = [];
     const indicies = new Set([rightIndex]);
     let it = 2;
@@ -37,7 +48,7 @@ export const getRandomAnswers = (
     return answers;
 }
 
-export const generateRecordAudioItem = (items: Radical[]): RecordAudioItem => {
+export const generateRecordAudioItem = (items: ChineseRadical[]): RecordAudioItem => {
     const index = random(0, items.length);
     const item = items[index];
 
@@ -53,7 +64,7 @@ export const generateRecordAudioItem = (items: Radical[]): RecordAudioItem => {
 
 export const generateMemoryGameItem = (
     itemsCount: number,
-    dataset: Radical[]): MemoryGameItem => {
+    dataset: ChineseRadical[]): MemoryGameItem => {
 
     let items: MemoryGameItemItem[] = [];
     const indicies = new Set();
@@ -116,7 +127,7 @@ export const generateMemoryGameItem = (
 
 export const generateMCQItems = (
     itemsCount: number,
-    items: Radical[]) => {
+    items: ChineseRadical[]) => {
 
     const sessionItems: MCQItem[] = [];
     const indicies = new Set();
