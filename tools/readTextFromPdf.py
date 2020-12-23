@@ -9,58 +9,53 @@ from tika import parser
 import re
 import json
 import uuid
-
-output_file = "extracted_text_hsk1.txt"
-output_json_file = "extracted_text_hsk1.json"
-
-if path.exists(output_file):
-
-    with open(output_file, 'r', encoding="utf-8") as out_file:
-        
-        text = out_file.read()
-        pattern = r"\s*([\u4e00-\u9fff]+)\s(.*?)\s(.*)$"
-
-        matches = re.findall(pattern, text, re.MULTILINE)
-
-        result = []
-
-        for match in matches:
-            [hanzi, pinyin, meanings] = match
-
-            result.append({
-                "id": str(uuid.uuid4()),
-                "hanzi": hanzi,
-                "meanings": meanings,
-            })
-
-        with open(output_json_file, "w") as out_json_file:
-            json.dump(result, out_json_file)
-
-    exit()
+import glob, os
 
 directory_path = os.path.dirname(__file__)
-file_name = "HSK All Levels Vocabulary/HSK 1 Vocabulary list.pdf"
-file_path = os.path.join(directory_path, file_name)
 
-parsed = parser.from_file(file_path)
-text = parsed["content"].encode("utf-8")
+for root, dirs, files in os.walk(directory_path):
 
-with open(output_file, 'wb') as the_file:
-    the_file.write(text)
+    directory_name = os.path.basename(root)
 
-# file = open(file_path, "rb")
+    if not directory_name == "HSK All Levels Vocabulary":
+        continue
 
-# fileReader = PyPDF2.PdfFileReader(file)
+    for file in files:
 
-# num_pages = fileReader.numPages
+        if not file.endswith(".pdf"):
+            continue
 
-# with open('somefile.txt', 'w') as the_file:
+        file_path = path.join(root, file)
 
-#     for index in range(num_pages):
-#         page = fileReader.getPage(index)
-#         text = page.extractText()
-#         content = page.getContents()
+        file_name = path.splitext(file)[0]
+        output_file = file_name + ".txt"
         
-#         print(text)
-#         #the_file.write(text)
+        if not path.isfile(output_file):
+            parsed = parser.from_file(file_path)
+            text = parsed["content"].encode("utf-8")
         
+            with open(output_file, 'wb') as the_file:
+                the_file.write(text)
+
+        output_json_file = file_name + ".json"
+
+        with open(output_file, 'r', encoding="utf-8") as the_file:
+
+            text = the_file.read()
+            pattern = r"\s*([\u4e00-\u9fff]+)\s(.*?)\s(.*)$"
+
+            matches = re.findall(pattern, text, re.MULTILINE)
+
+            result = []
+
+            for match in matches:
+                [hanzi, pinyin, meanings] = match
+
+                result.append({
+                    "id": str(uuid.uuid4()),
+                    "hanzi": hanzi,
+                    "meanings": meanings,
+                })
+
+            with open(output_json_file, "w") as out_json_file:
+                json.dump(result, out_json_file)
