@@ -1,11 +1,62 @@
-import { Answer, MCQItem, MemoryGameItem, MemoryGameItemItem, RecordAudioItem } from "models/CourseItem";
-import { ChineseRadical } from "models/dataset/Radical";
-import MemoryGame from "pages/MemoryGame/MemoryGame";
+import { Answer, CourseItem, FillTableItem, FillTableItemItem, MatchPairsItem, MatchPairsItemItem, MCQItem, MemoryGameItem, MemoryGameItemItem, RecordAudioItem, TranscribeItem } from "models/CourseItem";
+import { CourseItemMetadata, CourseMetadata } from "models/CourseMetadata";
+import { Dataset } from "models/dataset";
+import { ChineseRadical } from "models/dataset/ChineseRadical";
+import { Entity } from "models/Entity";
+import { QuestionAnswerItem } from "models/QuestionAnswerItem";
+import MemoryGame from "pages/CourseSession/MemoryGame/MemoryGame";
 import { v4 as uuidv4 } from "uuid";
 
 export const random = (from: number, to: number) => Math.floor(Math.random() * (to - from) + from);
 
 export const hasBuiltInSpeechSynthesis = !!window.speechSynthesis;
+
+type Result = {
+    index: number;
+    item: CourseItem;
+}
+
+export const recordAudio = (timeout: number) => 
+    navigator.mediaDevices.getUserMedia({audio: true}).then(mediaStream => new Promise((resolve, reject) => {
+    const mediaRecorder = new MediaRecorder(mediaStream);
+    const audioChunks: Blob[] = [];
+
+    mediaRecorder.addEventListener("dataavailable", (event) => {
+        audioChunks.push(event.data)
+    })
+
+    mediaRecorder.addEventListener("stop", () => {
+        const blob = new Blob(audioChunks);
+        const url = URL.createObjectURL(blob);
+        resolve(url);
+    })
+
+    mediaRecorder.start();
+
+    setTimeout(() => {
+        mediaRecorder.stop();
+    }, timeout)
+}));
+
+export const recognizeSpeech = (
+    languageId: string,
+    onstart: () => void,
+    onresult: () => void,
+    onend: () => void
+    ) => {
+    const recognition = new window.webkitSpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.lang = languageId;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = onstart;
+    recognition.onresult = onresult;
+    recognition.onend = onend;
+
+    recognition.start();
+}
 
 export const playAudioWithSpeechSynthesis = (language: string, text: string) => new Promise((resolve, reject) => {
     const speechSynthesis = window.speechSynthesis;
@@ -16,29 +67,91 @@ export const playAudioWithSpeechSynthesis = (language: string, text: string) => 
     speechSynthesis.speak(speechSynthesisUtterance);
 });
 
+const getRandomItemFromDataset = (dataset: Dataset, exclude: Set<number>) => {
+    let index = random(0, dataset.length);
+        
+    while(exclude.has(index)) {
+        index = random(0, dataset.length);
+    }
+
+    const datasetItem = dataset[index];
+
+    return {
+        index,
+        datasetItem
+    }
+}
+
+const transformObject = (item: any, courseItemMetadata: CourseItemMetadata) => {
+    
+    const transform = courseItemMetadata.transform[0];
+
+    return {
+        id: item.id,
+        answer: item[transform.answer],
+        question: item[transform.question],
+        description: item[transform.question],
+        source: item[transform.source],
+        destination: item[transform.destination],
+        transcription: item[transform.transcription],
+        canPlayAudio: item[transform.canPlayAudio] || false,
+    }
+}
+
+// export const getRandomAnswers = (
+//     rightIndex: number,
+//     rightAnswer: Answer,
+//     wrongAnswerCount: number,
+//     items: QuestionAnswerItem[]) => {
+//     const answers: Answer[] = [];
+//     const indicies = new Set([rightIndex]);
+
+//     for(const _ of Array(wrongAnswerCount)) {
+        
+//         let index = random(0, items.length);
+        
+//         while(indicies.has(index)) {
+//             index = random(0, items.length);
+//         }
+
+//         indicies.add(index);
+//         const item = items[index];
+//         answers.push({
+//             id: uuidv4(),
+//             value: item.answer,
+//             isCorrect: false,
+//             isSelected: false,
+//         });
+//     }
+
+//     answers.splice(random(0, answers.length), 0, rightAnswer);
+
+//     return answers;
+// }
+
 export const getRandomAnswers = (
     rightIndex: number,
     rightAnswer: Answer,
     wrongAnswerCount: number,
-    items: ChineseRadical[]) => {
+    dataset: Dataset,
+    courseItemMetadata: CourseItemMetadata) => {
     const answers: Answer[] = [];
-    const indicies = new Set([rightIndex]);
-    let it = 2;
+    const exclude = new Set([rightIndex]);
 
     for(const _ of Array(wrongAnswerCount)) {
         
-        let index = random(0, items.length);
-        
-        while(indicies.has(index)) {
-            index = random(0, items.length);
-        }
+        const {
+            datasetItem,
+            index,
+        } = getRandomItemFromDataset(dataset, exclude)
+        exclude.add(index);
 
-        indicies.add(index);
-        const item = items[index];
+        const item = transformObject(datasetItem, courseItemMetadata);
+        
         answers.push({
             id: uuidv4(),
+            value: item.answer,
             isCorrect: false,
-            value: item.meaning,
             isSelected: false,
         });
     }
@@ -48,37 +161,236 @@ export const getRandomAnswers = (
     return answers;
 }
 
-export const generateRecordAudioItem = (items: ChineseRadical[]): RecordAudioItem => {
-    const index = random(0, items.length);
-    const item = items[index];
+export const  generateItems = (
+    itemsCount: number,
+    dataset: Dataset,
+    courseMetadata: CourseMetadata) => {
+    const list: CourseItem[] = [];
+
+    const { courseItems } = courseMetadata;
+    const exclude = new Set<number>();
+
+    while(itemsCount > list.length) {
+        const index = random(0, courseItems.length)
+        const courseItemMetadata = courseItems[index];
+
+        let result: Result;
+
+        switch(courseItemMetadata.type) {
+            case "multiple choice question":
+                result = generateMCQItem(dataset, exclude, courseItemMetadata);
+            break;
+
+            case "fill table":
+                result = generateFillTableItem(dataset, exclude, courseItemMetadata);
+            break;
+
+            case "record audio":
+                result = generateRecordAudioItem(dataset, exclude, courseItemMetadata);
+            break;
+
+            case "match pairs":
+                result = generateMatchPairsItem(dataset, exclude, courseItemMetadata);
+            break;
+
+            case "memory game":
+                result = generateMemoryGameItem(dataset, exclude, courseItemMetadata);
+            break;
+
+            case "transcribe":       
+                result = generateTranscribeItem(dataset, exclude, courseItemMetadata);             
+            break;
+
+            default:
+                throw new Error("Could not find course item type");
+        }
+
+        exclude.add(result.index);
+        list.push(result.item);
+    }
+
+    return list;
+}
+
+
+export const generateFillTableItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata): Result => {
+
+    const result: FillTableItem = {
+        id: uuidv4(),
+        type: "fill table",
+        items: [],
+        isCompleted: false,
+        isCorrect: false,
+    }
+
+    for(const _ of Array(5)) {
+        const {
+            index,
+            datasetItem
+        } = getRandomItemFromDataset(dataset, exclude);
+    
+        const item = transformObject(datasetItem, courseItemMetadata);
+        
+        const it: FillTableItemItem = {
+            id: item.id,
+            source: item.source,
+            destination: item.destination
+        };
+        
+        result.items.push(it);
+    }
 
     return {
+        index: -1,
+        item: result
+    }
+}
+
+
+export const generateMatchPairsItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata): Result => {
+
+    const result: MatchPairsItem = {
         id: uuidv4(),
+        type: "match pairs",
+        items: [],
+        expected: [],
+        isCompleted: false,
+        isCorrect: false,
+    }
+
+    for(const _ of Array(5)) {
+        const {
+            index,
+            datasetItem
+        } = getRandomItemFromDataset(dataset, exclude);
+    
+        const item = transformObject(datasetItem, courseItemMetadata);
+
+        let it: MatchPairsItemItem;
+        let it1: MatchPairsItemItem;
+
+        if(Math.random() > 0.5) {
+            it = {
+                id: uuidv4(),
+                value: item.source,
+                matchId: item.id
+            }
+        
+            it1 = {
+                id: uuidv4(),
+                value: item.destination,
+            }
+        }
+        else {
+            it = {
+                id: uuidv4(),
+                value: item.destination,
+                matchId: item.id
+            }
+        
+            it1 = {
+                id: uuidv4(),
+                value: item.source,
+            }
+        }
+        
+
+        result.items = result.items.concat([it, it1]);
+        result.expected = result.expected.concat([it, {
+            ...it1,
+            matchId: item.id
+        }])
+    }
+
+    return {
+        index: -1,
+        item: result
+    }
+}
+
+export const generateTranscribeItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata): Result => {
+
+    const {
+        index,
+        datasetItem
+    } = getRandomItemFromDataset(dataset, exclude);
+
+    const item = transformObject(datasetItem, courseItemMetadata);
+
+    const result: TranscribeItem = {
+        id: item.id,
+        type: "transcribe",
+        source: item.source,
+        transcription: item.transcription,
+        isCompleted: false,
+        isCorrect: false,
+    }
+
+    return {
+        index,
+        item: result,
+    };
+}
+
+export const generateRecordAudioItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata
+    ): Result => {
+    
+    const {
+        index,
+        datasetItem
+    } = getRandomItemFromDataset(dataset, exclude);
+
+    const item = transformObject(datasetItem, courseItemMetadata);
+
+    const result: RecordAudioItem = {
+        id: item.id,
         type: "record audio",
         isCorrect: false,
         isCompleted: false,
-        question: item.radical,
-        description: item.pinyin,
+        question: item.question,
+        description: item.description,
+    }
+
+    return {
+        index: -1,
+        item: result,
     }
 }
 
 export const generateMemoryGameItem = (
-    itemsCount: number,
-    dataset: ChineseRadical[]): MemoryGameItem => {
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata): Result => {
 
-    let items: MemoryGameItemItem[] = [];
-    const indicies = new Set();
+    const result: MemoryGameItem = {
+        id: uuidv4(),
+        type: "memory game",
+        items: [],
+        expected: [],
+        isCompleted: false,
+        isCorrect: false,
+    }
 
-    for(const _ of Array(itemsCount)) {
+    for(const _ of Array(5)) {
         
-        let index = random(0, dataset.length);
-        
-        while(indicies.has(index)) {
-            index = random(0, dataset.length);
-        }
-
-        indicies.add(index);
-        const datasetItem = dataset[index];
+        const {
+            index,
+            datasetItem
+        } = getRandomItemFromDataset(dataset, exclude);
+    
+        const item = transformObject(datasetItem, courseItemMetadata);
 
         items.push({
             id: uuidv4(),
@@ -116,57 +428,94 @@ export const generateMemoryGameItem = (
     items = shuffledIndicies.map(index => items[index]);
 
     return {
-        id: uuidv4(),
-        type: "memory game",
-        items,
-        isCompleted: false,
+        index: -1,
+        item: result,
+    }
+}
+
+export const generateMCQItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata): Result => {
+
+    const {
+        index,
+        datasetItem
+    } = getRandomItemFromDataset(dataset, exclude);
+
+    const item = transformObject(datasetItem, courseItemMetadata);
+
+    const rightAnswer = {
+        id: item.id,
+        value: item.answer,
+        isCorrect: true,
+        isSelected: false,
+    }
+
+    const question = {
+        id: item.id,
+        value: item.question,
+    }
+
+    const result: MCQItem = {
+        id: item.id,
+        type: "multiple choice question",
+        rightAnswer,
+        answers: getRandomAnswers(index, rightAnswer, 2, dataset, courseItemMetadata),
+        question,
         isCorrect: false,
-    }
-}
-
-
-export const generateMCQItems = (
-    itemsCount: number,
-    items: ChineseRadical[]) => {
-
-    const sessionItems: MCQItem[] = [];
-    const indicies = new Set();
-
-    for(const _ of Array(itemsCount)) {
-        
-        let index = random(0, items.length);
-        
-        while(indicies.has(index)) {
-            index = random(0, items.length);
-        }
-
-        indicies.add(index);
-        const item = items[index];
-
-        const rightAnswer = {
-            id: item.id,
-            value: item.meaning,
-            isCorrect: true,
-            isSelected: false,
-        }
-
-        const question = {
-            id: item.id,
-            value: item.radical,
-        }
-
-        sessionItems.push({
-            id: item.id,
-            type: "multiple choice question",
-            rightAnswer,
-            answers: getRandomAnswers(index, rightAnswer, 2, items),
-            question,
-            isCorrect: false,
-            isCompleted: false,
-        })
-
-        
+        isCompleted: false,
+        canPlayAudio: item.canPlayAudio,
     }
 
-    return sessionItems;
+    return {
+        index,
+        item: result,
+    };
 }
+
+// export const generateMCQItems = (
+//     itemsCount: number,
+//     items: QuestionAnswerItem[]) => {
+
+//     const sessionItems: MCQItem[] = [];
+//     const indicies = new Set();
+
+//     for(const _ of Array(itemsCount)) {
+        
+//         let index = random(0, items.length);
+        
+//         while(indicies.has(index)) {
+//             index = random(0, items.length);
+//         }
+
+//         indicies.add(index);
+//         const item = items[index];
+
+//         const rightAnswer = {
+//             id: item.id,
+//             value: item.answer,
+//             isCorrect: true,
+//             isSelected: false,
+//         }
+
+//         const question = {
+//             id: item.id,
+//             value: item.question,
+//         }
+
+//         sessionItems.push({
+//             id: item.id,
+//             type: "multiple choice question",
+//             rightAnswer,
+//             answers: getRandomAnswers(index, rightAnswer, 2, items),
+//             question,
+//             isCorrect: false,
+//             isCompleted: false,
+//         })
+
+        
+//     }
+
+//     return sessionItems;
+// }

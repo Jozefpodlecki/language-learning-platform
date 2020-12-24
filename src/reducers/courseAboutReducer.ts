@@ -1,5 +1,6 @@
 import * as actions from "actions";
 import { Course } from "models/Course";
+import { Dataset } from "models/dataset";
 import { Loadable, unload } from "models/Loadable";
 import { ActionType, getType } from "typesafe-actions";
 
@@ -7,7 +8,7 @@ type Action = ActionType<typeof actions>;
 
 type State = {
     course: Loadable<Course & { 
-        dataset: Loadable<any[]>
+        dataset: Loadable<Dataset>
     }>;
 }
 

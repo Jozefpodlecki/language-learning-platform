@@ -1,13 +1,15 @@
 import { Course } from "models/Course";
-import _radicals from "../assets/data/radicals.json";
 import _courses from "../assets/data/courses.json";
+import _courseMetadata from "../assets/data/courseMetadata.json";
+import { CourseMetadata } from "models/CourseMetadata";
+import { Dataset } from "models/dataset";
 
 type PageCriteria = {
     page: number;
     pageSize: number;
 }
 
-const importAll = (context: __WebpackModuleApi.RequireContext) => {
+const importImages = (context: __WebpackModuleApi.RequireContext) => {
     return context.keys()
         .reduce((acc, key) => {
             const module = context(key);
@@ -18,14 +20,32 @@ const importAll = (context: __WebpackModuleApi.RequireContext) => {
         }, {} as Record<string, string>);
 };
 
+const importDatasets = (context: __WebpackModuleApi.RequireContext) => {
+    return context.keys()
+        .reduce((acc, key) => {
+            const module = context(key);
+            acc[key] = module;
+
+            return acc;
+        }, {} as Record<string, Dataset>);
+};
+
 const courseImagesContext = require.context(
-    "../assets/images",
+    "/src/assets/images",
     false,
     /\.(png|jpe?g|svg)$/,
     "sync"
 );
 
-const courseImages = importAll(courseImagesContext);
+const courseDatasetContext = require.context(
+    "/src/assets/data/dataset",
+    false,
+    /\.json$/,
+    "sync"
+);
+
+const courseImages = importImages(courseImagesContext);
+const courseDatasets = importDatasets(courseDatasetContext);
 
 export const getCourses = (options: PageCriteria) => {
 
@@ -43,10 +63,16 @@ export const getCourseAsync = (courseId: string) => {
     return Promise.resolve(course);
 }
 
-export const getCourseDatasetAsync = (courseId: string) => {
+export const getCourseDatasetAsync = (courseId: string): Promise<Dataset> => {
     const course = _courses.find(pr => pr.id === courseId) as Course;
+    const dataset = courseDatasets[course.datasetUrl];
+    
+    return Promise.resolve(dataset);
+}
 
-    if(course.datasetUrl === "./radicals.json") {
-        return Promise.resolve(_radicals);
-    }
+export const getCourseMetadataAsync = (courseId: string): Promise<CourseMetadata> => {
+    const courseMetadata = _courseMetadata
+        .find(pr => pr.courseId === courseId) as CourseMetadata;
+
+    return Promise.resolve(courseMetadata);
 }

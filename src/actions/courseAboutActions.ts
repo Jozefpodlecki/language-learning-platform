@@ -1,8 +1,9 @@
 import { Course } from "models/Course";
+import { Dataset } from "models/dataset";
 import { createAsyncAction } from "typesafe-actions";
 
 export const getCourseDataset = createAsyncAction(
     "getCourseDataset.request",
     "getCourseDataset.success",
     "getCourseDataset.error"
-)<string, any[], void>();
+)<string, Dataset, void>();

@@ -7,7 +7,8 @@ import { faCheck, faMicrophone, faMicrophoneSlash, faRunning, faStop, faVolumeUp
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { resolve } from "path";
 import { useDispatch } from "react-redux";
-import ActionButton from "../components/ActionButton";
+import ActionButton from "../../components/ActionButton";
+import { recordAudio } from "appUtils";
 
 type Props = RecordAudioItem & { 
     title: string,
@@ -62,50 +63,8 @@ const RecordAudio: FunctionComponent<Props> = ({
 
     const onRecordAudio = async () => {
 
-        const mediaStream = await navigator.mediaDevices.getUserMedia({audio: true})
-        const mediaRecorder = new MediaRecorder(mediaStream);
-        const audioChunks: Blob[] = [];
-
-        mediaRecorder.addEventListener("dataavailable", (event) => {
-            audioChunks.push(event.data)
-        })
-
-        mediaRecorder.addEventListener("stop", () => {
-            const blob = new Blob(audioChunks);
-            const url = URL.createObjectURL(blob);
-            setState(state => ({...state, audioUrl: url}))
-        })
-
-        mediaRecorder.start();
-
-        setTimeout(() => {
-            mediaRecorder.stop();
-        }, 3000)
-
-        const recognition = new window.webkitSpeechRecognition();
-
-        recognition.continuous = false;
-        recognition.lang = 'zh';
-        recognition.interimResults = true;
-        recognition.maxAlternatives = 1;
-
-        recognition.onstart = function() {
-            setState(state => ({...state, isRecording: true}))
-        };
-          
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            setState(state => ({...state, result: transcript}))
-        };
-
-        recognition.onend = function(event) {
-            setState(state => ({...state, 
-                hasSpoken: true,
-                isRecording: false
-            }))
-        }
-
-        recognition.start();
+        const url = await recordAudio(3000);
+        
     }
 
     const onStopRecordAudio = () => {
@@ -129,9 +88,9 @@ const RecordAudio: FunctionComponent<Props> = ({
             return;
         }
 
-        dispatch(actions.sendAudio.request({
-            transcript: result,
-        }))
+        dispatch(actions.sendAudio.request());
+
+
     }
 
     return  <div className={style.quiz}>

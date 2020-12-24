@@ -1,6 +1,5 @@
-import * as actions from "actions";
-import { ChineseRadical } from "models/dataset/Radical";
-import React, { ChangeEvent, FunctionComponent, useEffect, useState } from "react";
+import { ChineseRadical } from "models/dataset/ChineseRadical";
+import React, { FunctionComponent } from "react";
 import style from "./chineseRadicalsItemTemplate.scss";
 
 type Props = ChineseRadical;

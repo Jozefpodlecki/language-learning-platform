@@ -37,6 +37,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
     hasSelected,
     selectedAnswerId,
     remainingSeconds,
+    canPlayAudio,
     onQuit,
 }) => {
     const dispatch = useDispatch();
@@ -137,7 +138,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
             <div className={style.question}>
                 {question.value}
             </div>
-            {isPlaying ? <Loader
+            {canPlayAudio ? isPlaying ? <Loader
                 type="ThreeDots"
                 color="black"
                 width={50}
@@ -145,7 +146,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
                 value="Play"
                 onClick={onPlayAudio}
                 icon={faVolumeUp}
-            />}
+            /> : null}
             {hasSubmit ? null : <div className={style.answers}>
                 {answers.map((answer, index) => <Answer
                     {...answer}

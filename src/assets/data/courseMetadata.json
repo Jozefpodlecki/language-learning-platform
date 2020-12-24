@@ -1,0 +1,95 @@
+[
+    {
+        "courseId": "f7ac9a82-4d60-49f9-ba39-3808202047d1",
+        "courseItems": [
+            {
+                "type": "multiple choice question",
+                "transform": [
+                    {
+                        "question": "pinyin",
+                        "answer": "radical"
+                    },
+                    {
+                        "question": "radical",
+                        "answer": "meaning"
+                    },
+                    {
+                        "question": "pinyin",
+                        "answer": "meaning"
+                    },
+                    {
+                        "question": "meaning",
+                        "answer": "radical"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "courseId": "c4fcf42c-6690-4aca-a3ee-c684a1ec7d42",
+        "courseItems": [
+            {
+                "type": "multiple choice question",
+                "transform": [
+                    {
+                        "question": "hanzi",
+                        "answer": "meanings"
+                    },
+                    {
+                        "question": "meanings",
+                        "answer": "hanzi"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "courseId": "7e86194b-3acb-46fa-a1d8-052426358ba6",
+        "courseItems": [
+            {
+                "type": "transcribe",
+                "transform": [
+                    {
+                        "source": "fr",
+                        "transcription": "en"
+                    },
+                    {
+                        "source": "en",
+                        "transcription": "fr"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "courseId": "30d3c394-1ba0-4412-bf6b-e8e46595fbc3",
+        "courseItems": [
+            {
+                "type": "transcribe",
+                "transform": [
+                    {
+                        "source": "fr",
+                        "transcription": "en"
+                    },
+                    {
+                        "source": "en",
+                        "transcription": "fr"
+                    }
+                ]
+            },
+            {
+                "type": "multiple choice question",
+                "transform": [
+                    {
+                        "question": "hanzi",
+                        "answer": "meanings"
+                    },
+                    {
+                        "question": "meanings",
+                        "answer": "hanzi"
+                    }
+                ]
+            }
+        ]
+    }
+]

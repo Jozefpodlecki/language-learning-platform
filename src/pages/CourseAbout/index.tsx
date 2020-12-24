@@ -12,6 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ChineseRadicalsItemTemplate from "./ChineseRadicalsItemTemplate";
+import Hsk1ItemTemplate from "./Hsk1ItemTemplate";
+import FrenchItemTemplate from "./FrenchItemTemplate";
+import { Dataset } from "models/dataset";
 
 const CourseAbout: FunctionComponent = () => {
     const {
@@ -44,14 +47,23 @@ const CourseAbout: FunctionComponent = () => {
                 .then(course => {
                     dispatch(actions.getCourse.success(course));
                 })
+
+            return;
         }
-        else {
-            if(course.dataset.isLoading === true) {
-                getCourseDatasetAsync(courseId)
-                    .then(dataset => {
-                        dispatch(actions.getCourseDataset.success(dataset));
-                    })
-            }
+
+        if(course.id !== courseId) {
+            getCourseAsync(courseId)
+                .then(course => {
+                    dispatch(actions.getCourse.success(course));
+                })
+            return;
+        }
+
+        if(course.dataset.isLoading === true) {
+            getCourseDatasetAsync(courseId)
+                .then(dataset => {
+                    dispatch(actions.getCourseDataset.success(dataset));
+                })
         }
 
     }, [course])
@@ -61,10 +73,17 @@ const CourseAbout: FunctionComponent = () => {
             return;
         }
 
-        let items: any[] = course.dataset;
+        let items: Dataset = course.dataset;
+
+        let filter = (pr: any) => pr.meaning.includes(value);
+
+        if(course.name.includes("HSK")) {
+            filter = (pr: any) => 
+                pr.meanings.includes(value);
+        }
 
         if(value) {
-            items = items.filter(pr => pr.meaning.includes(value));
+            items = items.filter(filter);
         }
 
         const from = page * pageSize;
@@ -74,16 +93,6 @@ const CourseAbout: FunctionComponent = () => {
     }, [course, value]);
 
     if(course.isLoading === true) {
-        return <div>
-            <Loader
-                type="ThreeDots"
-                color="black"
-                width={200}
-                height={200}/>
-        </div>
-    }
-
-    if(course.dataset.isLoading === true) {
         return <div>
             <Loader
                 type="ThreeDots"
@@ -105,6 +114,14 @@ const CourseAbout: FunctionComponent = () => {
         ItemTemplate = ChineseRadicalsItemTemplate;
     }
 
+    if(course.name.includes("HSK")) {
+        ItemTemplate = Hsk1ItemTemplate;
+    }
+
+    if(course.name.includes("French")) {
+        ItemTemplate = FrenchItemTemplate;
+    }
+
     return <div>
         <Navbar/>
         <div className={style.header}>
@@ -115,17 +132,23 @@ const CourseAbout: FunctionComponent = () => {
             <div className={style.title}>{course.name}</div>
         </div>
         <div className={style.sectionHeader}>Dataset</div>
-        <div className={style.searchbox}>
-            <input
-                className={style.input}
-                type="text"
-                value={value}
-                placeholder="Search"
-                onChange={onChange}/>
-        </div>
-        <div className={style.list}>
-            {items.map(pr => <ItemTemplate {...pr}/>)}
-        </div>
+        {course.dataset.isLoading === true ? <Loader
+                type="ThreeDots"
+                color="black"
+                width={200}
+                height={200}/> : <>
+            <div className={style.searchbox}>
+                <input
+                    className={style.input}
+                    type="text"
+                    value={value}
+                    placeholder="Search"
+                    onChange={onChange}/>
+                </div>
+                <div className={style.list}>
+                    {items.map(pr => <ItemTemplate key={pr.id} {...pr}/>)}
+                </div>
+            </>}
     </div>
 };
 

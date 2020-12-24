@@ -11,6 +11,7 @@ type State = {
     session: Loadable<CourseSession>;
     hasSubmit: boolean;
     hasSelected: boolean;
+    hasChanged: boolean;
     selectedAnswerId?: string;
     item: Loadable<CourseItem>;
     course: Loadable<Course>;
@@ -21,6 +22,7 @@ const initialState: State = {
         isLoading: true,
     },
     hasSelected: false,
+    hasChanged: false,
     hasSubmit: false,
     item: {
         isLoading: true,
@@ -34,6 +36,32 @@ export default (
     state = initialState,
     action: Action
 ):  State => {
+
+    if(action.type === getType(actions.transcribeChange)) {
+        const { 
+            transcription,
+        } = action.payload;
+
+        let item = state.item;
+
+        if(item.isLoading === true) {
+            return state;
+        }
+
+        if(item.type !== "transcribe") {
+            return state;
+        }
+
+        item = {
+            ...item,
+            transcription
+        }
+
+        return {
+            ...state,
+            item
+        }
+    }
             
     if(action.type === getType(actions.selectAnswer)) {
         const { 
@@ -41,13 +69,11 @@ export default (
             answerId,
         } = action.payload;
 
-        if(state.session.isLoading === true) {
+        const item = state.item;
+
+        if(item.isLoading === true) {
             return state;
         }
-
-        const items = [...state.session.items];
-
-        const item = items.find(pr => pr.id === itemId);
 
         if(item.type !== "multiple choice question") {
             return state;
@@ -62,10 +88,7 @@ export default (
             ...state,
             hasSelected: true,
             selectedAnswerId: answerId,
-            session: {
-                ...state.session,
-                items: items
-            }
+            item,
         }
     }
 
@@ -109,22 +132,13 @@ export default (
     }
 
     if(action.type === getType(actions.sendAudio.request)) {
-        const { transcript } = action.payload;
 
-        if(!transcript) {
-            return state;
+        return {
+            ...state,
+            item: {
+                isLoading: true,
+            }
         }
-
-        
-        if(state.item.isLoading === true) {
-            return state;
-        }
-
-        if(state.item.type !== "record audio") {
-            return state;
-        }
-
-        state.item.description
     }
 
     if(action.type === getType(actions.sendAnswer.request)) {

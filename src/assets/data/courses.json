@@ -12,5 +12,19 @@
         "languageId": "zh",
         "thumbnailUrl": "./hsk1.jpg",
         "datasetUrl": "./hsk1.json"
+    },
+    {
+        "id": "c4fcf42c-6690-4aca-a3ee-c684a1ec7d42",
+        "name": "HSK 2",
+        "languageId": "zh",
+        "thumbnailUrl": "./hsk2.jpg",
+        "datasetUrl": "./hsk2.json"
+    },
+    {
+        "id": "7e86194b-3acb-46fa-a1d8-052426358ba6",
+        "name": "French sentences",
+        "languageId": "fr",
+        "thumbnailUrl": "./fr.png",
+        "datasetUrl": "./french.json"
     }
 ]

@@ -4,13 +4,16 @@ import { useSelector } from "hooks/useSelector";
 import Loader from "react-loader-spinner";
 import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 
-import style from "./courseSession.scss";
+import style from "./index.scss";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import RecordAudio from "./RecordAudio";
 import { useHistory, useParams } from "react-router";
 import { finishSession, getCourseAsync, getSession, moveNext } from "api";
 import ProgressBar from "components/ProgressBar";
-import CourseCompletion from "./CourseCompletion";
+import CourseCompletion from "../CourseCompletion";
+import Transcribe from "./Transcribe";
+import MatchPairs from "./MatchPairs";
+import FillTable from "./FillTable";
 
 const CourseSession: FunctionComponent = () => {
     const dispatch = useDispatch();
@@ -22,6 +25,7 @@ const CourseSession: FunctionComponent = () => {
                 session, 
                 hasSubmit,
                 hasSelected,
+                hasChanged,
                 selectedAnswerId,
             }
         }
@@ -158,6 +162,42 @@ const CourseSession: FunctionComponent = () => {
                 title={course.name}
                 completed={completed}
                 hasSubmit={hasSubmit}
+            />
+        }
+
+        if(item.type === "fill table") {
+            content = <FillTable
+                {...item}
+                sessionId={sessionId}
+                title={course.name}
+                remainingSeconds={remainingSeconds}
+                hasSubmit={hasSubmit}
+                hasChanged={hasChanged}
+                onQuit={onQuit}
+            />
+        }
+
+        if(item.type === "match pairs") {
+            content = <MatchPairs
+                {...item}
+                sessionId={sessionId}
+                title={course.name}
+                remainingSeconds={remainingSeconds}
+                hasSubmit={hasSubmit}
+                hasChanged={hasChanged}
+                onQuit={onQuit}
+            />
+        }
+
+        if(item.type === "transcribe") {
+            content = <Transcribe
+                {...item}
+                sessionId={sessionId}
+                title={course.name}
+                remainingSeconds={remainingSeconds}
+                hasSubmit={hasSubmit}
+                hasChanged={hasChanged}
+                onQuit={onQuit}
             />
         }
     }

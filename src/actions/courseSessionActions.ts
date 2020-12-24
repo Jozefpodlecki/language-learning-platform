@@ -36,7 +36,13 @@ export const sendAudio = createAsyncAction(
     "sendAudio.request",
     "sendAudio.success",
     "sendAudio.error"
-)<SendAudioPayload, void, void>();
+)<void, CourseItem, void>();
+
+export const sendText = createAsyncAction(
+    "sendText.request",
+    "sendText.success",
+    "sendText.error"
+)<void, CourseItem, void>();
 
 export const sendAnswer = createAsyncAction(
     "sendAnswer.request",
@@ -44,7 +50,36 @@ export const sendAnswer = createAsyncAction(
     "sendAnswer.error"
 )<void, CourseItem, void>();
 
+export const sendFillTableData = createAsyncAction(
+    "sendFillTableData.request",
+    "sendFillTableData.success",
+    "sendFillTableData.error"
+)<void, CourseItem, void>();
+
+export const sendMatchPairsData = createAsyncAction(
+    "sendMatchPairsData.request",
+    "sendMatchPairsData.success",
+    "sendMatchPairsData.error"
+)<void, CourseItem, void>();
+
+export const sendMemoryGameData = createAsyncAction(
+    "sendMemoryGameData.request",
+    "sendMemoryGameData.success",
+    "sendMemoryGameData.error"
+)<void, CourseItem, void>();
+
 export const selectAnswer = createAction("selectAnswer")<{
-    answerId: string;
     itemId: string;
+    answerId: string;
+}>();
+
+export const transcribeChange = createAction("transcribeChange")<{
+    itemId: string;
+    transcription: string;
+}>();
+
+export const fillTable = createAction("fillTable")<{
+    itemId: string;
+    tableItemId: string;
+    value: string;
 }>();

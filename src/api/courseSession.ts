@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { CourseSession } from "models/CourseSession";
-import { random, generateRecordAudioItem, generateMCQItems } from "appUtils";
-import { Answer, MCQItem } from "models/CourseItem";
-import { getCourseDatasetAsync } from "./course";
+import { random, generateRecordAudioItem, generateItems } from "appUtils";
+import { Answer, AudioToSentenceItem, MCQItem, MemoryGameItem, MemoryGameItemItem } from "models/CourseItem";
+import { getCourseDatasetAsync, getCourseMetadataAsync } from "./course";
+import { QuestionAnswerItem } from "models/QuestionAnswerItem";
 
 const getSessionsFromLocalStorage = () => (JSON.parse(localStorage.getItem("session")) || []) as CourseSession[];
 
@@ -47,7 +48,13 @@ export const createSession = async (
 
     const dataset = await getCourseDatasetAsync(courseId);
     //const items = generateMCQItems(itemCount, dataset);
-    const items = generateMCQItems(itemCount, dataset);
+
+    const numberOfCourseItemTypes = 2;
+
+    const courseMetadata = await getCourseMetadataAsync(courseId);
+    const items = generateItems(itemCount, dataset, courseMetadata)
+
+    //const items = generateMCQItems(itemCount, dataset);
     session.items = items;
     //session.items = [generateRecordAudioItem(dataset)]
 
@@ -60,6 +67,30 @@ export const createSession = async (
     setSessionsToLocalStorage(sessions);
 
     return session;
+}
+
+export const sendAudioToSentenceText = (sessionId: string, text: string) => {
+    const sessions = getSessionsFromLocalStorage();
+
+    const session = sessions.find(pr => pr.id === sessionId);
+
+    const item = session.items.find(pr => pr.type === "audio to sentence") as AudioToSentenceItem;
+
+    item.isCorrect = false;
+
+    return Promise.resolve();
+}
+
+export const sendMemoryGameData = (sessionId: string, data: MemoryGameItemItem[]) => {
+    const sessions = getSessionsFromLocalStorage();
+
+    const session = sessions.find(pr => pr.id === sessionId);
+
+    const item = session.items.find(pr => pr.type === "memory game") as MemoryGameItem;
+
+    item.isCorrect = false;
+
+    return Promise.resolve();
 }
 
 export const sendAnswer = (sessionId: string, answer: Answer) => {
