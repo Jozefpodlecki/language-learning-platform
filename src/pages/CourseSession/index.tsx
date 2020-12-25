@@ -14,18 +14,20 @@ import CourseCompletion from "../CourseCompletion";
 import Transcribe from "./Transcribe";
 import MatchPairs from "./MatchPairs";
 import FillTable from "./FillTable";
+import MemoryGame from "./MemoryGame";
 
 const CourseSession: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
         pages: {
             courseSession: {
-                item,
+                courseItem,
                 course,
                 session, 
                 hasSubmit,
                 hasSelected,
                 hasChanged,
+                selectedItems,
                 selectedAnswerId,
             }
         }
@@ -42,9 +44,9 @@ const CourseSession: FunctionComponent = () => {
     const [remainingSeconds, setRemainingTime] = useState(-1);
 
     useEffect(() => {
-        if (item.isLoading === false && id !== item.id) {
+        if (courseItem.isLoading === false && id !== courseItem.id) {
             setRemainingTime(5);
-            setId(item.id);
+            setId(courseItem.id);
         }
 
         if (course.isLoading === true) {
@@ -54,7 +56,7 @@ const CourseSession: FunctionComponent = () => {
                 })
         }
 
-        if (item.isLoading === true) {
+        if (courseItem.isLoading === true) {
             getSession(sessionId)
                 .then(session => {
                     dispatch(actions.startSession.success(session));
@@ -63,8 +65,8 @@ const CourseSession: FunctionComponent = () => {
 
         if (session.isLoading === false 
             && !session.completedOn
-            && item.isLoading === false
-            && item.isCompleted) {
+            && courseItem.isLoading === false
+            && courseItem.isCompleted) {
 
             if(remainingSeconds === -1) {
                 setRemainingTime(5);
@@ -95,7 +97,7 @@ const CourseSession: FunctionComponent = () => {
                 clearTimeout(timeoutHandle);
             }
         }
-    }, [id, course, item, remainingSeconds]);
+    }, [id, course, courseItem, remainingSeconds]);
 
     const onQuit = () => {
         dispatch(actions.quitSession.success());
@@ -128,7 +130,7 @@ const CourseSession: FunctionComponent = () => {
         />
     }
     
-    if(item.isLoading === true) {
+    if(courseItem.isLoading === true) {
         content = <div>
             <Loader
                 type="ThreeDots"
@@ -139,12 +141,12 @@ const CourseSession: FunctionComponent = () => {
         </div>
     }
     else {
-        isCompleted = item.isCompleted;
-        isCorrect = item.isCorrect;
+        isCompleted = courseItem.isCompleted;
+        isCorrect = courseItem.isCorrect;
 
-        if(item.type === "multiple choice question") {
+        if(courseItem.type === "multiple choice question") {
             content =  <MultipleChoiceQuestion
-                {...item}
+                {...courseItem}
                 sessionId={sessionId}
                 title={course.name}
                 remainingSeconds={remainingSeconds}
@@ -156,18 +158,32 @@ const CourseSession: FunctionComponent = () => {
             />
         }
     
-        if(item.type === "record audio") {
+        if(courseItem.type === "record audio") {
             content = <RecordAudio
-                {...item}
+                {...courseItem}
                 title={course.name}
                 completed={completed}
                 hasSubmit={hasSubmit}
             />
         }
 
-        if(item.type === "fill table") {
+        if(courseItem.type === "memory game") {
+            content = <MemoryGame
+                {...courseItem}
+                sessionId={sessionId}
+                title={course.name}
+                remainingSeconds={remainingSeconds}
+                hasSubmit={hasSubmit}
+                hasChanged={hasChanged}
+                isInteractive={true}
+                selectedItems={selectedItems}
+                onQuit={onQuit}
+            />
+        }
+
+        if(courseItem.type === "fill table") {
             content = <FillTable
-                {...item}
+                {...courseItem}
                 sessionId={sessionId}
                 title={course.name}
                 remainingSeconds={remainingSeconds}
@@ -177,9 +193,9 @@ const CourseSession: FunctionComponent = () => {
             />
         }
 
-        if(item.type === "match pairs") {
+        if(courseItem.type === "match pairs") {
             content = <MatchPairs
-                {...item}
+                {...courseItem}
                 sessionId={sessionId}
                 title={course.name}
                 remainingSeconds={remainingSeconds}
@@ -189,9 +205,9 @@ const CourseSession: FunctionComponent = () => {
             />
         }
 
-        if(item.type === "transcribe") {
+        if(courseItem.type === "transcribe") {
             content = <Transcribe
-                {...item}
+                {...courseItem}
                 sessionId={sessionId}
                 title={course.name}
                 remainingSeconds={remainingSeconds}

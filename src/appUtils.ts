@@ -1,10 +1,9 @@
-import { Answer, CourseItem, FillTableItem, FillTableItemItem, MatchPairsItem, MatchPairsItemItem, MCQItem, MemoryGameItem, MemoryGameItemItem, RecordAudioItem, TranscribeItem } from "models/CourseItem";
+import { Answer, 
+    CourseItem, FillTableItem, FillTableItemItem,
+    MatchPairsItem, MatchPairsItemItem, MCQItem, MemoryGameItem,
+    MemoryGameItemItem, RecordAudioItem, TranscribeItem } from "models/CourseItem";
 import { CourseItemMetadata, CourseMetadata } from "models/CourseMetadata";
 import { Dataset } from "models/dataset";
-import { ChineseRadical } from "models/dataset/ChineseRadical";
-import { Entity } from "models/Entity";
-import { QuestionAnswerItem } from "models/QuestionAnswerItem";
-import MemoryGame from "pages/CourseSession/MemoryGame/MemoryGame";
 import { v4 as uuidv4 } from "uuid";
 
 export const random = (from: number, to: number) => Math.floor(Math.random() * (to - from) + from);
@@ -90,9 +89,11 @@ const transformObject = (item: any, courseItemMetadata: CourseItemMetadata) => {
         id: item.id,
         answer: item[transform.answer],
         question: item[transform.question],
-        description: item[transform.question],
+        description: item[transform.description],
         source: item[transform.source],
+        sourceLanguageId: item[transform.sourceLanguageId] || eval(transform.sourceLanguageId),
         destination: item[transform.destination],
+        destinationLanguageId: item[transform.destinationLanguageId] || eval(transform.destinationLanguageId),
         transcription: item[transform.transcription],
         canPlayAudio: item[transform.canPlayAudio] || false,
     }
@@ -168,11 +169,12 @@ export const  generateItems = (
     const list: CourseItem[] = [];
 
     const { courseItems } = courseMetadata;
+    const courseItemsEnabled = courseItems.filter(pr => pr.enabled);
     const exclude = new Set<number>();
 
     while(itemsCount > list.length) {
-        const index = random(0, courseItems.length)
-        const courseItemMetadata = courseItems[index];
+        const index = random(0, courseItemsEnabled.length)
+        const courseItemMetadata = courseItemsEnabled[index];
 
         let result: Result;
 
@@ -190,11 +192,11 @@ export const  generateItems = (
             break;
 
             case "match pairs":
-                result = generateMatchPairsItem(dataset, exclude, courseItemMetadata);
+                result = generateMatchPairsItem(dataset, exclude, courseItemMetadata, 5);
             break;
 
             case "memory game":
-                result = generateMemoryGameItem(dataset, exclude, courseItemMetadata);
+                result = generateMemoryGameItem(dataset, exclude, courseItemMetadata, 5);
             break;
 
             case "transcribe":       
@@ -249,22 +251,22 @@ export const generateFillTableItem = (
     }
 }
 
-
-export const generateMatchPairsItem = (
+export const generateMemoryGameItem = (
     dataset: Dataset,
     exclude: Set<number>,
-    courseItemMetadata: CourseItemMetadata): Result => {
+    courseItemMetadata: CourseItemMetadata,
+    numberOfMemoryGameItems: number): Result => {
 
-    const result: MatchPairsItem = {
+    const result: MemoryGameItem = {
         id: uuidv4(),
-        type: "match pairs",
+        type: "memory game",
         items: [],
-        expected: [],
         isCompleted: false,
         isCorrect: false,
     }
 
-    for(const _ of Array(5)) {
+    for(const _ of Array(numberOfMemoryGameItems)) {
+        
         const {
             index,
             datasetItem
@@ -272,40 +274,68 @@ export const generateMatchPairsItem = (
     
         const item = transformObject(datasetItem, courseItemMetadata);
 
-        let it: MatchPairsItemItem;
-        let it1: MatchPairsItemItem;
+        result.items.push({
+            id: uuidv4(),
+            matchId: item.id,
+            value: item.source
+        })
 
-        if(Math.random() > 0.5) {
-            it = {
-                id: uuidv4(),
-                value: item.source,
-                matchId: item.id
-            }
-        
-            it1 = {
-                id: uuidv4(),
-                value: item.destination,
-            }
-        }
-        else {
-            it = {
-                id: uuidv4(),
-                value: item.destination,
-                matchId: item.id
-            }
-        
-            it1 = {
-                id: uuidv4(),
-                value: item.source,
-            }
-        }
-        
+        result.items.push({
+            id: uuidv4(),
+            matchId: item.id,
+            value: item.destination
+        })
+    }
 
-        result.items = result.items.concat([it, it1]);
-        result.expected = result.expected.concat([it, {
-            ...it1,
-            matchId: item.id
-        }])
+    result.items = reshuffle(result.items);
+
+    return {
+        index: -1,
+        item: result,
+    }
+}
+
+export const generateMatchPairsItem = (
+    dataset: Dataset,
+    exclude: Set<number>,
+    courseItemMetadata: CourseItemMetadata,
+    numberOfPairs: number): Result => {
+
+    const result: MatchPairsItem = {
+        id: uuidv4(),
+        type: "match pairs",
+        items: [],
+        pieces: [],
+        expected: [],
+        isCompleted: false,
+        isCorrect: false,
+    }
+
+    for(const _ of Array(numberOfPairs)) {
+        const {
+            index,
+            datasetItem
+        } = getRandomItemFromDataset(dataset, exclude);
+    
+        const item = transformObject(datasetItem, courseItemMetadata);
+
+        const pairItem = {
+            id: uuidv4(),
+            source: item.source,
+            destination: "",   
+        }
+
+        const piece = {
+            id: uuidv4(),
+            value: item.destination,   
+        }
+
+        result.items.push(pairItem);
+        result.pieces.push(piece);
+        result.expected.push({
+            ...pairItem,
+            destination: item.destination
+        });
     }
 
     return {
@@ -330,7 +360,10 @@ export const generateTranscribeItem = (
         id: item.id,
         type: "transcribe",
         source: item.source,
-        transcription: item.transcription,
+        sourceLanguageId: item.source,
+        destination: item.destination,
+        destinationLanguageId: item.destination,
+        transcription: "",
         isCompleted: false,
         isCorrect: false,
     }
@@ -369,46 +402,12 @@ export const generateRecordAudioItem = (
     }
 }
 
-export const generateMemoryGameItem = (
-    dataset: Dataset,
-    exclude: Set<number>,
-    courseItemMetadata: CourseItemMetadata): Result => {
-
-    const result: MemoryGameItem = {
-        id: uuidv4(),
-        type: "memory game",
-        items: [],
-        expected: [],
-        isCompleted: false,
-        isCorrect: false,
-    }
-
-    for(const _ of Array(5)) {
-        
-        const {
-            index,
-            datasetItem
-        } = getRandomItemFromDataset(dataset, exclude);
-    
-        const item = transformObject(datasetItem, courseItemMetadata);
-
-        items.push({
-            id: uuidv4(),
-            matchId: datasetItem.id,
-            value: datasetItem.radical
-        })
-
-        items.push({
-            id: uuidv4(),
-            matchId: datasetItem.id,
-            value: datasetItem.meaning
-        })
-    }
+const reshuffle = <T>(items: T[]): T[] => {
 
     let shuffledIndicies: number[] = [];
-    indicies.clear();
+    const indicies = new Set<number>();
 
-    while(indicies.size !== shuffledIndicies.length) {
+    while(items.length !== shuffledIndicies.length) {
         let index = random(0, items.length);
 
         while(indicies.has(index)) {
@@ -416,6 +415,7 @@ export const generateMemoryGameItem = (
         }
 
         shuffledIndicies.push(index);
+        indicies.add(index);
 
         if(indicies.size - shuffledIndicies.length === 2) {
             const remainingIndicies = items
@@ -424,13 +424,11 @@ export const generateMemoryGameItem = (
                 shuffledIndicies = shuffledIndicies.concat(remainingIndicies);
         }
     }
-    
+
+    console.log(Array.from(indicies.entries()))
     items = shuffledIndicies.map(index => items[index]);
 
-    return {
-        index: -1,
-        item: result,
-    }
+    return items;
 }
 
 export const generateMCQItem = (
@@ -518,4 +516,4 @@ export const generateMCQItem = (
 //     }
 
 //     return sessionItems;
-// }
+// 

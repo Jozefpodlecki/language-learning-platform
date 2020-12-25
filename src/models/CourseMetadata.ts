@@ -6,6 +6,7 @@ export type CourseMetadata = {
 }
 
 export type CourseItemMetadata = {
+    enabled: boolean;
     type: CourseItemType;
     transform: Record<string, string>[];
 }

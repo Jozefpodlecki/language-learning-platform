@@ -4,7 +4,7 @@ import style from "./index.scss";
 import { TranscribeItem } from "models/CourseItem";
 import { faArrowRight, faCheck, faRunning } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
-import { moveNext } from "api";
+import { courseImages, moveNext, sendTranscribeText } from "api";
 import ActionButton from "components/ActionButton";
 
 type Props = TranscribeItem & {
@@ -21,6 +21,9 @@ const Transcribe: FunctionComponent<Props> = ({
     sessionId,
     title,
     source,
+    sourceLanguageId,
+    destination,
+    destinationLanguageId,
     transcription,
     isCompleted,
     remainingSeconds,
@@ -32,6 +35,8 @@ const Transcribe: FunctionComponent<Props> = ({
     const onCheck = () => {
         
         dispatch(actions.sendAnswer.request());
+
+        sendTranscribeText(sessionId, id, transcription)
     }
 
     const onNextOne = () => {
@@ -55,6 +60,10 @@ const Transcribe: FunctionComponent<Props> = ({
     return <div className={style.quiz}>
         <div className={style.title}>{title}</div>
         <div data-id={id} className={style.item}>
+            <div className={style.header}>
+                <div>Write this in</div>
+                <img className={style.image} src={courseImages["./gb.png"]}/>
+            </div>
             <div className={style.question}>{source}</div>
             <div>
                 <textarea

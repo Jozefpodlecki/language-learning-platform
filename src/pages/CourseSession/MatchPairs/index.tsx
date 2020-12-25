@@ -2,42 +2,85 @@
 import React, { FunctionComponent } from "react";
 import { useDispatch } from "react-redux";
 import Item from "./Item";
+import * as actions from "actions";
 
 import style from "./index.scss";
 import { MatchPairsItem } from "models/CourseItem/MatchPairsItem";
+import ActionButton from "components/ActionButton";
+import { faArrowRight, faCheck, faRunning } from "@fortawesome/free-solid-svg-icons";
+import { moveNext } from "api";
+import { useDrop } from "react-dnd";
+import DragItem from "./DragItem";
 
 type Props = MatchPairsItem & {
     sessionId: string;
     title: string,
     hasSubmit: boolean;
-    completed: number;
-    hasSelected: boolean;
-    selectedAnswerId: string;
+    hasChanged: boolean;
     remainingSeconds: number;
     onQuit(): void;
 }
 
 const MatchPairs: FunctionComponent<Props> = ({
     items,
-    items1
+    pieces,
+    sessionId,
+    isCorrect,
+    remainingSeconds,
+    hasChanged,
+    isCompleted,
+    onQuit,
 }) => {
     const dispatch = useDispatch();
+    
 
     const onClick = (id: string) => {
         
     }
 
-    return <div>
-        <div>
-            <div>
-                {items.map(pr => <Item onClick={onClick}/>)}
+    const onCheck = () => {
+
+    }
+
+    const onDrop = (id: string, value: string) => {
+
+    }
+
+    const onNextOne = () => {
+        dispatch(actions.nextItem.request())
+
+        moveNext(sessionId)
+            .then(session => {
+                actions.nextItem.success(session);
+            });
+    }
+
+    return <div className={style.quiz}>
+        <div className={style.item}>
+            <div className={style.container}>
+                {items.map(pr => <Item key={pr.id} {...pr} onClick={onClick} onDrop={onDrop}/>)}
             </div>
-            <div>
-                {items.map(pr => <div></div>)}
+            <div className={style.dragContainer}>
+                {pieces.map(pr => <DragItem key={pr.id} {...pr} onClick={onClick}/>)}
             </div>
         </div>
-        <div>
-            {items1.map(pr => <Item onClick={onClick}/>)}
+        <div className={style.actions}>
+            <ActionButton
+                value="Quit"
+                onClick={onQuit}
+                icon={faRunning}/>
+            {isCompleted ? <ActionButton
+                value={`Next item in ${remainingSeconds}`}
+                onClick={onNextOne}
+                icon={faArrowRight}/> : <ActionButton
+                value="Next item"
+                onClick={onNextOne}
+                icon={faArrowRight}/>}
+            {isCompleted ? null : <ActionButton
+                disabled={!hasChanged}
+                value="Check"
+                onClick={onCheck}
+                icon={faCheck}/>}
         </div>
     </div>
 }

@@ -1,13 +1,32 @@
-import { Route, Switch } from "react-router";
+import { Route, Switch, useHistory } from "react-router";
 import CourseSession from "pages/CourseSession";
 import Courses from "pages/Courses";
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import CourseAbout from "pages/CourseAbout";
 import NotFound from "pages/NotFound";
 import UnderConstruction from "pages/UnderConstruction";
 import CourseReview from "pages/CourseReview";
+import { getSessionsFromLocalStorage } from "api";
 
 const App: FunctionComponent = () => {
+    const history = useHistory()
+
+    const onStorage = () => {
+        const session = getSessionsFromLocalStorage();
+
+        if(!session.length) {
+            if(history.location.pathname === "/") {
+                history.push("/");
+            }
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("storage", onStorage);
+
+        return () => window.removeEventListener("storage", onStorage);
+    }, [history])
+
     return (
         <Switch>
             <Route exact path="/" component={Courses} />

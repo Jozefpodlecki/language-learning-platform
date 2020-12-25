@@ -3,4 +3,5 @@ export type BaseItem = {
     type: string;
     isCorrect: boolean;
     isCompleted: boolean;
+    completedOn?: Date;
 }

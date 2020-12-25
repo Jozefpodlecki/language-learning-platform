@@ -1,8 +1,9 @@
+import { Answer } from "./Answer"
 import { AudioToSentenceItem } from "./AudioToSentenceItem"
 import { FillTableItem } from "./FillTableItem"
 import { MatchPairsItem } from "./MatchPairsItem"
 import { MCQItem } from "./MCQItem"
-import { MemoryGameItem } from "./MemoryGameItem"
+import { MemoryGameItem, MemoryGameItemItem } from "./MemoryGameItem"
 import { RecordAudioItem } from "./RecordAudioItem"
 import { TranscribeItem } from "./TranscribeItem"
 
@@ -14,6 +15,8 @@ export * from "./MCQItem"
 export * from "./RecordAudioItem"
 export * from "./MatchPairsItem"
 export * from "./Answer"
+
+export type Selectable<T> = T & { isSelected: boolean }
 
 export type CourseItem = MCQItem
     | RecordAudioItem

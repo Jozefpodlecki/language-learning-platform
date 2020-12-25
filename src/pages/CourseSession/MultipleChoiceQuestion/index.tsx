@@ -53,7 +53,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
 
                 const answer = answers.find((pr) => selectedAnswerId === pr.id)
 
-                sendAnswer(sessionId, answer)
+                sendAnswer(sessionId, id, answer)
                     .then(item => {
                         dispatch(actions.sendAnswer.success(item))
                     })
@@ -98,7 +98,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
 
         const answer = answers.find((pr) => selectedAnswerId === pr.id)
 
-        sendAnswer(sessionId, answer)
+        sendAnswer(sessionId, id, answer)
             .then(item => {
                 dispatch(actions.sendAnswer.success(item))
             })

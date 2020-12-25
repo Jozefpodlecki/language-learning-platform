@@ -4,10 +4,14 @@ export type MatchPairsItem = BaseItem & {
     type: "match pairs";
     expected: MatchPairsItemItem[];
     items: MatchPairsItemItem[];
+    pieces: {
+        id: string;
+        value: string;
+    }[];
 }
 
 export type MatchPairsItemItem = {
     id: string;
-    value: string;
-    matchId?: string
+    source: string;
+    destination: string;
 }

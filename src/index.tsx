@@ -11,6 +11,8 @@ import store from "store/store";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 dayjs.extend(duration);
 dayjs.extend(relativeTime)
 
@@ -18,10 +20,11 @@ const root = document.getElementById(process.env.root);
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-        ,
+        <DndProvider backend={HTML5Backend}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </DndProvider>
     </Provider>,
     root
 );

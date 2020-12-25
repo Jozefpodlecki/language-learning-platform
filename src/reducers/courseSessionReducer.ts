@@ -3,7 +3,7 @@ import { ActionType, getType } from "typesafe-actions";
 import { Loadable, unload } from "models/Loadable";
 import { Course } from "models/Course";
 import { CourseSession } from "models/CourseSession";
-import { CourseItem } from "models/CourseItem";
+import { CourseItem, MemoryGameItem, MemoryGameItemItem, Selectable } from "models/CourseItem";
 
 export type Action = ActionType<typeof actions>;
 
@@ -13,7 +13,8 @@ type State = {
     hasSelected: boolean;
     hasChanged: boolean;
     selectedAnswerId?: string;
-    item: Loadable<CourseItem>;
+    selectedItems: MemoryGameItemItem[];
+    courseItem: Loadable<CourseItem>;
     course: Loadable<Course>;
 }
 
@@ -24,7 +25,8 @@ const initialState: State = {
     hasSelected: false,
     hasChanged: false,
     hasSubmit: false,
-    item: {
+    selectedItems: [],
+    courseItem: {
         isLoading: true,
     },
     course: {
@@ -42,24 +44,91 @@ export default (
             transcription,
         } = action.payload;
 
-        let item = state.item;
+        let courseItem = state.courseItem;
 
-        if(item.isLoading === true) {
+        if(courseItem.isLoading === true) {
             return state;
         }
 
-        if(item.type !== "transcribe") {
+        if(courseItem.type !== "transcribe") {
             return state;
         }
 
-        item = {
-            ...item,
+        courseItem = {
+            ...courseItem,
             transcription
         }
 
         return {
             ...state,
-            item
+            courseItem
+        }
+    }
+
+    if(action.type === getType(actions.verifyPair)) {
+        const courseItem = state.courseItem;
+
+        if(courseItem.isLoading === true) {
+            return state;
+        }
+
+        if(courseItem.type !== "memory game") {
+            return state;
+        }
+
+        const items = courseItem.items;
+        let [first, second, ...rest] = state.selectedItems;
+
+        if(first.matchId !== second.matchId) {
+            [first, second] = items.filter(pr => pr.id === first.id || pr.id === second.id)
+            first.state = "wrong";
+            second.state = "wrong";
+        }
+        else
+        {
+            first.state = "right";
+            second.state = "right";
+        }
+
+        return {
+            ...state,
+            courseItem: {
+                ...courseItem,
+                items
+            },
+            selectedItems: rest,
+        }
+    }
+
+    if(action.type === getType(actions.selectItem)) {
+        const id = action.payload;
+
+        const courseItem = state.courseItem;
+
+        if(courseItem.isLoading === true) {
+            return state;
+        }
+
+        if(courseItem.type !== "memory game") {
+            return state;
+        }
+
+        const items = [...courseItem.items]
+        const memoryGameItem = items.find(pr => pr.id === id);
+        memoryGameItem.state = memoryGameItem.state === "none" ? "selected" : "none";
+
+        let selectedItems;
+
+        if(memoryGameItem.state === "selected") {
+            selectedItems = state.selectedItems.filter(pr => pr.id !== memoryGameItem.id);
+        }
+        else {
+            selectedItems = [...state.selectedItems, memoryGameItem]
+        }
+
+        return {
+            ...state,
+            selectedItems,
         }
     }
             
@@ -69,33 +138,33 @@ export default (
             answerId,
         } = action.payload;
 
-        const item = state.item;
+        const courseItem = state.courseItem;
 
-        if(item.isLoading === true) {
+        if(courseItem.isLoading === true) {
             return state;
         }
 
-        if(item.type !== "multiple choice question") {
+        if(courseItem.type !== "multiple choice question") {
             return state;
         }
 
-        const answers = item.answers.map(pr => ({...pr, isSelected: false}));
+        const answers = courseItem.answers.map(pr => ({...pr, state: "none"}));
         const answer = answers.find(pr => pr.id === answerId);
         answer.isSelected = true;
-        item.answers = answers;
+        courseItem.answers = answers;
 
         return {
             ...state,
             hasSelected: true,
             selectedAnswerId: answerId,
-            item,
+            courseItem,
         }
     }
 
     if(action.type === getType(actions.nextItem.request)) {
         return {
             ...state,
-            item: {
+            courseItem: {
                 isLoading: true,
             }
         }
@@ -104,12 +173,26 @@ export default (
     if(action.type === getType(actions.nextItem.success)) {
         const session = unload(action.payload);
 
-        const item = unload(session.items.find(pr => pr.id === session.currentItemId));
+        let courseItem = unload(session.items.find(pr => pr.id === session.currentItemId));
+
+        if(courseItem.type === "memory game") {
+
+            let newCourseItem = {
+                ...courseItem,
+                items: courseItem.items = courseItem.items.map(pr => ({...pr, isSelected: false}))
+            }
+
+            return {
+                ...state,
+                session,
+                courseItem: newCourseItem,
+            }
+        }
 
         return {
             ...state,
             session,
-            item,
+            courseItem,
         }
     }
 
@@ -135,7 +218,7 @@ export default (
 
         return {
             ...state,
-            item: {
+            courseItem: {
                 isLoading: true,
             }
         }
@@ -150,15 +233,19 @@ export default (
     }
 
     if(action.type === getType(actions.sendAnswer.success)) {
-        const item = unload(action.payload);
+        const courseItem = unload(action.payload);
 
         if(state.session.isLoading === true) {
             return state;
         }
 
+        if(courseItem.type !== "multiple choice question") {
+            return state;
+        }
+
         const items = [
-            ...state.session.items.filter(pr => pr.id !== item.id),
-            item
+            ...state.session.items.filter(pr => pr.id !== courseItem.id),
+            courseItem
         ]
 
         return {
@@ -167,20 +254,33 @@ export default (
                 ...state.session,
                 items
             },
-            item,
+            courseItem,
         }
     }
 
     if(action.type === getType(actions.startSession.success)) {
         const session = unload(action.payload);
 
-        const item = unload(session.items.find(pr => pr.id === session.currentItemId));
+        const courseItem = unload(session.items.find(pr => pr.id === session.currentItemId));
+
+        if(courseItem.type === "memory game") {
+
+            let newCourseItem = {
+                ...courseItem,
+                items: courseItem.items = courseItem.items.map(pr => ({...pr, isSelected: false}))
+            }
+
+            return {
+                ...state,
+                session,
+                courseItem: newCourseItem,
+            }
+        }
 
         return {
             ...state,
             session,
-            item,
-            hasSubmit: false
+            courseItem,
         }
     }
             

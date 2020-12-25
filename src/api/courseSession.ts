@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { CourseSession } from "models/CourseSession";
 import { random, generateRecordAudioItem, generateItems } from "appUtils";
-import { Answer, AudioToSentenceItem, MCQItem, MemoryGameItem, MemoryGameItemItem } from "models/CourseItem";
+import { Answer, AudioToSentenceItem, MCQItem, MemoryGameItem, MemoryGameItemItem, TranscribeItem } from "models/CourseItem";
 import { getCourseDatasetAsync, getCourseMetadataAsync } from "./course";
 import { QuestionAnswerItem } from "models/QuestionAnswerItem";
 
-const getSessionsFromLocalStorage = () => (JSON.parse(localStorage.getItem("session")) || []) as CourseSession[];
+export const getSessionsFromLocalStorage = () => (JSON.parse(localStorage.getItem("session")) || []) as CourseSession[];
 
 const setSessionsToLocalStorage = (sessions: CourseSession[]) => localStorage.setItem("session", JSON.stringify(sessions));
 
@@ -69,37 +69,36 @@ export const createSession = async (
     return session;
 }
 
-export const sendAudioToSentenceText = (sessionId: string, text: string) => {
+export const sendTranscribeText = (sessionId: string, itemId: string, text: string) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find(pr => pr.id === sessionId);
 
-    const item = session.items.find(pr => pr.type === "audio to sentence") as AudioToSentenceItem;
+    const item = session.items.find(pr => pr.type === "transcribe") as TranscribeItem;
 
     item.isCorrect = false;
 
     return Promise.resolve();
 }
 
-export const sendMemoryGameData = (sessionId: string, data: MemoryGameItemItem[]) => {
+export const sendMemoryGameData = (sessionId: string, itemId: string, data: MemoryGameItemItem[]) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find(pr => pr.id === sessionId);
 
-    const item = session.items.find(pr => pr.type === "memory game") as MemoryGameItem;
+    const item = session.items.find(pr => pr.id === itemId) as MemoryGameItem;
 
     item.isCorrect = false;
 
-    return Promise.resolve();
+    return Promise.resolve(item);
 }
 
-export const sendAnswer = (sessionId: string, answer: Answer) => {
+export const sendAnswer = (sessionId: string, itemId: string, answer: Answer) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find(pr => pr.id === sessionId);
 
-    const item = session.items.find(pr => pr.type === "multiple choice question" 
-        && pr.answers.some(npr => npr.id === answer.id)) as MCQItem;
+    const item = session.items.find(pr => pr.id === itemId) as MCQItem;
 
     const isCorrect = answer.id === item.rightAnswer.id;
     item.isCorrect = isCorrect;

@@ -44,7 +44,7 @@ const courseDatasetContext = require.context(
     "sync"
 );
 
-const courseImages = importImages(courseImagesContext);
+export const courseImages = importImages(courseImagesContext);
 const courseDatasets = importDatasets(courseDatasetContext);
 
 export const getCourses = (options: PageCriteria) => {

@@ -1,0 +1,23 @@
+.item {
+    cursor: pointer;
+    border: 2px solid black;
+    padding: 10px;
+    font-size: 30px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s;
+
+    &:hover {
+        background-color: lightgray;
+    }
+}
+
+.selected {
+    background-color: lightblue;
+
+    &:hover {
+        background-color: lightblue;
+    }
+}
