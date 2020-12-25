@@ -3,8 +3,11 @@
 .memoryGame {
     margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(3, 200px);
     grid-gap: 10px;
+}
+
+.result {
+    font-size: 50px;
 }
 
 .header {

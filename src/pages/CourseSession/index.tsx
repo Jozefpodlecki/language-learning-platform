@@ -26,6 +26,7 @@ const CourseSession: FunctionComponent = () => {
                 session, 
                 hasSubmit,
                 hasSelected,
+                hasFinished,
                 hasChanged,
                 selectedItems,
                 selectedAnswerId,
@@ -176,6 +177,7 @@ const CourseSession: FunctionComponent = () => {
                 hasSubmit={hasSubmit}
                 hasChanged={hasChanged}
                 isInteractive={true}
+                hasFinished={hasFinished}
                 selectedItems={selectedItems}
                 onQuit={onQuit}
             />

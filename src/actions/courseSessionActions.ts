@@ -74,7 +74,7 @@ export const selectAnswer = createAction("selectAnswer")<{
 }>();
 
 export const selectItem = createAction("selectItem")<string>();
-export const verifyPair = createAction("verifyPair")<string>();
+export const processPair = createAction("processPair")();
 
 export const transcribeChange = createAction("transcribeChange")<{
     itemId: string;

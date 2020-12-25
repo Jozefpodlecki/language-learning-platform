@@ -1,5 +1,6 @@
 .item {
     cursor: pointer;
+    user-select: none;
     border: 2px solid black;
     padding: 10px;
     font-size: 30px;
@@ -11,6 +12,46 @@
 
     &:hover {
         background-color: lightgray;
+    }
+}
+
+.right {
+    background-color: lightgreen;
+    cursor: initial;
+    pointer-events: none;
+    
+    &:hover {
+        background-color: lightgreen;
+    }
+}
+
+.completed {
+    color: green;
+    cursor: initial;
+    pointer-events: none;
+
+    &:hover {
+        background-color: initial;
+    }
+}
+
+.wrong {
+    background-color: orangered;
+    cursor: initial;
+    pointer-events: none;
+
+    &:hover {
+        background-color: orangered;
+    }
+}
+
+.disabled {
+    background-color: black;
+    cursor: initial;
+    pointer-events: none;
+
+    &:hover {
+        background-color: black;
     }
 }
 

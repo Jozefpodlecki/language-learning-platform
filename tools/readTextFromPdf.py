@@ -11,11 +11,11 @@ import json
 import uuid
 import glob, os
 
-directory_path = os.path.dirname(__file__)
+directory_path = path.dirname(__file__)
 
 for root, dirs, files in os.walk(directory_path):
 
-    directory_name = os.path.basename(root)
+    directory_name = path.basename(root)
 
     if not directory_name == "HSK All Levels Vocabulary":
         continue
@@ -28,7 +28,7 @@ for root, dirs, files in os.walk(directory_path):
         file_path = path.join(root, file)
 
         file_name = path.splitext(file)[0]
-        output_file = file_name + ".txt"
+        output_file = path.join(directory_path, file_name + ".txt")
         
         if not path.isfile(output_file):
             parsed = parser.from_file(file_path)
@@ -37,7 +37,7 @@ for root, dirs, files in os.walk(directory_path):
             with open(output_file, 'wb') as the_file:
                 the_file.write(text)
 
-        output_json_file = file_name + ".json"
+        output_json_file = path.join(directory_path, file_name + ".json")
 
         with open(output_file, 'r', encoding="utf-8") as the_file:
 
@@ -50,6 +50,14 @@ for root, dirs, files in os.walk(directory_path):
 
             for match in matches:
                 [hanzi, pinyin, meanings] = match
+
+                if not hanzi:
+                    print("could not find hanzi")
+                    continue
+
+                if not meanings:
+                    print("could not find meaning for {} {}".format(hanzi, pinyin))
+                    continue
 
                 result.append({
                     "id": str(uuid.uuid4()),

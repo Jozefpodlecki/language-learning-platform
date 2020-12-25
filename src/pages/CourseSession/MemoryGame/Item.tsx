@@ -1,10 +1,13 @@
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { MemoryGameItemItemState } from "models/CourseItem";
 import React, { FunctionComponent, MouseEvent, useMemo } from "react";
 import style from "./item.scss";
 
 type Props = {
     id: string;
     value: string;
-    state: "none" | "disabled" | "right" | "wrong" | "correct" | "selected"
+    state: MemoryGameItemItemState;
     onClick(id: string): void;
 };
 
@@ -23,16 +26,16 @@ const Item: FunctionComponent<Props> = ({
 
     const stateStyle = useMemo(() => {
         switch(state) {
-            case "correct":
-                return style.correct;
             case "right":
-                return style.correct;
+                return style.right;
             case "wrong":
-                return style.correct;
+                return style.wrong;
+            case "completed":
+                return style.completed;
             case "disabled":
-                return style.correct;
+                return style.disabled;
             case "selected":
-                return style.correct;
+                return style.selected;
             default:
                 return "";
         }
@@ -42,7 +45,9 @@ const Item: FunctionComponent<Props> = ({
         className={`${style.item} ${stateStyle}`}
         data-id={id}
         onClick={_onClick}>
-        {value}
+        {state === "completed" ? <div>
+            <FontAwesomeIcon icon={faCheck}/>
+        </div>: value}
     </div>
 }
 

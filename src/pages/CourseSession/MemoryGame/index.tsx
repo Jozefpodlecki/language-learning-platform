@@ -1,4 +1,4 @@
-import { faArrowRight, faCheck, faRunning } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck, faRunning, faSmile } from "@fortawesome/free-solid-svg-icons";
 import ActionButton from "components/ActionButton";
 import * as actions from "actions";
 import { MemoryGameItem, MemoryGameItemItem, Selectable } from "models/CourseItem";
@@ -8,6 +8,7 @@ import Item from "./Item";
 
 import style from "./index.scss";
 import { moveNext, sendMemoryGameData } from "api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props =  MemoryGameItem & {
     sessionId: string;
@@ -16,6 +17,7 @@ type Props =  MemoryGameItem & {
     hasSubmit: boolean;
     remainingSeconds: number;
     isInteractive: boolean;
+    hasFinished: boolean;
     selectedItems: MemoryGameItemItem[];
     onQuit(): void;
 };
@@ -28,6 +30,7 @@ const MemoryGame: FunctionComponent<Props> = ({
     hasSubmit,
     hasChanged,
     isCorrect,
+    hasFinished,
     remainingSeconds,
     selectedItems,
     isCompleted,
@@ -36,23 +39,39 @@ const MemoryGame: FunctionComponent<Props> = ({
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(selectedItems.length > 1) {
-            dispatch(actions.verifyPair(id));
+
+        if(hasFinished) {
+            setTimeout(() => {
+                dispatch(actions.sendMemoryGameData.request());
+
+                sendMemoryGameData(sessionId, id, items)
+                    .then(item => {
+                        dispatch(actions.sendMemoryGameData.success(item))
+                    })
+            }, 1000)
+
+            return;
         }
-    }, [selectedItems])
+
+        let handle: NodeJS.Timeout;
+
+        const callback = () => {
+            dispatch(actions.processPair());
+
+            if(!hasFinished) {
+                handle = setTimeout(callback, 500);
+            }
+        }
+
+        handle = setTimeout(callback, 500);
+
+        return () => {
+            clearTimeout(handle);
+        }
+    }, [hasFinished])
 
     const onClick = (id: string) => {
         dispatch(actions.selectItem(id))
-    }
-
-    const onCheck = () => {
-
-        dispatch(actions.sendAnswer.request());
-
-        sendMemoryGameData(sessionId, id, [])
-            .then(item => {
-                dispatch(actions.sendMemoryGameData.success(item))
-            })
     }
 
     const onNextOne = () => {
@@ -64,17 +83,28 @@ const MemoryGame: FunctionComponent<Props> = ({
             });
     }
 
+    const dimension = 4;
+
     return <div className={style.quiz}>
         <div className={style.title}>{title}</div>
-        <div className={style.item}>
+        {hasFinished ? <div className={style.result}>
+            <div>Nice one!</div>
+            <div>
+                <FontAwesomeIcon icon={faSmile}/>
+            </div>
+        </div> : <div className={style.item}>
             <div className={style.header}>Match items</div>
-            <div className={style.memoryGame}>
+            <div 
+                style={{
+                    gridTemplateColumns: `repeat(${dimension}, 200px)`
+                }}
+                className={style.memoryGame}>
                 {items.map(pr => <Item 
                     key={pr.id}
                     {...pr}
                     onClick={onClick}/>)}
             </div>
-        </div>
+        </div>}
         <div className={style.actions}>
             <ActionButton
                 value="Quit"

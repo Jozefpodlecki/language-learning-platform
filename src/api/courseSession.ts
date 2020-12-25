@@ -88,7 +88,11 @@ export const sendMemoryGameData = (sessionId: string, itemId: string, data: Memo
 
     const item = session.items.find(pr => pr.id === itemId) as MemoryGameItem;
 
-    item.isCorrect = false;
+    item.items = data;
+    item.isCompleted = true;
+    item.isCorrect = true;
+
+    setSessionsToLocalStorage(sessions);
 
     return Promise.resolve(item);
 }

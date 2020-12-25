@@ -192,11 +192,11 @@ export const  generateItems = (
             break;
 
             case "match pairs":
-                result = generateMatchPairsItem(dataset, exclude, courseItemMetadata, 5);
+                result = generateMatchPairsItem(dataset, exclude, courseItemMetadata, 3);
             break;
 
             case "memory game":
-                result = generateMemoryGameItem(dataset, exclude, courseItemMetadata, 5);
+                result = generateMemoryGameItem(dataset, exclude, courseItemMetadata, 3);
             break;
 
             case "transcribe":       
@@ -263,6 +263,7 @@ export const generateMemoryGameItem = (
         items: [],
         isCompleted: false,
         isCorrect: false,
+        incorrectTries: 0,
     }
 
     for(const _ of Array(numberOfMemoryGameItems)) {
@@ -277,14 +278,38 @@ export const generateMemoryGameItem = (
         result.items.push({
             id: uuidv4(),
             matchId: item.id,
-            value: item.source
+            value: item.source,
+            state: "none",
+            isMatched: false,
         })
 
         result.items.push({
             id: uuidv4(),
             matchId: item.id,
-            value: item.destination
+            value: item.destination,
+            state: "none",
+            isMatched: false,
         })
+    }
+
+    let i = 2;
+
+    while(i ** 2 <= result.items.length) {
+        i++;
+    }
+
+    const padCount = i - result.items.length;
+
+    if(padCount) {
+        const padding = Array(padCount).fill({}).map(pr => ({
+            id: uuidv4(),
+            matchId: "",
+            value: "",
+            state: "disabled" as const,
+            isMatched: false,
+        }));
+
+        result.items = result.items.concat(padding);
     }
 
     result.items = reshuffle(result.items);
@@ -404,29 +429,29 @@ export const generateRecordAudioItem = (
 
 const reshuffle = <T>(items: T[]): T[] => {
 
-    let shuffledIndicies: number[] = [];
     const indicies = new Set<number>();
 
-    while(items.length !== shuffledIndicies.length) {
+    while(items.length !== indicies.size) {
         let index = random(0, items.length);
 
         while(indicies.has(index)) {
             index = random(0, items.length);
         }
 
-        shuffledIndicies.push(index);
         indicies.add(index);
 
-        if(indicies.size - shuffledIndicies.length === 2) {
+        if(items.length - indicies.size === 2) {
             const remainingIndicies = items
                 .map((or, index) => index)
-                .filter(pr => !shuffledIndicies.includes(pr))
-                shuffledIndicies = shuffledIndicies.concat(remainingIndicies);
+                .filter(pr => !indicies.has(pr))
+                
+            for(const index of remainingIndicies) {
+                indicies.add(index);
+            }
         }
     }
 
-    console.log(Array.from(indicies.entries()))
-    items = shuffledIndicies.map(index => items[index]);
+    items = Array.from(indicies.values()).map(index => items[index]);
 
     return items;
 }

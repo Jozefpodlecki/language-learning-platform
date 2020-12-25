@@ -12,6 +12,7 @@ type State = {
     hasSubmit: boolean;
     hasSelected: boolean;
     hasChanged: boolean;
+    hasFinished: boolean;
     selectedAnswerId?: string;
     selectedItems: MemoryGameItemItem[];
     courseItem: Loadable<CourseItem>;
@@ -24,6 +25,7 @@ const initialState: State = {
     },
     hasSelected: false,
     hasChanged: false,
+    hasFinished: false,
     hasSubmit: false,
     selectedItems: [],
     courseItem: {
@@ -38,6 +40,38 @@ export default (
     state = initialState,
     action: Action
 ):  State => {
+
+    
+    if(action.type === getType(actions.sendMemoryGameData.request)) {
+        return {
+            ...state,
+            courseItem: {
+                isLoading: true,
+            }
+        }
+    }
+
+    if(action.type === getType(actions.sendMemoryGameData.success)) {
+        const courseItem = unload(action.payload);
+
+        if(state.session.isLoading === true) {
+            return state;
+        }
+
+        const items = [
+            ...state.session.items.filter(pr => pr.id !== courseItem.id),
+            courseItem
+        ]
+
+        return {
+            ...state,
+            session: {
+                ...state.session,
+                items
+            },
+            courseItem,
+        }
+    }
 
     if(action.type === getType(actions.transcribeChange)) {
         const { 
@@ -65,22 +99,66 @@ export default (
         }
     }
 
-    if(action.type === getType(actions.verifyPair)) {
+    if(action.type === getType(actions.processPair)) {
         const courseItem = state.courseItem;
 
         if(courseItem.isLoading === true) {
             return state;
         }
-
+        
         if(courseItem.type !== "memory game") {
             return state;
         }
 
-        const items = courseItem.items;
+        if(!courseItem.items.some(pr => !pr.isMatched)) {
+            return {
+                ...state,
+                courseItem: {
+                    ...courseItem,
+                },
+                hasFinished: true,
+            };
+        }
+
+        if(state.selectedItems.length < 2) {
+            return state;
+        }
+
+        const items = [...courseItem.items];
         let [first, second, ...rest] = state.selectedItems;
+        [first, second] = items.filter(pr => pr.id === first.id || pr.id === second.id)
+
+        if(first.state === "wrong" && second.state === "wrong") {
+            first.state = "none";
+            second.state = "none";
+
+            return {
+                ...state,
+                courseItem: {
+                    ...courseItem,
+                    items
+                },
+                selectedItems: rest,
+            }
+        }
+
+        if(first.state === "right" && second.state === "right") {
+            first.state = "completed";
+            first.isMatched = true;
+            second.state = "completed";
+            second.isMatched = true;
+
+            return {
+                ...state,
+                courseItem: {
+                    ...courseItem,
+                    items
+                },
+                selectedItems: rest,
+            }
+        }
 
         if(first.matchId !== second.matchId) {
-            [first, second] = items.filter(pr => pr.id === first.id || pr.id === second.id)
             first.state = "wrong";
             second.state = "wrong";
         }
@@ -89,6 +167,8 @@ export default (
             first.state = "right";
             second.state = "right";
         }
+
+        rest = rest.concat([first, second]);
 
         return {
             ...state,
@@ -115,7 +195,6 @@ export default (
 
         const items = [...courseItem.items]
         const memoryGameItem = items.find(pr => pr.id === id);
-        memoryGameItem.state = memoryGameItem.state === "none" ? "selected" : "none";
 
         let selectedItems;
 
@@ -125,6 +204,8 @@ export default (
         else {
             selectedItems = [...state.selectedItems, memoryGameItem]
         }
+
+        memoryGameItem.state = memoryGameItem.state === "none" ? "selected" : "none";
 
         return {
             ...state,

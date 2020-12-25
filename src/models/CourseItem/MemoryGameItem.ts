@@ -7,9 +7,12 @@ export type MemoryGameItem = BaseItem & {
     incorrectTries: number;
 }
 
+export type MemoryGameItemItemState =  "none" | "disabled" | "right" | "wrong" | "selected" | "completed"
+
 export type MemoryGameItemItem = {
     id: string;
     value: string;
     matchId: string;
-    state: "none" | "disabled" | "right" | "wrong" | "correct" | "selected";
+    isMatched: boolean;
+    state: MemoryGameItemItemState;
 }
