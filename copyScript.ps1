@@ -1,0 +1,1 @@
+Copy-item -Force -Recurse -Verbose "build\*" -Destination "."
