@@ -88,10 +88,6 @@ const Courses: FunctionComponent = () => {
             })
     }
 
-    const onAbout = (courseId: string) => {
-        history.push(`/course/${courseId}/info`);
-    }
-
     if(courses.isLoading === true) {
         return <div>
             Loading...
@@ -109,7 +105,6 @@ const Courses: FunctionComponent = () => {
                     key={course.id}
                     {...course}
                     disabled={hasUncompletedSession && course.id === uncompletedCourseId}
-                    onAbout={onAbout}
                     onPractice={onPractice}
                     />)}
             </div>

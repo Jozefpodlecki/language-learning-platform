@@ -25,14 +25,14 @@ const CourseReview: FunctionComponent = () => {
 
     useEffect(() => {
 
-        if (course.isLoading === true) {
+        if (course.isLoading === true || course.id !== courseId) {
             getCourseAsync(courseId)
                 .then(course => {
                     dispatch(actions.getCourse.success(course));
                 })
         }
 
-        if (session.isLoading === true) {
+        if (session.isLoading === true || session.id !== sessionId) {
             getSession(sessionId)
                 .then(session => {
                     dispatch(actions.startSession.success(session));
@@ -61,6 +61,12 @@ const CourseReview: FunctionComponent = () => {
                 width={200}
                 height={200}
             />
+        </div>
+    }
+
+    if(!session.completedOn) {
+        return <div className={style.container}>
+            Course is not completed.
         </div>
     }
 

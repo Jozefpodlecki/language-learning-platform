@@ -1,5 +1,6 @@
 import * as actions from "actions";
 import { Course } from "models/Course";
+import { CourseMetadata } from "models/CourseMetadata";
 import { Dataset } from "models/dataset";
 import { Loadable, unload } from "models/Loadable";
 import { ActionType, getType } from "typesafe-actions";
@@ -10,11 +11,15 @@ type State = {
     course: Loadable<Course & { 
         dataset: Loadable<Dataset>
     }>;
+    metadata: Loadable<CourseMetadata>;
 }
 
 const initialState: State = {
     course: {
-        isLoading: true
+        isLoading: true,
+    },
+    metadata: {
+        isLoading: true,
     }
 }
 
@@ -34,6 +39,15 @@ export default (
                     isLoading: true,
                 }
             }
+        };
+    }
+
+    if(action.type === getType(actions.getCourseMetadata.success)) {
+        const metadata = unload(action.payload);
+
+        return {
+            ...state,
+            metadata,
         };
     }
 

@@ -2,6 +2,10 @@ import { CourseItemType } from "./CourseItem";
 
 export type CourseMetadata = {
     courseId: string;
+    flashcards: {
+        key: string;
+        value: string;
+    };
     courseItems: CourseItemMetadata[];
 }
 

@@ -5,6 +5,7 @@ import React, { FunctionComponent, useEffect } from "react";
 import CourseAbout from "pages/CourseAbout";
 import NotFound from "pages/NotFound";
 import UnderConstruction from "pages/UnderConstruction";
+import CourseFlashcards from "pages/CourseFlashcards";
 import CourseReview from "pages/CourseReview";
 import { getSessionsFromLocalStorage } from "api";
 
@@ -34,6 +35,7 @@ const App: FunctionComponent = () => {
             <Route exact path="/course/:courseId/session/:sessionId" component={CourseSession} />
             <Route exact path="/course/:courseId/session/:sessionId/review" component={CourseReview} />
             <Route exact path="/course/:courseId/info" component={CourseAbout} />
+            <Route exact path="/course/:courseId/flashcards" component={CourseFlashcards} />
             <Route component={NotFound} />
         </Switch>
     );

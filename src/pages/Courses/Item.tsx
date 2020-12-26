@@ -1,51 +1,23 @@
 
-import { faGraduationCap, faInfo, IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpen, faGraduationCap, faInfo } from "@fortawesome/free-solid-svg-icons";
 import { Course } from "models/Course";
 import React, { FunctionComponent } from "react";
+import { Link } from "react-router-dom";
+import Button from "./Button";
 import style from "./item.scss";
 import Thumbnail from "./Thumbnail";
 
 type Props = Course & { 
     disabled: boolean;
-    onAbout(courseId: string): void;
     onPractice(courseId: string): void;
 };
 
-type ButtonProps = {
-    value: string;
-    disabled?: boolean;
-    icon?: IconDefinition;
-    onClick(): void;
-}
-
-const Button: FunctionComponent<ButtonProps> = ({
-    value,
-    disabled,
-    icon,
-    onClick,
-}) => {
-    return <div
-        className={`${style.button} ${disabled ? style.disabled : ""}`}
-        onClick={onClick}>
-        <div>{value}</div>
-        <div className={style.buttonIcon}>
-            <FontAwesomeIcon icon={icon}/>
-        </div>
-    </div>
-}
-
 const Item: FunctionComponent<Props> = ({
     id,
-    languageId,
     name,
     thumbnailUrl,
-    disabled,
-    onAbout,
     onPractice
 }) => {
-
-    const _onAbout = () => onAbout(id);
 
     const _onPractice = () => onPractice(id);
 
@@ -55,12 +27,17 @@ const Item: FunctionComponent<Props> = ({
         <div className={style.title}>{name}</div>
         <Thumbnail src={thumbnailUrl}/>
         <div className={style.actions}>
-            <Button value="About"
-                onClick={_onAbout}
-                icon={faInfo}/>
+            <Link to={`/course/${id}/info`}>
+                <Button value="About"
+                    icon={faInfo}/>
+            </Link>
             <Button value="Practice"
                 onClick={_onPractice}
                 icon={faGraduationCap}/>
+            <Link to={`/course/${id}/flashcards`}>
+                <Button value="Flashcards"
+                    icon={faBookOpen}/>
+            </Link>
         </div>
     </div>
 };
