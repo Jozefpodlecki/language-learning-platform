@@ -12,6 +12,13 @@
     transition: border-color .3s;
 }
 
+.loaderWrapper {
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .right {
     border-color: yellowgreen;

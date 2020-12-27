@@ -2,6 +2,7 @@ import {
     Answer,
     AudioToSentenceItem,
     FillTableItem,
+    FillTableItemItem,
     MCQItem,
     MemoryGameItem,
     MemoryGameItemItem,
@@ -80,23 +81,31 @@ export const createSession = async (
 export const sendFillTableItems = (
     sessionId: string,
     itemId: string,
-    items: any[],
+    items: FillTableItemItem[],
 ) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const item = session.items.find(
-        (pr) => pr.type === "fill table"
-    ) as FillTableItem;
+    const courseItem = session.items.find(pr => pr.id === itemId) as FillTableItem;
 
-    item.isCorrect = false;
-    item.isCompleted = true;
-    item.completedOn = new Date();
+    for(const item of items) {
+        const expected = courseItem.expected.find(pr => pr.id === item.id);
+        item.isCorrect = item.destination === expected.destination;
+        item.destinationExpected = expected.destination;
+    }
+
+    courseItem.items = items;
+    courseItem.isCorrect = !items.some(pr => !pr.isCorrect);
+    courseItem.isCompleted = true;
+    courseItem.completedOn = new Date();
+
+    session.completedCount++;
+    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(item);
+    return Promise.resolve(courseItem);
 }
 
 export const sendTranscribeText = (
@@ -108,15 +117,15 @@ export const sendTranscribeText = (
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const item = session.items.find(
+    const courseItem = session.items.find(
         (pr) => pr.type === "transcribe"
     ) as TranscribeItem;
 
-    item.isCorrect = false;
+    courseItem.isCorrect = false;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(item);
+    return Promise.resolve(courseItem);
 };
 
 export const sendMemoryGameData = (
@@ -128,15 +137,18 @@ export const sendMemoryGameData = (
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const item = session.items.find((pr) => pr.id === itemId) as MemoryGameItem;
+    const courseItem = session.items.find((pr) => pr.id === itemId) as MemoryGameItem;
 
-    item.items = data;
-    item.isCompleted = true;
-    item.isCorrect = true;
+    courseItem.items = data;
+    courseItem.isCompleted = true;
+    courseItem.isCorrect = true;
+
+    session.completedCount++;
+    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(item);
+    return Promise.resolve(courseItem);
 };
 
 export const sendAnswer = (

@@ -73,7 +73,14 @@ const CourseSession: FunctionComponent = () => {
             courseItem.isCompleted
         ) {
             if (remainingSeconds === -1) {
-                setRemainingTime(5);
+
+                if(courseItem.type === "fill table") {
+                    setRemainingTime(30);
+                }
+                else {
+                    setRemainingTime(5);
+                }
+                
                 return;
             }
 
@@ -137,7 +144,7 @@ const CourseSession: FunctionComponent = () => {
 
     if (courseItem.isLoading === true) {
         content = (
-            <div>
+            <div className={style.loaderWrapper}>
                 <Loader
                     type="ThreeDots"
                     color="black"

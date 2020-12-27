@@ -4,7 +4,6 @@ import style from "./item.scss";
 
 type Props = FillTableItemItem & {
     isCompleted: boolean;
-    expected: string;
     onChange(id: string, value: string): void;
 };
 
@@ -27,7 +26,7 @@ const Item: FunctionComponent<Props> = ({
 
     return <div className={style.item}>
         <div className={style.cell}>{source}</div>
-        <div className={`${style.cell} ${isCompleted ? isCorrect ? style.right : style.right : null}`}>
+        <div className={`${style.cell} ${isCompleted ? isCorrect ? style.right : style.wrong : null}`}>
             <input
                 data-id={id}
                 className={style.input}

@@ -27,6 +27,7 @@ const FillTable: FunctionComponent<Props> = ({
     title,
     items,
     isCompleted,
+    isCorrect,
     remainingSeconds,
     hasChanged,
     onQuit,
@@ -65,7 +66,11 @@ const FillTable: FunctionComponent<Props> = ({
         <div className={style.quiz}>
             <div className={style.title}>{title}</div>
             <div className={style.item}>
-                <div className={style.header}>Fill gaps</div>
+                {isCompleted ? <div className={style.header}>
+                    {isCorrect ? 
+                    <div>Nice one!</div> : 
+                    <div>Few things were wrong...</div>}
+                </div> : <div className={style.header}>Fill gaps</div>}
                 <div>
                     {items.map((pr) => <Item
                         key={pr.id}

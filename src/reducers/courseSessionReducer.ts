@@ -242,6 +242,24 @@ export default (state = initialState, action: Action): State => {
         };
     }
 
+    if (action.type === getType(actions.sendFillTableItems.request)) {
+        return {
+            ...state,
+            courseItem: {
+                isLoading: true,
+            },
+        };
+    }
+
+    if (action.type === getType(actions.sendFillTableItems.success)) {
+        const courseItem = unload(action.payload);
+        
+        return {
+            ...state,
+            courseItem,
+        };
+    }
+
     if (action.type === getType(actions.nextItem.request)) {
         return {
             ...state,
@@ -313,9 +331,9 @@ export default (state = initialState, action: Action): State => {
         }
         
         const items = [...courseItem.items];
-        const hasChanged = items.some(pr => pr.destination);
         const tableItem = items.find(pr => pr.id === tableItemId);
         tableItem.destination = value;
+        const hasChanged = items.some(pr => pr.destination);
 
         return {
             ...state,

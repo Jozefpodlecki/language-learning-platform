@@ -6,12 +6,18 @@
 .cell {
     width: 150px;
     padding: 10px;
-    border: 1px solid black;
+    border: 2px solid black;
     text-align: center;
 
     &:nth-child(2) {
         width: 300px;   
     }
+
+    &:nth-child(3) {
+        width: 300px;   
+    }
+
+    margin: 1px;
 }
 
 .input {
@@ -23,4 +29,12 @@
     &:focus {
         outline: none;
     }
+}
+
+.right {
+    border-color: green;
+}
+
+.wrong {
+    border-color: red;
 }

@@ -56,12 +56,6 @@ export const sendAnswer = createAsyncAction(
     "sendAnswer.error"
 )<void, CourseItem, void>();
 
-export const sendFillTableData = createAsyncAction(
-    "sendFillTableData.request",
-    "sendFillTableData.success",
-    "sendFillTableData.error"
-)<void, CourseItem, void>();
-
 export const sendMatchPairsData = createAsyncAction(
     "sendMatchPairsData.request",
     "sendMatchPairsData.success",

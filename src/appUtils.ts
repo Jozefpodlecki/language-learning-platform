@@ -294,11 +294,12 @@ export const generateFillTableItem = (
     };
 
     for (const _ of Array(5)) {
-        const { datasetItem } = getRandomItemFromDataset(
+        const { index, datasetItem } = getRandomItemFromDataset(
             dataset,
             exclude
         );
 
+        exclude.add(index);
         const item = transformObject(datasetItem, courseItemMetadata);
 
         const it: FillTableItemItem = {
