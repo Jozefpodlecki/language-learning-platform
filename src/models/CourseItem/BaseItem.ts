@@ -4,4 +4,4 @@ export type BaseItem = {
     isCorrect: boolean;
     isCompleted: boolean;
     completedOn?: Date;
-}
+};

@@ -14,5 +14,4 @@ export type CourseSession = {
     correctPercentage: number;
     createdById: string;
     isExam: boolean;
-}
-
+};

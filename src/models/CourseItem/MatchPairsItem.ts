@@ -8,10 +8,10 @@ export type MatchPairsItem = BaseItem & {
         id: string;
         value: string;
     }[];
-}
+};
 
 export type MatchPairsItemItem = {
     id: string;
     source: string;
     destination: string;
-}
+};

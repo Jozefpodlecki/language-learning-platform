@@ -7,14 +7,14 @@ type Props = HSK;
 const Hsk1ItemTemplate: FunctionComponent<Props> = ({
     id,
     hanzi,
-    meanings
+    meanings,
 }) => {
-    return <div
-        key={id}
-        className={style.item}>
-        <div className={style.key}>{hanzi}</div>
-        <div className={style.value}>{meanings}</div>
-    </div>
-}
+    return (
+        <div key={id} className={style.item}>
+            <div className={style.key}>{hanzi}</div>
+            <div className={style.value}>{meanings}</div>
+        </div>
+    );
+};
 
 export default Hsk1ItemTemplate;

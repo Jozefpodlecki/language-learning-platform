@@ -4,4 +4,4 @@ export type AudioToSentenceItem = BaseItem & {
     type: "audio to sentence";
     source: string;
     text: string;
-}
+};

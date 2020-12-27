@@ -1,15 +1,15 @@
 import * as actions from "actions/coursesActions";
 import { ActionType, getType } from "typesafe-actions";
-import { Loadable, unload } from "models/Loadable";
 import { Course } from "models/Course";
 import { CourseSession } from "models/CourseSession";
+import { Loadable, unload } from "models/Loadable";
 
 type Action = ActionType<typeof actions>;
 
 type State = {
     session: Loadable<CourseSession>;
     courses: Loadable<Course[]>;
-}
+};
 
 const initialState: State = {
     courses: {
@@ -17,41 +17,36 @@ const initialState: State = {
     },
     session: {
         isLoading: true,
-    }
-}
+    },
+};
 
-export default (
-    state = initialState,
-    action: Action
-):  State => {
-            
-    
-    if(action.type === getType(actions.getCourses.request)) {
+export default (state = initialState, action: Action): State => {
+    if (action.type === getType(actions.getCourses.request)) {
         return {
             ...state,
-        }
+        };
     }
 
-    if(action.type === getType(actions.getCourses.success)) {
+    if (action.type === getType(actions.getCourses.success)) {
         const courses = unload(action.payload);
 
         return {
             ...state,
             courses,
-        }
+        };
     }
 
-    if(action.type === getType(actions.getLastSession.success)) {
+    if (action.type === getType(actions.getLastSession.success)) {
         const session = action.payload;
 
-        if(!session) {
+        if (!session) {
             return state;
         }
 
         return {
             ...state,
             session: unload(session),
-        }
+        };
     }
 
     return state;

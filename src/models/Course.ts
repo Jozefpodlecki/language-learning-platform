@@ -4,4 +4,4 @@ export type Course = {
     languageId: string;
     datasetUrl: string;
     thumbnailUrl: string;
-}
+};

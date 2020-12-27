@@ -1,12 +1,12 @@
 import { Course } from "models/Course";
-import { CourseSession } from "models/CourseSession";
 import { CourseItem } from "models/CourseItem";
+import { CourseSession } from "models/CourseSession";
 import { createAction, createAsyncAction } from "typesafe-actions";
 
 type SendAudioPayload = {
     audioUrl?: string;
     transcript?: string;
-}
+};
 
 export const getCourse = createAsyncAction(
     "getCourse.request",
@@ -31,6 +31,12 @@ export const quitSession = createAsyncAction(
     "quitSession.success",
     "quitSession.error"
 )<void, void, void>();
+
+export const sendFillTableItems = createAsyncAction(
+    "sendFillTableItems.request",
+    "sendFillTableItems.success",
+    "sendFillTableItems.error"
+)<void, CourseItem, void>();
 
 export const sendAudio = createAsyncAction(
     "sendAudio.request",

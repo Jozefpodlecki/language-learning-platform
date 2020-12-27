@@ -87,6 +87,16 @@
         "courseItems": [
             {
                 "enabled": true,
+                "type": "fill table",
+                "transform": [
+                    {
+                        "source": "hanzi",
+                        "destination": "meanings"
+                    }
+                ]
+            },
+            {
+                "enabled": false,
                 "type": "memory game",
                 "transform": [
                     {

@@ -1,6 +1,6 @@
-import { Entity } from "models/Entity";
 import { Answer } from "./Answer";
 import { BaseItem } from "./BaseItem";
+import { Entity } from "models/Entity";
 
 export type MCQItem = BaseItem & {
     id: string;
@@ -10,4 +10,4 @@ export type MCQItem = BaseItem & {
     answer?: Answer;
     rightAnswer: Answer;
     canPlayAudio: boolean;
-}
+};

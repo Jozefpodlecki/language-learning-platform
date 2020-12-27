@@ -1,4 +1,3 @@
-import { Course } from "models/Course";
 import { Dataset } from "models/dataset";
 import { createAsyncAction } from "typesafe-actions";
 

@@ -1,13 +1,18 @@
-import { Selectable } from "."
-import { BaseItem } from "./BaseItem"
+import { BaseItem } from "./BaseItem";
 
 export type MemoryGameItem = BaseItem & {
     type: "memory game";
     items: MemoryGameItemItem[];
     incorrectTries: number;
-}
+};
 
-export type MemoryGameItemItemState =  "none" | "disabled" | "right" | "wrong" | "selected" | "completed"
+export type MemoryGameItemItemState =
+    | "none"
+    | "disabled"
+    | "right"
+    | "wrong"
+    | "selected"
+    | "completed";
 
 export type MemoryGameItemItem = {
     id: string;
@@ -15,4 +20,4 @@ export type MemoryGameItemItem = {
     matchId: string;
     isMatched: boolean;
     state: MemoryGameItemItemState;
-}
+};

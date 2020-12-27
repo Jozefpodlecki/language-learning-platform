@@ -1,2 +1,2 @@
-export * from "./course"
-export * from "./courseSession"
+export * from "./course";
+export * from "./courseSession";

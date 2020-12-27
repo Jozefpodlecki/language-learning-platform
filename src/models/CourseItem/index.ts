@@ -1,29 +1,30 @@
-import { Answer } from "./Answer"
-import { AudioToSentenceItem } from "./AudioToSentenceItem"
-import { FillTableItem } from "./FillTableItem"
-import { MatchPairsItem } from "./MatchPairsItem"
-import { MCQItem } from "./MCQItem"
-import { MemoryGameItem, MemoryGameItemItem } from "./MemoryGameItem"
-import { RecordAudioItem } from "./RecordAudioItem"
-import { TranscribeItem } from "./TranscribeItem"
+import { Answer } from "./Answer";
+import { AudioToSentenceItem } from "./AudioToSentenceItem";
+import { FillTableItem } from "./FillTableItem";
+import { MCQItem } from "./MCQItem";
+import { MatchPairsItem } from "./MatchPairsItem";
+import { MemoryGameItem } from "./MemoryGameItem";
+import { RecordAudioItem } from "./RecordAudioItem";
+import { TranscribeItem } from "./TranscribeItem";
 
-export * from "./AudioToSentenceItem"
-export * from "./TranscribeItem"
-export * from "./MemoryGameItem"
-export * from "./FillTableItem"
-export * from "./MCQItem"
-export * from "./RecordAudioItem"
-export * from "./MatchPairsItem"
-export * from "./Answer"
+export * from "./AudioToSentenceItem";
+export * from "./TranscribeItem";
+export * from "./MemoryGameItem";
+export * from "./FillTableItem";
+export * from "./MCQItem";
+export * from "./RecordAudioItem";
+export * from "./MatchPairsItem";
+export * from "./Answer";
 
-export type Selectable<T> = T & { isSelected: boolean }
+export type Selectable<T> = T & { isSelected: boolean };
 
-export type CourseItem = MCQItem
+export type CourseItem =
+    | MCQItem
     | RecordAudioItem
     | AudioToSentenceItem
     | TranscribeItem
     | FillTableItem
     | MatchPairsItem
-    | MemoryGameItem
+    | MemoryGameItem;
 
-export type CourseItemType = Pick<CourseItem, "type">["type"]
+export type CourseItemType = Pick<CourseItem, "type">["type"];

@@ -8,13 +8,13 @@ import App from "./App";
 import "i18n";
 import store from "store/store";
 
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 dayjs.extend(duration);
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
 
 const root = document.getElementById(process.env.root);
 

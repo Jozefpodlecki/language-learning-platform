@@ -1,4 +1,3 @@
-
 import React, { FunctionComponent, ReactNode } from "react";
 
 import style from "./style.scss";
@@ -8,11 +7,7 @@ type LayoutProps = {
 };
 
 const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
-    return (
-        <div className={style.layout}>
-            {children}
-        </div>
-    );
+    return <div className={style.layout}>{children}</div>;
 };
 
 export default Layout;

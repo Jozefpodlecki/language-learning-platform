@@ -2,6 +2,7 @@ import { BaseItem } from "./BaseItem";
 
 export type RecordAudioItem = BaseItem & {
     type: "record audio";
-    question: string;
+    text: string;
     description: string;
-}
+    languageId: string;
+};

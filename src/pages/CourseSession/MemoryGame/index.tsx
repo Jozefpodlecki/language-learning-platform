@@ -1,18 +1,25 @@
-import { faArrowRight, faCheck, faRunning, faSmile } from "@fortawesome/free-solid-svg-icons";
-import ActionButton from "components/ActionButton";
 import * as actions from "actions";
-import { MemoryGameItem, MemoryGameItemItem, Selectable } from "models/CourseItem";
-import React, { FunctionComponent, useEffect } from "react";
+import {
+    MemoryGameItem,
+    MemoryGameItemItem,
+} from "models/CourseItem";
+import {
+    faArrowRight,
+    faRunning,
+    faSmile,
+} from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
+import ActionButton from "components/ActionButton";
 import Item from "./Item";
+import React, { FunctionComponent, useEffect } from "react";
 
-import style from "./index.scss";
-import { moveNext, sendMemoryGameData } from "api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { moveNext, sendMemoryGameData } from "api";
+import style from "./index.scss";
 
-type Props =  MemoryGameItem & {
+type Props = MemoryGameItem & {
     sessionId: string;
-    title: string,
+    title: string;
     hasChanged: boolean;
     hasSubmit: boolean;
     remainingSeconds: number;
@@ -27,28 +34,22 @@ const MemoryGame: FunctionComponent<Props> = ({
     sessionId,
     items,
     title,
-    hasSubmit,
-    hasChanged,
-    isCorrect,
     hasFinished,
     remainingSeconds,
-    selectedItems,
     isCompleted,
-    onQuit
+    onQuit,
 }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-
-        if(hasFinished) {
+        if (hasFinished) {
             setTimeout(() => {
                 dispatch(actions.sendMemoryGameData.request());
 
-                sendMemoryGameData(sessionId, id, items)
-                    .then(item => {
-                        dispatch(actions.sendMemoryGameData.success(item))
-                    })
-            }, 1000)
+                sendMemoryGameData(sessionId, id, items).then((item) => {
+                    dispatch(actions.sendMemoryGameData.success(item));
+                });
+            }, 1000);
 
             return;
         }
@@ -58,67 +59,75 @@ const MemoryGame: FunctionComponent<Props> = ({
         const callback = () => {
             dispatch(actions.processPair());
 
-            if(!hasFinished) {
+            if (!hasFinished) {
                 handle = setTimeout(callback, 500);
             }
-        }
+        };
 
         handle = setTimeout(callback, 500);
 
         return () => {
             clearTimeout(handle);
-        }
-    }, [hasFinished])
+        };
+    }, [hasFinished]);
 
     const onClick = (id: string) => {
-        dispatch(actions.selectItem(id))
-    }
+        dispatch(actions.selectItem(id));
+    };
 
     const onNextOne = () => {
-        dispatch(actions.nextItem.request())
+        dispatch(actions.nextItem.request());
 
-        moveNext(sessionId)
-            .then(session => {
-                actions.nextItem.success(session);
-            });
-    }
+        moveNext(sessionId).then((session) => {
+            actions.nextItem.success(session);
+        });
+    };
 
     const dimension = 4;
 
-    return <div className={style.quiz}>
-        <div className={style.title}>{title}</div>
-        {hasFinished ? <div className={style.result}>
-            <div>Nice one!</div>
-            <div>
-                <FontAwesomeIcon icon={faSmile}/>
+    return (
+        <div className={style.quiz}>
+            <div className={style.title}>{title}</div>
+            {hasFinished ? (
+                <div className={style.result}>
+                    <div>Nice one!</div>
+                    <div>
+                        <FontAwesomeIcon icon={faSmile} />
+                    </div>
+                </div>
+            ) : (
+                <div className={style.item}>
+                    <div className={style.header}>Match items</div>
+                    <div
+                        style={{
+                            gridTemplateColumns: `repeat(${dimension}, 200px)`,
+                        }}
+                        className={style.memoryGame}
+                    >
+                        {items.map((pr) => (
+                            <Item key={pr.id} {...pr} onClick={onClick} />
+                        ))}
+                    </div>
+                </div>
+            )}
+            <div className={style.actions}>
+                <ActionButton value="Quit" onClick={onQuit} icon={faRunning} />
+                {isCompleted ? (
+                    <ActionButton
+                        value={`Next item in ${remainingSeconds}`}
+                        onClick={onNextOne}
+                        icon={faArrowRight}
+                    />
+                ) : (
+                    <ActionButton
+                        value="Next item"
+                        onClick={onNextOne}
+                        icon={faArrowRight}
+                    />
+                )}
             </div>
-        </div> : <div className={style.item}>
-            <div className={style.header}>Match items</div>
-            <div 
-                style={{
-                    gridTemplateColumns: `repeat(${dimension}, 200px)`
-                }}
-                className={style.memoryGame}>
-                {items.map(pr => <Item 
-                    key={pr.id}
-                    {...pr}
-                    onClick={onClick}/>)}
-            </div>
-        </div>}
-        <div className={style.actions}>
-            <ActionButton
-                value="Quit"
-                onClick={onQuit}
-                icon={faRunning}/>
-            {isCompleted ? <ActionButton
-                value={`Next item in ${remainingSeconds}`}
-                onClick={onNextOne}
-                icon={faArrowRight}/> : <ActionButton
-                value="Next item"
-                onClick={onNextOne}
-                icon={faArrowRight}/>}
         </div>
-    </div>
-}
+    );
+};
 
 export default MemoryGame;

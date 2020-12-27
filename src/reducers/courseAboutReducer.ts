@@ -1,18 +1,20 @@
 import * as actions from "actions";
+import { ActionType, getType } from "typesafe-actions";
 import { Course } from "models/Course";
 import { CourseMetadata } from "models/CourseMetadata";
 import { Dataset } from "models/dataset";
 import { Loadable, unload } from "models/Loadable";
-import { ActionType, getType } from "typesafe-actions";
 
 type Action = ActionType<typeof actions>;
 
 type State = {
-    course: Loadable<Course & { 
-        dataset: Loadable<Dataset>
-    }>;
+    course: Loadable<
+        Course & {
+            dataset: Loadable<Dataset>;
+        }
+    >;
     metadata: Loadable<CourseMetadata>;
-}
+};
 
 const initialState: State = {
     course: {
@@ -20,15 +22,11 @@ const initialState: State = {
     },
     metadata: {
         isLoading: true,
-    }
-}
+    },
+};
 
-export default (
-    state = initialState,
-    action: Action
-):  State => {
-    
-    if(action.type === getType(actions.getCourse.success)) {
+export default (state = initialState, action: Action): State => {
+    if (action.type === getType(actions.getCourse.success)) {
         const course = unload(action.payload);
 
         return {
@@ -37,12 +35,12 @@ export default (
                 ...course,
                 dataset: {
                     isLoading: true,
-                }
-            }
+                },
+            },
         };
     }
 
-    if(action.type === getType(actions.getCourseMetadata.success)) {
+    if (action.type === getType(actions.getCourseMetadata.success)) {
         const metadata = unload(action.payload);
 
         return {
@@ -51,10 +49,10 @@ export default (
         };
     }
 
-    if(action.type === getType(actions.getCourseDataset.success)) {
+    if (action.type === getType(actions.getCourseDataset.success)) {
         const dataset = unload(action.payload);
 
-        if(state.course.isLoading === true) {
+        if (state.course.isLoading === true) {
             return state;
         }
 
@@ -63,10 +61,9 @@ export default (
             course: {
                 ...state.course,
                 dataset,
-            }
+            },
         };
     }
-    
 
     return state;
 };
