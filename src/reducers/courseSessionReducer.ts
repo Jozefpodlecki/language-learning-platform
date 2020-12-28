@@ -42,12 +42,21 @@ const initialState: State = {
 };
 
 export default (state = initialState, action: Action): State => {
-    if (action.type === getType(actions.sendMemoryGameData.request)) {
+    if (action.type === getType(actions.sendTranscribe.request)) {
         return {
             ...state,
             courseItem: {
                 isLoading: true,
             },
+        };
+    }
+
+    if (action.type === getType(actions.sendTranscribe.success)) {
+        const courseItem = unload(action.payload);
+
+        return {
+            ...state,
+            courseItem,
         };
     }
 
@@ -86,6 +95,8 @@ export default (state = initialState, action: Action): State => {
             return state;
         }
 
+        const hasChanged = !!transcription;
+
         courseItem = {
             ...courseItem,
             transcription,
@@ -94,6 +105,7 @@ export default (state = initialState, action: Action): State => {
         return {
             ...state,
             courseItem,
+            hasChanged,
         };
     }
 

@@ -1,6 +1,8 @@
 [
     {
         "courseId": "f7ac9a82-4d60-49f9-ba39-3808202047d1",
+        "sourceLanguageId": "en",
+        "destinationLanguageId": "zh",
         "flashcards": {
             "key": "radical",
             "value": "meaning"
@@ -32,6 +34,8 @@
     },
     {
         "courseId": "c4fcf42c-6690-4aca-a3ee-c684a1ec7d42",
+        "sourceLanguageId": "en",
+        "destinationLanguageId": "zh",
         "flashcards": {
             "key": "hanzi",
             "value": "meanings"
@@ -55,12 +59,12 @@
     },
     {
         "courseId": "7e86194b-3acb-46fa-a1d8-052426358ba6",
+        "sourceLanguageId": "en",
+        "destinationLanguageId": "fr",
         "flashcards": {
             "key": "fr",
             "value": "en"
         },
-        "sourceLanguageId": "fr",
-        "destinationLanguageId": "en",
         "courseItems": [
             {
                 "enabled": true,
@@ -80,6 +84,8 @@
     },
     {
         "courseId": "30d3c394-1ba0-4412-bf6b-e8e46595fbc3",
+        "sourceLanguageId": "zh",
+        "destinationLanguageId": "zh",
         "flashcards": {
             "key": "hanzi",
             "value": "meanings"

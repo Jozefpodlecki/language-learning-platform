@@ -38,6 +38,12 @@ export const sendFillTableItems = createAsyncAction(
     "sendFillTableItems.error"
 )<void, CourseItem, void>();
 
+export const sendTranscribe = createAsyncAction(
+    "sendTranscribe.request",
+    "sendTranscribe.success",
+    "sendTranscribe.error"
+)<void, CourseItem, void>();
+
 export const sendAudio = createAsyncAction(
     "sendAudio.request",
     "sendAudio.success",

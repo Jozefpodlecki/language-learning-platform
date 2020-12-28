@@ -130,47 +130,14 @@ const transformObject = (item: Record<string, any>, courseItemMetadata: CourseIt
         source: item[transform.source],
         text: item[transform.text],
         sourceLanguageId:
-            item[transform.sourceLanguageId] ||
-            eval(transform.sourceLanguageId),
+            item[transform.sourceLanguageId],
         destination: item[transform.destination],
         destinationLanguageId:
-            item[transform.destinationLanguageId] ||
-            eval(transform.destinationLanguageId),
+            item[transform.destinationLanguageId],
         transcription: item[transform.transcription],
         canPlayAudio: item[transform.canPlayAudio] || false,
     };
 };
-
-// export const getRandomAnswers = (
-//     rightIndex: number,
-//     rightAnswer: Answer,
-//     wrongAnswerCount: number,
-//     items: QuestionAnswerItem[]) => {
-//     const answers: Answer[] = [];
-//     const indicies = new Set([rightIndex]);
-
-//     for(const _ of Array(wrongAnswerCount)) {
-
-//         let index = random(0, items.length);
-
-//         while(indicies.has(index)) {
-//             index = random(0, items.length);
-//         }
-
-//         indicies.add(index);
-//         const item = items[index];
-//         answers.push({
-//             id: uuidv4(),
-//             value: item.answer,
-//             isCorrect: false,
-//             isSelected: false,
-//         });
-//     }
-
-//     answers.splice(random(0, answers.length), 0, rightAnswer);
-
-//     return answers;
-// }
 
 export const getRandomAnswers = (
     rightIndex: number,
@@ -264,7 +231,8 @@ export const generateItems = (
                 result = generateTranscribeItem(
                     dataset,
                     exclude,
-                    courseItemMetadata
+                    courseItemMetadata,
+                    courseMetadata
                 );
                 break;
 
@@ -445,7 +413,8 @@ export const generateMatchPairsItem = (
 export const generateTranscribeItem = (
     dataset: Dataset,
     exclude: Set<number>,
-    courseItemMetadata: CourseItemMetadata
+    courseItemMetadata: CourseItemMetadata,
+    courseMetadata: CourseMetadata,
 ): Result => {
     const { index, datasetItem } = getRandomItemFromDataset(dataset, exclude);
 
@@ -455,7 +424,7 @@ export const generateTranscribeItem = (
         id: item.id,
         type: "transcribe",
         source: item.source,
-        sourceLanguageId: item.source,
+        sourceLanguageId: courseMetadata.sourceLanguageId,
         destination: item.destination,
         destinationLanguageId: item.destination,
         transcription: "",
@@ -565,48 +534,3 @@ export const generateMCQItem = (
         item: result,
     };
 };
-
-// export const generateMCQItems = (
-//     itemsCount: number,
-//     items: QuestionAnswerItem[]) => {
-
-//     const sessionItems: MCQItem[] = [];
-//     const indicies = new Set();
-
-//     for(const _ of Array(itemsCount)) {
-
-//         let index = random(0, items.length);
-
-//         while(indicies.has(index)) {
-//             index = random(0, items.length);
-//         }
-
-//         indicies.add(index);
-//         const item = items[index];
-
-//         const rightAnswer = {
-//             id: item.id,
-//             value: item.answer,
-//             isCorrect: true,
-//             isSelected: false,
-//         }
-
-//         const question = {
-//             id: item.id,
-//             value: item.question,
-//         }
-
-//         sessionItems.push({
-//             id: item.id,
-//             type: "multiple choice question",
-//             rightAnswer,
-//             answers: getRandomAnswers(index, rightAnswer, 2, items),
-//             question,
-//             isCorrect: false,
-//             isCompleted: false,
-//         })
-
-//     }
-
-//     return sessionItems;
-//

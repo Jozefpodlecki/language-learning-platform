@@ -77,7 +77,7 @@ const RecordAudio: FunctionComponent<Props> = ({
             <div className={style.title}>{title}</div>
             <div className={style.item}>
                 <div className={style.text}>
-                    <div className={style.question}>{question}</div>
+                    <div className={style.question}>{text}</div>
                     <div className={style.description}>{description}</div>
                 </div>
                 <div>

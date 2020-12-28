@@ -117,11 +117,14 @@ export const sendTranscribeText = (
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const courseItem = session.items.find(
-        (pr) => pr.type === "transcribe"
-    ) as TranscribeItem;
+    const courseItem = session.items.find(pr => pr.id === itemId) as TranscribeItem;
 
-    courseItem.isCorrect = false;
+    courseItem.isCompleted = true;
+    courseItem.isCorrect = text === courseItem.destination;
+    courseItem.completedOn = new Date();
+    
+    session.completedCount++;
+    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 

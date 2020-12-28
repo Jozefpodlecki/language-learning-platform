@@ -4,9 +4,13 @@
     padding: 10px;
     border: none;
     resize: none;
-    border: 1px solid black;
+    border: 1px solid #00000033;
     font-size: 20px;
     width: 300px;
+
+    &:focus {
+        outline: none;
+    }
 }
 
 .title {
@@ -14,14 +18,16 @@
 }
 
 .question {
-    font-size: 50px;
+    margin: 50px 0;
+    font-size: 20px;
 }
 
 .header {
     display: flex;
+    font-size: 30px;
 }
 
 .image {
     margin-left: 20px;
-    width: 50px;
+    width: 100px;
 }
