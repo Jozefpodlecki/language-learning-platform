@@ -31,14 +31,17 @@ const Item: FunctionComponent<Props> = ({
                 <Link to={`/course/${id}/info`}>
                     <Button value="About" icon={faInfo} />
                 </Link>
-                <Button
+                <Link to={`/course/${id}/lesson`}>
+                    <Button value="Lessons" icon={faBookOpen} />
+                </Link>
+                {/* <Button
                     value="Practice"
                     onClick={_onPractice}
                     icon={faGraduationCap}
                 />
                 <Link to={`/course/${id}/flashcards`}>
                     <Button value="Flashcards" icon={faBookOpen} />
-                </Link>
+                </Link> */}
             </div>
         </div>
     );

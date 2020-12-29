@@ -49,7 +49,7 @@ export const getCourses = (options: PageCriteria) => {
     const courses = _courses.map((pr) => ({
         ...pr,
         thumbnailUrl: courseImages[pr.thumbnailUrl],
-    }));
+    })).filter(pr => !pr.parentCourseId)
 
     return Promise.resolve(courses);
 };

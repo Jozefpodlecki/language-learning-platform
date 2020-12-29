@@ -4,27 +4,46 @@
         "name": "Chinese Radicals",
         "languageId": "zh",
         "thumbnailUrl": "./chineseRadicals.png",
-        "datasetUrl": "./radicals.json"
+        "datasetUrl": "./radicals.json",
+        "parentCourseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
+    },
+    {
+        "id": "3e089467-c94f-4d10-bc86-7d48e6b250b3",
+        "name": "Chinese",
+        "languageId": "zh",
+        "thumbnailUrl": "./cn.png",
+        "datasetUrl": "./hsk1.json",
+        "parentCourseId": null
     },
     {
         "id": "30d3c394-1ba0-4412-bf6b-e8e46595fbc3",
         "name": "HSK 1",
         "languageId": "zh",
         "thumbnailUrl": "./hsk1.jpg",
-        "datasetUrl": "./hsk1.json"
+        "datasetUrl": "./hsk1.json",
+        "parentCourseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
     },
     {
         "id": "c4fcf42c-6690-4aca-a3ee-c684a1ec7d42",
         "name": "HSK 2",
         "languageId": "zh",
         "thumbnailUrl": "./hsk2.jpg",
-        "datasetUrl": "./hsk2.json"
+        "datasetUrl": "./hsk2.json",
+        "parentCourseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
+    },
+    {
+        "id": "bd2d1c87-f830-40ca-87cb-8b74c51855cc",
+        "name": "French",
+        "languageId": "fr",
+        "thumbnailUrl": "./fr.png",
+        "parentCourseId": null
     },
     {
         "id": "7e86194b-3acb-46fa-a1d8-052426358ba6",
         "name": "French sentences",
         "languageId": "fr",
         "thumbnailUrl": "./fr.png",
-        "datasetUrl": "./french.json"
+        "datasetUrl": "./french.json",
+        "parentCourseId": "bd2d1c87-f830-40ca-87cb-8b74c51855cc"
     }
 ]

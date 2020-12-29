@@ -8,25 +8,9 @@ import Courses from "pages/Courses";
 import NotFound from "pages/NotFound";
 import React, { FunctionComponent, useEffect } from "react";
 import UnderConstruction from "pages/UnderConstruction";
+import CourseLesson from "pages/CourseLesson";
 
 const App: FunctionComponent = () => {
-    const history = useHistory();
-
-    const onStorage = () => {
-        const session = getSessionsFromLocalStorage();
-
-        if (!session.length) {
-            if (history.location.pathname === "/") {
-                history.push("/");
-            }
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener("storage", onStorage);
-
-        return () => window.removeEventListener("storage", onStorage);
-    }, [history]);
 
     return (
         <Switch>
@@ -41,6 +25,11 @@ const App: FunctionComponent = () => {
                 exact
                 path="/course/:courseId/session/:sessionId/review"
                 component={CourseReview}
+            />
+             <Route
+                exact
+                path="/course/:courseId/lesson"
+                component={CourseLesson}
             />
             <Route
                 exact
