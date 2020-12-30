@@ -1,8 +1,9 @@
 import { Course } from "models/Course";
-import { CourseMetadata } from "models/CourseMetadata";
+import { LessonMetadata } from "models/LessonMetadata";
+import { Lesson } from "models/Lesson";
 import { createAsyncAction } from "typesafe-actions";
 
-export * from "./courseAboutActions";
+export * from "./courseActions";
 export * from "./coursesActions";
 export * from "./courseSessionActions";
 
@@ -16,4 +17,10 @@ export const getCourseMetadata = createAsyncAction(
     "getCourseMetadata.request",
     "getCourseMetadata.success",
     "getCourseMetadata.error"
-)<void, CourseMetadata, void>();
+)<void, LessonMetadata, void>();
+
+export const getLessonsByCourse = createAsyncAction(
+    "getLessonsByCourse.request",
+    "getLessonsByCourse.success",
+    "getLessonsByCourse.error"
+)<void, Lesson[], void>();

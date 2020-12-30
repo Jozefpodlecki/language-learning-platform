@@ -1,9 +1,9 @@
 import { Route, Switch, useHistory } from "react-router";
 import { getSessionsFromLocalStorage } from "api";
-import CourseAbout from "pages/CourseAbout";
+import CourseAbout from "pages/Course";
 import CourseFlashcards from "pages/CourseFlashcards";
-import CourseReview from "pages/CourseReview";
-import CourseSession from "pages/CourseSession";
+import CourseReview from "pages/LessonReview";
+import LessonSession from "pages/LessonSession";
 import Courses from "pages/Courses";
 import NotFound from "pages/NotFound";
 import React, { FunctionComponent, useEffect } from "react";
@@ -18,8 +18,8 @@ const App: FunctionComponent = () => {
             <Route exact path="/profile" component={UnderConstruction} />
             <Route
                 exact
-                path="/course/:courseId/session/:sessionId"
-                component={CourseSession}
+                path="/course/:courseId/lesson/:lessonId/session/:sessionId"
+                component={LessonSession}
             />
             <Route
                 exact
@@ -31,16 +31,16 @@ const App: FunctionComponent = () => {
                 path="/course/:courseId/lesson"
                 component={CourseLesson}
             />
-            <Route
+            {/* <Route
                 exact
                 path="/course/:courseId/info"
                 component={CourseAbout}
-            />
-            <Route
+            /> */}
+            {/* <Route
                 exact
                 path="/course/:courseId/flashcards"
                 component={CourseFlashcards}
-            />
+            /> */}
             <Route component={NotFound} />
         </Switch>
     );

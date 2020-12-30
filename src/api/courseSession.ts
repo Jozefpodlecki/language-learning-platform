@@ -1,24 +1,40 @@
 import {
     Answer,
-    AudioToSentenceItem,
     FillTableItem,
     FillTableItemItem,
-    MCQItem,
+    Item as MCQItem,
     MemoryGameItem,
     MemoryGameItemItem,
     TranscribeItem,
-} from "models/CourseItem";
-import { CourseSession } from "models/CourseSession";
-import { QuestionAnswerItem } from "models/QuestionAnswerItem";
-import { generateItems, generateRecordAudioItem, random } from "appUtils";
-import { getCourseDatasetAsync, getCourseMetadataAsync } from "./course";
+} from "models/Exercise";
+import { LessonSession } from "models/LessonSession";
+import { random } from "appUtils";
+import { getLessonDatasetAsync, getLessoneMetadataAsync } from "./course";
 import { v4 as uuidv4 } from "uuid";
+import { generateExercises } from "logic";
 
-export const getSessionsFromLocalStorage = () =>
-    (JSON.parse(localStorage.getItem("session")) || []) as CourseSession[];
+const useStorage = <T>(key: string, setter: (value: T) => string, getter: (value: string | undefined) => T) => {
+    const _setter = (value: T) => localStorage.setItem(key, setter(value));
+    const _getter = () => getter(localStorage.getItem(key))
 
-const setSessionsToLocalStorage = (sessions: CourseSession[]) =>
-    localStorage.setItem("session", JSON.stringify(sessions));
+    return {
+        setter: _setter,
+        getter: _getter,
+    }
+}
+
+const {
+    setter: setSessionsToLocalStorage,
+    getter: getSessionsFromLocalStorage
+} = useStorage<LessonSession[]>("session",
+    (value) => JSON.stringify(value),
+    (value) => JSON.parse(value) || []);
+
+// export const getSessionsFromLocalStorage = () =>
+//     (JSON.parse(localStorage.getItem("session")) || []) as LessonSession[];
+
+// const setSessionsToLocalStorage = (sessions: LessonSession[]) =>
+//     localStorage.setItem("session", JSON.stringify(sessions));
 
 export const getSession = async (sessionId: string) => {
     const sessions = getSessionsFromLocalStorage();
@@ -38,6 +54,7 @@ export const getLastSession = async () => {
 
 export const createSession = async (
     userId: string,
+    lessonId: string,
     courseId: string,
     isExam: boolean
 ) => {
@@ -45,31 +62,32 @@ export const createSession = async (
 
     const itemCount = random(5, 10);
 
-    const session: CourseSession = {
+    const session: LessonSession = {
         id: uuidv4(),
         startedOn: new Date(),
         completedCount: 0,
         itemCount,
-        currentItemId: "",
+        currentExerciseId: "",
+        lessonId,
         courseId,
-        items: [],
+        exercises: [],
         correctPercentage: 0,
         isExam,
         createdById: userId,
     };
 
-    const dataset = await getCourseDatasetAsync(courseId);
+    const dataset = await getLessonDatasetAsync(lessonId);
 
     const numberOfCourseItemTypes = 2;
 
-    const courseMetadata = await getCourseMetadataAsync(courseId);
-    const items = generateItems(itemCount, dataset, courseMetadata);
+    const courseMetadata = await getLessoneMetadataAsync(lessonId);
+    const exercises = generateExercises(itemCount, dataset, courseMetadata);
 
-    session.items = items;
+    session.exercises = exercises;
 
-    const index = random(0, items.length);
-    const item = items[index];
-    session.currentItemId = item.id;
+    const index = random(0, exercises.length);
+    const exercise = exercises[index];
+    session.currentExerciseId = exercise.id;
 
     sessions.push(session);
 
@@ -87,25 +105,25 @@ export const sendFillTableItems = (
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const courseItem = session.items.find(pr => pr.id === itemId) as FillTableItem;
+    const exercise = session.exercises.find(pr => pr.id === itemId) as FillTableItem;
 
     for(const item of items) {
-        const expected = courseItem.expected.find(pr => pr.id === item.id);
+        const expected = exercise.expected.find(pr => pr.id === item.id);
         item.isCorrect = item.destination === expected.destination;
         item.destinationExpected = expected.destination;
     }
 
-    courseItem.items = items;
-    courseItem.isCorrect = !items.some(pr => !pr.isCorrect);
-    courseItem.isCompleted = true;
-    courseItem.completedOn = new Date();
+    exercise.items = items;
+    exercise.isCorrect = !items.some(pr => !pr.isCorrect);
+    exercise.isCompleted = true;
+    exercise.completedOn = new Date();
 
     session.completedCount++;
-    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
+    session.correctPercentage += exercise.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(courseItem);
+    return Promise.resolve(exercise);
 }
 
 export const sendTranscribeText = (
@@ -117,53 +135,53 @@ export const sendTranscribeText = (
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const courseItem = session.items.find(pr => pr.id === itemId) as TranscribeItem;
+    const exercise = session.exercises.find(pr => pr.id === itemId) as TranscribeItem;
 
-    courseItem.isCompleted = true;
-    courseItem.isCorrect = text === courseItem.destination;
-    courseItem.completedOn = new Date();
+    exercise.isCompleted = true;
+    exercise.isCorrect = text === exercise.destination;
+    exercise.completedOn = new Date();
     
     session.completedCount++;
-    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
+    session.correctPercentage += exercise.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(courseItem);
+    return Promise.resolve(exercise);
 };
 
 export const sendMemoryGameData = (
     sessionId: string,
-    itemId: string,
+    exerciseId: string,
     data: MemoryGameItemItem[]
 ) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const courseItem = session.items.find((pr) => pr.id === itemId) as MemoryGameItem;
+    const exercise = session.exercises.find((pr) => pr.id === exerciseId) as MemoryGameItem;
 
-    courseItem.items = data;
-    courseItem.isCompleted = true;
-    courseItem.isCorrect = true;
+    exercise.items = data;
+    exercise.isCompleted = true;
+    exercise.isCorrect = true;
 
     session.completedCount++;
-    session.correctPercentage += courseItem.isCorrect ? 1 / session.itemCount : 0;
+    session.correctPercentage += exercise.isCorrect ? 1 / session.itemCount : 0;
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(courseItem);
+    return Promise.resolve(exercise);
 };
 
 export const sendAnswer = (
     sessionId: string,
-    itemId: string,
+    exerciseId: string,
     answer: Answer
 ) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find((pr) => pr.id === sessionId);
 
-    const item = session.items.find((pr) => pr.id === itemId) as MCQItem;
+    const item = session.exercises.find((pr) => pr.id === exerciseId) as MCQItem;
 
     const isCorrect = answer.id === item.rightAnswer.id;
     item.isCorrect = isCorrect;
@@ -179,7 +197,7 @@ export const sendAnswer = (
     return Promise.resolve(item);
 };
 
-export const moveNext = (sessionId: string) => {
+export const moveToNextExercise = (sessionId: string) => {
     const sessions = getSessionsFromLocalStorage();
 
     const session = sessions.find((pr) => pr.id === sessionId);
@@ -188,20 +206,26 @@ export const moveNext = (sessionId: string) => {
         session.completedOn = new Date();
         setSessionsToLocalStorage(sessions);
 
-        return Promise.resolve(session);
+        return Promise.resolve({
+            session,
+            exercise: null
+        });
     }
 
-    const items = session.items.filter((pr) => !pr.isCompleted);
+    const exercises = session.exercises.filter((pr) => !pr.isCompleted);
 
-    const index = random(0, items.length);
+    const index = random(0, exercises.length);
 
-    const item = items[index];
-    session.currentItemId = item.id;
+    const exercise = exercises[index];
+    session.currentExerciseId = exercise.id;
     session.modifiedOn = new Date();
 
     setSessionsToLocalStorage(sessions);
 
-    return Promise.resolve(session);
+    return Promise.resolve({
+        session,
+        exercise
+    });
 };
 
 export const finishSession = (sessionId: string) => {
@@ -212,9 +236,9 @@ export const finishSession = (sessionId: string) => {
     const currentDate = new Date();
     session.completedOn = currentDate;
 
-    for (const item of session.items) {
-        item.isCompleted = true;
-        item.completedOn = currentDate;
+    for (const exercise of session.exercises) {
+        exercise.isCompleted = true;
+        exercise.completedOn = currentDate;
     }
 
     setSessionsToLocalStorage(sessions);

@@ -1,6 +1,7 @@
 import { Course } from "models/Course";
-import { CourseItem } from "models/CourseItem";
-import { CourseSession } from "models/CourseSession";
+import { Exercise } from "models/Exercise";
+import { Lesson } from "models/Lesson";
+import { LessonSession } from "models/LessonSession";
 import { createAction, createAsyncAction } from "typesafe-actions";
 
 type SendAudioPayload = {
@@ -8,23 +9,32 @@ type SendAudioPayload = {
     transcript?: string;
 };
 
+export const getLesson = createAsyncAction(
+    "getLesson.request",
+    "getLesson.success",
+    "getLesson.error"
+)<void, Lesson, void>();
+
 export const getCourse = createAsyncAction(
     "getCourse.request",
     "getCourse.success",
     "getCourse.error"
 )<void, Course, void>();
 
-export const nextItem = createAsyncAction(
-    "nextItem.request",
-    "nextItem.success",
-    "nextItem.error"
-)<void, CourseSession, void>();
+export const nextExercise = createAsyncAction(
+    "nextExercise.request",
+    "nextExercise.success",
+    "nextExercise.error"
+)<void, {
+    session: LessonSession;
+    exercise: Exercise;
+}, void>();
 
 export const startSession = createAsyncAction(
     "startSession.request",
     "startSession.success",
     "startSession.error"
-)<void, CourseSession, void>();
+)<void, LessonSession, void>();
 
 export const quitSession = createAsyncAction(
     "quitSession.request",
@@ -36,43 +46,43 @@ export const sendFillTableItems = createAsyncAction(
     "sendFillTableItems.request",
     "sendFillTableItems.success",
     "sendFillTableItems.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendTranscribe = createAsyncAction(
     "sendTranscribe.request",
     "sendTranscribe.success",
     "sendTranscribe.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendAudio = createAsyncAction(
     "sendAudio.request",
     "sendAudio.success",
     "sendAudio.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendText = createAsyncAction(
     "sendText.request",
     "sendText.success",
     "sendText.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendAnswer = createAsyncAction(
     "sendAnswer.request",
     "sendAnswer.success",
     "sendAnswer.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendMatchPairsData = createAsyncAction(
     "sendMatchPairsData.request",
     "sendMatchPairsData.success",
     "sendMatchPairsData.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const sendMemoryGameData = createAsyncAction(
     "sendMemoryGameData.request",
     "sendMemoryGameData.success",
     "sendMemoryGameData.error"
-)<void, CourseItem, void>();
+)<void, Exercise, void>();
 
 export const selectAnswer = createAction("selectAnswer")<{
     itemId: string;

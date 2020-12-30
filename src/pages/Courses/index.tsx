@@ -12,7 +12,9 @@ import style from "./index.scss";
 const Courses: FunctionComponent = () => {
     const dispatch = useDispatch();
     const {
-        user: { user },
+        user: {
+            id
+        },
         pages: {
             courses: { courses, session },
         },
@@ -67,15 +69,6 @@ const Courses: FunctionComponent = () => {
         history.push(sessionLink);
     };
 
-    const onPractice = (courseId: string) => {
-        dispatch(actions.startSession.request());
-
-        createSession(user.id, courseId, false).then((session) => {
-            dispatch(actions.startSession.success(session));
-            history.push(`/course/${courseId}/session/${session.id}`);
-        });
-    };
-
     if (courses.isLoading === true) {
         return <div>Loading...</div>;
     }
@@ -94,7 +87,6 @@ const Courses: FunctionComponent = () => {
                                 hasUncompletedSession &&
                                 course.id === uncompletedCourseId
                             }
-                            onPractice={onPractice}
                         />
                     ))}
                 </div>

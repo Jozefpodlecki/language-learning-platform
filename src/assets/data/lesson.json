@@ -1,0 +1,34 @@
+[
+    {
+        "id": "f7ac9a82-4d60-49f9-ba39-3808202047d1",
+        "name": "Chinese Radicals",
+        "languageId": "zh",
+        "thumbnailUrl": "./chineseRadicals.png",
+        "datasetUrl": "./radicals.json",
+        "courseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
+    },
+    {
+        "id": "30d3c394-1ba0-4412-bf6b-e8e46595fbc3",
+        "name": "HSK 1",
+        "languageId": "zh",
+        "thumbnailUrl": "./hsk1.jpg",
+        "datasetUrl": "./hsk1.json",
+        "courseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
+    },
+    {
+        "id": "c4fcf42c-6690-4aca-a3ee-c684a1ec7d42",
+        "name": "HSK 2",
+        "languageId": "zh",
+        "thumbnailUrl": "./hsk2.jpg",
+        "datasetUrl": "./hsk2.json",
+        "courseId": "3e089467-c94f-4d10-bc86-7d48e6b250b3"
+    },
+    {
+        "id": "7e86194b-3acb-46fa-a1d8-052426358ba6",
+        "name": "French sentences",
+        "languageId": "fr",
+        "thumbnailUrl": "./fr.png",
+        "datasetUrl": "./french.json",
+        "courseId": "bd2d1c87-f830-40ca-87cb-8b74c51855cc"
+    }
+]

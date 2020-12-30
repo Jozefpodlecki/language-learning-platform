@@ -1,13 +1,13 @@
 import * as actions from "actions/coursesActions";
 import { ActionType, getType } from "typesafe-actions";
 import { Course } from "models/Course";
-import { CourseSession } from "models/CourseSession";
+import { LessonSession } from "models/LessonSession";
 import { Loadable, unload } from "models/Loadable";
 
 type Action = ActionType<typeof actions>;
 
 type State = {
-    session: Loadable<CourseSession>;
+    session: Loadable<LessonSession>;
     courses: Loadable<Course[]>;
 };
 

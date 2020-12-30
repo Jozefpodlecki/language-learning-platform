@@ -1,0 +1,14 @@
+[
+    {
+        "id": "3e089467-c94f-4d10-bc86-7d48e6b250b3",
+        "name": "Chinese",
+        "languageId": "zh",
+        "thumbnailUrl": "./cn.png"
+    },
+    {
+        "id": "bd2d1c87-f830-40ca-87cb-8b74c51855cc",
+        "name": "French",
+        "languageId": "fr",
+        "thumbnailUrl": "./fr.png"
+    }
+]

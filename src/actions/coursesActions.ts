@@ -1,5 +1,5 @@
 import { Course } from "models/Course";
-import { CourseSession } from "models/CourseSession";
+import { LessonSession } from "models/LessonSession";
 import { createAsyncAction } from "typesafe-actions";
 
 export const getCourses = createAsyncAction(
@@ -12,4 +12,4 @@ export const getLastSession = createAsyncAction(
     "getLastSession.request",
     "getLastSession.success",
     "getLastSession.error"
-)<void, CourseSession | undefined, void>();
+)<void, LessonSession | undefined, void>();

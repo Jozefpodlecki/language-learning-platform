@@ -1,15 +1,15 @@
-import { ReducersMapObject, combineReducers } from "redux";
-import courseAboutReducer from "./courseAboutReducer";
-import courseSessionReducer from "./courseSessionReducer";
+import { combineReducers } from "redux";
+import courseReducer from "./courseReducer";
+import lessonSessionReducer from "./lessonSessionReducer";
 import coursesReducer from "./coursesReducer";
 import userReducer from "./userReducer";
 
 export const rootReducer = combineReducers({
     user: userReducer,
     pages: combineReducers({
-        courseSession: courseSessionReducer,
+        session: lessonSessionReducer,
         courses: coursesReducer,
-        course: courseAboutReducer,
+        course: courseReducer
     }),
 });
 

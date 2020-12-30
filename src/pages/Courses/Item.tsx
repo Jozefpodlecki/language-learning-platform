@@ -12,16 +12,13 @@ import style from "./item.scss";
 
 type Props = Course & {
     disabled: boolean;
-    onPractice(courseId: string): void;
 };
 
 const Item: FunctionComponent<Props> = ({
     id,
     name,
     thumbnailUrl,
-    onPractice,
 }) => {
-    const _onPractice = () => onPractice(id);
 
     return (
         <div className={style.course} key={id}>

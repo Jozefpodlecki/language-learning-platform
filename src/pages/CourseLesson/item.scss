@@ -1,0 +1,17 @@
+.item {
+    flex-basis: 300px;
+
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    padding: 10px;
+    margin: 1px;
+    border: 1px solid black;
+}
+
+.button {
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid black;
+    cursor: pointer;
+}

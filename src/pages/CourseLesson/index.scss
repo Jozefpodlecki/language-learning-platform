@@ -17,31 +17,6 @@
     text-align: center;
 }
 
-.node {
-    cursor: pointer;
-}
-
-.nodeCircle {
-    transition: fill .5s;
-    fill: #E94057;
-}
-
-.nodeHover .nodeCircle {
-    fill: #093637;
-}
-
-.nodeText {
-    font-family: 'Monda', sans-serif;
-    font-size: 25px;
-    text-anchor: middle;
-    fill: white;
-}
-
-.nodeLink {
-    stroke: #aaa;
-    stroke-width: 10px;
-}
-
 .list {
     display: flex;
     flex-wrap: wrap;
