@@ -11,7 +11,7 @@ import React, {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { createSession, getCourseAsync, getCourseDatasetAsync, getLessonsByCourseAsync } from "api";
+import { createSession, getCourseAsync, getLessonsByCourseAsync } from "api";
 import { useHistory, useParams } from "react-router";
 import Loader from "react-loader-spinner";
 import Navbar from "../Navbar";

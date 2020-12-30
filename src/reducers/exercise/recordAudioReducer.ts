@@ -1,26 +1,13 @@
 import * as actions from "actions";
+import { RecordAudioItem } from "models/Exercise";
 import { ActionType, getType } from "typesafe-actions";
+import { ExercisePageState } from "./ExercisePageState";
 
 type Action = ActionType<typeof actions>;
 
-type State = {
+type State = RecordAudioItem & ExercisePageState
 
-};
-
-const initialState: State = {
-
-};
-
-export default (state = initialState, action: Action): State => {
-
-    if (action.type === getType(actions.sendAudio.request)) {
-        return {
-            ...state,
-            exercise: {
-                isLoading: true,
-            },
-        };
-    }
+export default (state: State, action: Action): State => {
 
     return state;
 };

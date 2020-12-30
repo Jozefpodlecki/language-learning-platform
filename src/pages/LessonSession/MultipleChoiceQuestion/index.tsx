@@ -23,14 +23,14 @@ import React, {
     useState,
 } from "react";
 import style from "./index.scss";
+import { useSelector } from "hooks/useSelector";
 
 type Props = MCQItem & {
     sessionId: string;
     title: string;
     completed: number;
-    hasSelected: boolean;
-    selectedAnswerId: string;
     remainingSeconds: number;
+    hasChanged: boolean;
     onNextOne(): void;
     onQuit(): void;
 };
@@ -44,9 +44,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
     isCorrect,
     rightAnswer,
     answers,
-    answer,
-    hasSelected,
-    selectedAnswerId,
+    hasChanged,
     remainingSeconds,
     canPlayAudio,
     onNextOne,
@@ -54,12 +52,35 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
 }) => {
     const dispatch = useDispatch();
     const [isPlaying, setPlaying] = useState(false);
+    const {
+        pages: {
+            session: {
+                exercise
+            }
+        },
+    } = useSelector((state) => state);
+
+    useEffect(() => {
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [hasChanged]);
+
+    if(exercise.isLoading === true) {
+        return;
+    }
+
+    const { multipleChoiceQuestion: {
+        selectedAnswerId
+    } } = exercise;
 
     const onKeyDown = (event: KeyboardEvent) => {
         const key = event.key;
         const answerIndex = Number(key);
         if (Number.isNaN(answerIndex)) {
-            if (hasSelected && key === "Enter") {
+            if (hasChanged && key === "Enter") {
                 dispatch(actions.sendAnswer.request());
 
                 const answer = answers.find((pr) => selectedAnswerId === pr.id);
@@ -86,13 +107,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
         }
     };
 
-    useEffect(() => {
-        window.addEventListener("keydown", onKeyDown);
-
-        return () => {
-            window.removeEventListener("keydown", onKeyDown);
-        };
-    }, [hasSelected]);
+    
 
     const onClick = useCallback((answerId: string) => {
         dispatch(
@@ -104,7 +119,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
     }, []);
 
     const onCheck = () => {
-        if (!hasSelected) {
+        if (!hasChanged) {
             return;
         }
 
@@ -195,7 +210,7 @@ const MultipleChoiceQuestion: FunctionComponent<Props> = ({
                 )}
                 {isCompleted ? null : (
                     <ActionButton
-                        disabled={!hasSelected}
+                        disabled={!hasChanged}
                         value="Check"
                         onClick={onCheck}
                         icon={faCheck}

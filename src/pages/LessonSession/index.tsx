@@ -116,6 +116,10 @@ const CourseSession: FunctionComponent = () => {
         }
     }, [exerciseId, session, remainingSeconds]);
 
+    const onNextOne = () => {
+
+    }
+
     const onQuit = () => {
         dispatch(actions.quitSession.success());
 
@@ -173,8 +177,7 @@ const CourseSession: FunctionComponent = () => {
                     title={lesson.name}
                     remainingSeconds={remainingSeconds}
                     completed={completed}
-                    hasSelected={hasSelected}
-                    selectedAnswerId={selectedAnswerId}
+                    onNextOne={onNextOne}
                     onQuit={onQuit}
                 />
             );
@@ -186,6 +189,8 @@ const CourseSession: FunctionComponent = () => {
                     {...exercise}
                     title={lesson.name}
                     completed={completed}
+                    onNextOne={onNextOne}
+                    onQuit={onQuit}
                 />
             );
         }
@@ -197,11 +202,7 @@ const CourseSession: FunctionComponent = () => {
                     sessionId={sessionId}
                     title={lesson.name}
                     remainingSeconds={remainingSeconds}
-                    hasSubmit={hasSubmit}
-                    hasChanged={hasChanged}
-                    isInteractive={true}
-                    hasFinished={hasFinished}
-                    selectedItems={selectedItems}
+                    onNextOne={onNextOne}
                     onQuit={onQuit}
                 />
             );
@@ -214,8 +215,7 @@ const CourseSession: FunctionComponent = () => {
                     sessionId={sessionId}
                     title={lesson.name}
                     remainingSeconds={remainingSeconds}
-                    hasSubmit={hasSubmit}
-                    hasChanged={hasChanged}
+                    onNextOne={onNextOne}
                     onQuit={onQuit}
                 />
             );
@@ -228,8 +228,7 @@ const CourseSession: FunctionComponent = () => {
                     sessionId={sessionId}
                     title={lesson.name}
                     remainingSeconds={remainingSeconds}
-                    hasSubmit={hasSubmit}
-                    hasChanged={hasChanged}
+                    onNextOne={onNextOne}
                     onQuit={onQuit}
                 />
             );
@@ -242,8 +241,7 @@ const CourseSession: FunctionComponent = () => {
                     sessionId={sessionId}
                     title={lesson.name}
                     remainingSeconds={remainingSeconds}
-                    hasSubmit={hasSubmit}
-                    hasChanged={hasChanged}
+                    onNextOne={onNextOne}
                     onQuit={onQuit}
                 />
             );

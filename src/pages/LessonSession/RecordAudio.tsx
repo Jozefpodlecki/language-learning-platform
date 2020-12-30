@@ -19,6 +19,9 @@ import style from "./recordAudio.scss";
 type Props = RecordAudioItem & {
     title: string;
     completed: number;
+    hasChanged: boolean;
+    onNextOne(): void;
+    onQuit(): void;
 };
 
 const RecordAudio: FunctionComponent<Props> = ({
@@ -27,6 +30,9 @@ const RecordAudio: FunctionComponent<Props> = ({
     languageId,
     description,
     isCompleted,
+    hasChanged,
+    onNextOne,
+    onQuit,
 }) => {
     const [
         { hasSpoken, isPlaying, isRecording },
@@ -58,10 +64,6 @@ const RecordAudio: FunctionComponent<Props> = ({
     const onStopPlayAudio = () => {};
 
     const onSkipAudio = () => {};
-
-    const onQuit = () => {
-        dispatch(actions.quitSession.request());
-    };
 
     const onCheck = () => {
         if (!hasSpoken) {

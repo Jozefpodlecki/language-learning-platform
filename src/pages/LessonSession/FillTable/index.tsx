@@ -15,7 +15,6 @@ import Item from "./Item";
 type Props = FillTableItem & {
     sessionId: string;
     title: string;
-    hasSubmit: boolean;
     remainingSeconds: number;
     hasChanged: boolean;
     onNextOne(): void;

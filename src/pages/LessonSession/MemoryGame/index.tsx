@@ -16,16 +16,13 @@ import React, { FunctionComponent, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sendMemoryGameData } from "api";
 import style from "./index.scss";
+import { useSelector } from "hooks/useSelector";
 
 type Props = MemoryGameItem & {
     sessionId: string;
     title: string;
-    hasChanged: boolean;
-    hasSubmit: boolean;
     remainingSeconds: number;
-    isInteractive: boolean;
-    hasFinished: boolean;
-    selectedItems: MemoryGameItemItem[];
+    hasChanged: boolean;
     onNextOne(): void;
     onQuit(): void;
 };
@@ -35,13 +32,29 @@ const MemoryGame: FunctionComponent<Props> = ({
     sessionId,
     items,
     title,
-    hasFinished,
     remainingSeconds,
-    isCompleted,
     onNextOne,
     onQuit,
 }) => {
     const dispatch = useDispatch();
+    const {
+        pages: {
+            session: {
+                exercise
+            }
+        },
+    } = useSelector((state) => state);
+
+    if(exercise.isLoading === true) {
+        return;
+    }
+
+    const {
+        memoryGame: {
+            hasFinished,
+            selectedItems
+        }
+    } = exercise;
 
     useEffect(() => {
         if (hasFinished) {

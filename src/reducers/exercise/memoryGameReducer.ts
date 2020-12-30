@@ -1,42 +1,28 @@
 import * as actions from "actions";
+import { MemoryGameItem, MemoryGameItemItem } from "models/Exercise";
 import { ActionType, getType } from "typesafe-actions";
+import { ExercisePageState } from "./ExercisePageState";
 
 type Action = ActionType<typeof actions>;
 
-type State = {
+type State = MemoryGameItem & ExercisePageState;
 
-};
-
-const initialState: State = {
-
-};
-
-export default (state = initialState, action: Action): State => {
+export default (state: State, action: Action): State => {
 
     if (action.type === getType(actions.selectItem)) {
         const id = action.payload;
 
-        const exercise = state.exercise;
-
-        if (exercise.isLoading === true) {
-            return state;
-        }
-
-        if (exercise.type !== "memory game") {
-            return state;
-        }
-
-        const items = [...exercise.items];
+        const items = [...state.items];
         const memoryGameItem = items.find((pr) => pr.id === id);
 
-        let selectedItems;
-
+        let selectedItems = state.memoryGame.selectedItems;
+        
         if (memoryGameItem.state === "selected") {
-            selectedItems = state.selectedItems.filter(
+            selectedItems = selectedItems.filter(
                 (pr) => pr.id !== memoryGameItem.id
             );
         } else {
-            selectedItems = [...state.selectedItems, memoryGameItem];
+            selectedItems = [...selectedItems, memoryGameItem];
         }
 
         memoryGameItem.state =
@@ -44,37 +30,33 @@ export default (state = initialState, action: Action): State => {
 
         return {
             ...state,
-            selectedItems,
+            memoryGame: {
+                ...state.memoryGame,
+                selectedItems,
+            }
         };
     }
 
     if (action.type === getType(actions.processPair)) {
-        const exercise = state.exercise;
 
-        if (exercise.isLoading === true) {
-            return state;
-        }
-
-        if (exercise.type !== "memory game") {
-            return state;
-        }
-
-        if (!exercise.items.some((pr) => !pr.isMatched)) {
+        if (!state.items.some((pr) => !pr.isMatched)) {
             return {
                 ...state,
-                exercise: {
-                    ...exercise,
-                },
-                hasFinished: true,
+                memoryGame: {
+                    ...state.memoryGame,
+                    hasFinished: true,
+                }
             };
         }
 
-        if (state.selectedItems.length < 2) {
+        const selectedItems = state.memoryGame.selectedItems;
+        
+        if (selectedItems.length < 2) {
             return state;
         }
 
-        const items = [...exercise.items];
-        let [first, second, ...rest] = state.selectedItems;
+        const items = [...state.items];
+        let [first, second, ...rest] = state.memoryGame.selectedItems;
         [first, second] = items.filter(
             (pr) => pr.id === first.id || pr.id === second.id
         );
@@ -85,11 +67,11 @@ export default (state = initialState, action: Action): State => {
 
             return {
                 ...state,
-                exercise: {
-                    ...exercise,
-                    items,
-                },
-                selectedItems: rest,
+                items,
+                memoryGame: {
+                    ...state.memoryGame,
+                    selectedItems: rest,
+                }
             };
         }
 
@@ -101,11 +83,11 @@ export default (state = initialState, action: Action): State => {
 
             return {
                 ...state,
-                exercise: {
-                    ...exercise,
-                    items,
-                },
-                selectedItems: rest,
+                items,
+                memoryGame: {
+                    ...state.memoryGame,
+                    selectedItems: rest,
+                }
             };
         }
 
@@ -121,35 +103,35 @@ export default (state = initialState, action: Action): State => {
 
         return {
             ...state,
-            exercise: {
-                ...exercise,
-                items,
-            },
-            selectedItems: rest,
+            items,
+            memoryGame: {
+                ...state.memoryGame,
+                selectedItems: rest,
+            }
         };
     }
 
-    if (action.type === getType(actions.sendMemoryGameData.success)) {
-        const exercise = unload(action.payload);
+    // if (action.type === getType(actions.sendMemoryGameData.success)) {
+    //     const exercise = unload(action.payload);
 
-        if (state.isLoading === true) {
-            return state;
-        }
+    //     if (state.isLoading === true) {
+    //         return state;
+    //     }
 
-        const exercises = [
-            ...state.exercises.filter((pr) => pr.id !== exercise.id),
-            exercise,
-        ];
+    //     const exercises = [
+    //         ...state.exercises.filter((pr) => pr.id !== exercise.id),
+    //         exercise,
+    //     ];
 
-        return {
-            ...state,
-            session: {
-                ...state.session,
-                exercises,
-            },
-            exercise,
-        };
-    }
+    //     return {
+    //         ...state,
+    //         session: {
+    //             ...state.session,
+    //             exercises,
+    //         },
+    //         exercise,
+    //     };
+    // }
 
     return state;
 };

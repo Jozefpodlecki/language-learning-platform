@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import ActionButton from "components/ActionButton";
 import React, { ChangeEvent, FunctionComponent, useMemo, useState } from "react";
 import style from "./index.scss";
+import { useSelector } from "hooks/useSelector";
 
 const createRangeFunction = (p1: number, p2: number, p3: number) => {
     
@@ -31,7 +32,6 @@ const range = createRangeFunction(
 type Props = TranscribeItem & {
     sessionId: string;
     title: string;
-    hasSubmit: boolean;
     remainingSeconds: number;
     hasChanged: boolean;
     onNextOne(): void;
@@ -48,13 +48,28 @@ const Transcribe: FunctionComponent<Props> = ({
     destination,
     isCompleted,
     isCorrect,
-    remainingSeconds,
     hasChanged,
+    remainingSeconds,
     onNextOne,
     onQuit,
 }) => {
     const dispatch = useDispatch();
+    const {
+        pages: {
+            session: {
+                exercise
+            }
+        },
+    } = useSelector((state) => state);
     const languageUrl = useMemo(() => courseImages[`./${sourceLanguageId}.png`], [sourceLanguageId]);
+
+    if(exercise.isLoading === true) {
+        return;
+    }
+
+    const { multipleChoiceQuestion: {
+        selectedAnswerId
+    } } = exercise;
 
     const onCheck = () => {
         dispatch(actions.sendTranscribe.request());

@@ -1,5 +1,5 @@
 import * as actions from "actions";
-import { getCourseAsync, getSession } from "api";
+import { getCourseAsync, getLessonAsync, getSession } from "api";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
@@ -14,18 +14,18 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const CourseReview: FunctionComponent = () => {
     const dispatch = useDispatch();
-    const { courseId, sessionId } = useParams<{
-        courseId: string;
+    const { lessonId, sessionId } = useParams<{
+        lessonId: string;
         sessionId: string;
     }>();
-    const { course, session } = useSelector(
+    const { lesson, session } = useSelector(
         (state) => state.pages.session
     );
 
     useEffect(() => {
-        if (course.isLoading === true || course.id !== courseId) {
-            getCourseAsync(courseId).then((course) => {
-                dispatch(actions.getCourse.success(course));
+        if (lesson.isLoading === true || lesson.id !== lessonId) {
+            getLessonAsync(lessonId).then((lesson) => {
+                dispatch(actions.getCourse.success(lesson));
             });
         }
 
@@ -34,7 +34,7 @@ const CourseReview: FunctionComponent = () => {
                 dispatch(actions.startSession.success(session));
             });
         }
-    }, [course, session]);
+    }, [lesson, session]);
 
     const time = useMemo(() => {
         if (session.isLoading === true) {
@@ -49,7 +49,7 @@ const CourseReview: FunctionComponent = () => {
         return formatted;
     }, [session]);
 
-    if (session.isLoading === true || course.isLoading === true) {
+    if (session.isLoading === true || lesson.isLoading === true) {
         return (
             <div className={style.loader}>
                 <Loader
@@ -69,7 +69,7 @@ const CourseReview: FunctionComponent = () => {
     return (
         <div className={style.container}>
             <div className={style.header}>
-                Course <b>{course.name}</b> Review
+                Course <b>{lesson.name}</b> Review
             </div>
             <div>
                 <div className={style.field}>
@@ -88,7 +88,7 @@ const CourseReview: FunctionComponent = () => {
                         <div className={style.cell}>Selected answer</div>
                         <div className={style.cell}>Right answer</div>
                     </div>
-                    {session.items.map((pr) => (
+                    {session.exercises.map((pr) => (
                         <Item key={pr.id} {...pr} />
                     ))}
                 </div>

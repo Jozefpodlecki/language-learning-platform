@@ -10,12 +10,19 @@ import {
 import { LessonSession } from "models/LessonSession";
 import { Loadable, unload } from "models/Loadable";
 import { Lesson } from "models/Lesson";
+import fillTableReducer from "./exercise/fillTableReducer";
+import mcqReducer from "./exercise/mcqReducer";
+import memoryGameReducer from "./exercise/memoryGameReducer";
+import transcribeReducer from "./exercise/transcribeReducer";
+import matchPairReducer from "./exercise/matchPairReducer";
+import recordAudioReducer from "./exercise/recordAudioReducer";
+import { defaultState, ExercisePageState } from "./exercise/ExercisePageState";
 
 export type Action = ActionType<typeof actions>;
 
 type State = {
     session: Loadable<LessonSession>;
-    exercise: Loadable<Exercise>;
+    exercise: Loadable<Exercise & ExercisePageState>;
     lesson: Loadable<Lesson>;
 }
 
@@ -58,6 +65,53 @@ const initialState: State = {
 
 export default (state = initialState, action: Action): State => {
 
+    if (action.type === getType(actions.sendData.request)) {
+        return {
+            ...state,
+            exercise: {
+                isLoading: true,
+            }
+        };
+    }
+
+    if (action.type === getType(actions.sendData.success)) {
+        const exercise = unload(action.payload);
+
+        return {
+            ...state,
+            exercise: {
+                ...exercise,
+                ...defaultState
+            }
+        };
+    }
+
+    let exercise = state.exercise;
+
+    if(exercise.isLoading === false) {
+        switch(exercise.type) {
+            case "fill table":
+                exercise = fillTableReducer(exercise, action)
+                break;
+            case "multiple choice question":
+                exercise = mcqReducer(exercise, action)
+                break;
+            case "memory game":
+                exercise = memoryGameReducer(exercise, action)
+                break;
+            case "transcribe":
+                exercise = transcribeReducer(exercise, action)
+                break;
+            case "match pairs":
+                exercise = matchPairReducer(exercise, action)
+                break;
+            case "record audio":
+                exercise = recordAudioReducer(exercise, action)
+                break;
+
+        }
+    }
+
     if (action.type === getType(actions.nextExercise.request)) {
         return {
             ...state,
@@ -77,10 +131,6 @@ export default (state = initialState, action: Action): State => {
         const session = unload(_session);
         const exercise = unload(_exercise);
 
-        // const exercise = unload(
-        //     session.exercises.find((pr) => pr.id === session.currentExerciseId)
-        // );
-
         if (exercise.type === "memory game") {
             const _exercise = {
                 ...exercise,
@@ -93,14 +143,20 @@ export default (state = initialState, action: Action): State => {
             return {
                 ...state,
                 ...session,
-                exercise: _exercise,
+                exercise: {
+                    ..._exercise,
+                    ...defaultState
+                },
             };
         }
 
         return {
             ...state,
             ...session,
-            exercise,
+            exercise: {
+                ...exercise,
+                ...defaultState
+            },
         };
     }
 
@@ -112,9 +168,7 @@ export default (state = initialState, action: Action): State => {
             exercise: {
                 isLoading: true
             },
-            lesson: {
-                ...lesson,
-            },
+            lesson,
         };
     }
 
@@ -146,14 +200,20 @@ export default (state = initialState, action: Action): State => {
             return {
                 ...state,
                 ...session,
-                exercise: _exercise,
+                exercise: {
+                    ..._exercise,
+                    ...defaultState
+                },
             };
         }
 
         return {
             ...state,
             ...session,
-            exercise,
+            exercise: {
+                ...exercise,
+                ...defaultState
+            },
         };
     }
 

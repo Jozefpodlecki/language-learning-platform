@@ -9,8 +9,6 @@ import {
     faCheck,
     faRunning,
 } from "@fortawesome/free-solid-svg-icons";
-import { moveNext } from "api";
-import { useDrop } from "react-dnd";
 import ActionButton from "components/ActionButton";
 import DragItem from "./DragItem";
 import style from "./index.scss";
@@ -18,9 +16,8 @@ import style from "./index.scss";
 type Props = MatchPairsItem & {
     sessionId: string;
     title: string;
-    hasSubmit: boolean;
-    hasChanged: boolean;
     remainingSeconds: number;
+    hasChanged: boolean;
     onNextOne(): void;
     onQuit(): void;
 };
@@ -30,8 +27,8 @@ const MatchPairs: FunctionComponent<Props> = ({
     pieces,
     sessionId,
     isCorrect,
-    remainingSeconds,
     hasChanged,
+    remainingSeconds,
     isCompleted,
     onNextOne,
     onQuit,

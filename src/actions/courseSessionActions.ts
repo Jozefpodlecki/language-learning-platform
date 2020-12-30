@@ -42,6 +42,12 @@ export const quitSession = createAsyncAction(
     "quitSession.error"
 )<void, void, void>();
 
+export const sendData = createAsyncAction(
+    "sendData.request",
+    "sendData.success",
+    "sendData.error"
+)<void, Exercise, void>();
+
 export const sendFillTableItems = createAsyncAction(
     "sendFillTableItems.request",
     "sendFillTableItems.success",

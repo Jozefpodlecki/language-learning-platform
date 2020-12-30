@@ -1,63 +1,32 @@
 import * as actions from "actions";
+import { Exercise, FillTableItem } from "models/Exercise";
+import { unload } from "models/Loadable";
 import { ActionType, getType } from "typesafe-actions";
+import { ExercisePageState } from "./ExercisePageState";
 
 type Action = ActionType<typeof actions>;
 
-type State = {
+type State = FillTableItem & ExercisePageState;
 
-};
-
-const initialState: State = {
-
-};
-
-export default (state = initialState, action: Action): State => {
+export default (state: State, action: Action): State => {
 
     if (action.type === getType(actions.fillTable)) {
         const { itemId, tableItemId, value } = action.payload;
 
-        const exercise = state.exercise;
-
-        if (exercise.isLoading === true) {
-            return state;
-        }
-
-        if (exercise.type !== "fill table") {
-            return state;
-        }
-        
-        const items = [...exercise.items];
+        const items = [...state.items];
         const tableItem = items.find(pr => pr.id === tableItemId);
         tableItem.destination = value;
         const hasChanged = items.some(pr => pr.destination);
 
         return {
             ...state,
-            exercise: {
-                ...exercise,
-                items,
-            },
+            ...items,
             hasChanged
         }
     }
 
-    if (action.type === getType(actions.sendFillTableItems.request)) {
-        return {
-            ...state,
-            exercise: {
-                isLoading: true,
-            },
-        };
-    }
-
-    if (action.type === getType(actions.sendFillTableItems.success)) {
-        const exercise = unload(action.payload);
-        
-        return {
-            ...state,
-            exercise,
-        };
-    }
-
-    return state;
+    return {
+        ...state,
+        hasChanged: false,
+    };
 };

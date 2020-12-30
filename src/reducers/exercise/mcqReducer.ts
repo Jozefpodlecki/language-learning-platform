@@ -1,77 +1,42 @@
 import * as actions from "actions";
+import { Item as MCQItem } from "models/Exercise";
 import { ActionType, getType } from "typesafe-actions";
+import { ExercisePageState } from "./ExercisePageState";
 
 type Action = ActionType<typeof actions>;
 
-type State = {
+type State = MCQItem & ExercisePageState
 
-};
-
-const initialState: State = {
-
-};
-
-export default (state = initialState, action: Action): State => {
-
-    if (action.type === getType(actions.sendAnswer.request)) {
-        return {
-            ...state,
-            hasSubmit: true,
-        };
-    }
+export default (state: State, action: Action): State => {
 
     if (action.type === getType(actions.sendAnswer.success)) {
-        const exercise = unload(action.payload);
-
-        if (state.session.isLoading === true) {
-            return state;
-        }
-
-        if (exercise.type !== "multiple choice question") {
-            return state;
-        }
-
-        const exercises = [
-            ...state.session.exercises.filter((pr) => pr.id !== exercise.id),
-            exercise,
-        ];
+        const exercise = action.payload as State;
 
         return {
             ...state,
-            session: {
-                ...state.session,
-                exercises,
-            },
-            exercise,
+            ...exercise,
         };
     }
 
     if (action.type === getType(actions.selectAnswer)) {
         const { itemId, answerId } = action.payload;
 
-        const exercise = state.exercise;
-
-        if (exercise.isLoading === true) {
-            return state;
-        }
-
-        if (exercise.type !== "multiple choice question") {
-            return state;
-        }
-
-        const answers = exercise.answers.map((pr) => ({
+        const answers = state.answers.map((pr) => ({
             ...pr,
             state: "none",
         }));
         const answer = answers.find((pr) => pr.id === answerId);
         answer.isSelected = true;
-        exercise.answers = answers;
+        state.answers = answers;
 
         return {
             ...state,
-            hasSelected: true,
-            selectedAnswerId: answerId,
-            exercise,
+            answers,
+            answer,
+            hasChanged: true,
+            multipleChoiceQuestion: {
+                selectedAnswerId: answerId,
+            }
         };
     }
 
