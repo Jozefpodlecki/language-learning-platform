@@ -33,7 +33,10 @@ const CourseSession: FunctionComponent = () => {
             }
         },
     } = useSelector((state) => state);
-    const { courseId, sessionId } = useParams<RouteParams>();
+    const { 
+        courseId,
+        lessonId,
+        sessionId } = useParams<RouteParams>();
     const history = useHistory();
     const completed = useMemo(
         () =>
@@ -51,23 +54,19 @@ const CourseSession: FunctionComponent = () => {
             getSession(sessionId).then((session) => {
                 dispatch(actions.startSession.success(session));
             });
+        }
 
-            return;
+        if (lesson.isLoading === true) {
+            getLessonAsync(lessonId).then((lesson) => {
+                dispatch(actions.getLesson.success(lesson));
+            });
         }
 
         if (exercise.isLoading === false && exerciseId !== exercise.id) {
             setRemainingTime(5);
             setExerciseId(exercise.id);
         }
-
-        if (lesson.isLoading === true) {
-            getLessonAsync(courseId).then((lesson) => {
-                dispatch(actions.getLesson.success(lesson));
-            });
-        }
-
         
-
         if (
             session.isLoading === false &&
             !session.completedOn &&
@@ -96,10 +95,10 @@ const CourseSession: FunctionComponent = () => {
                         session,
                         exercise
                     }) => {
-                        actions.nextExercise.success({
+                        dispatch(actions.nextExercise.success({
                             session,
                             exercise,
-                        });
+                        }));
                     });
 
                     return;
@@ -114,10 +113,20 @@ const CourseSession: FunctionComponent = () => {
                 clearTimeout(timeoutHandle);
             };
         }
-    }, [exerciseId, session, remainingSeconds]);
+    }, [exerciseId, session, exercise, remainingSeconds]);
 
     const onNextOne = () => {
+        dispatch(actions.nextExercise.request());
 
+        moveToNextExercise(sessionId).then(({
+            session,
+            exercise
+        }) => {
+            dispatch(actions.nextExercise.success({
+                session,
+                exercise,
+            }));
+        });
     }
 
     const onQuit = () => {
@@ -144,7 +153,7 @@ const CourseSession: FunctionComponent = () => {
     let content;
     let isCompleted = false;
     let isCorrect = false;
-
+    
     if (session.completedOn) {
         return (
             <LessonCompletion

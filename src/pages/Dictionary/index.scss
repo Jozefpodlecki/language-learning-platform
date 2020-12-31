@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+}
+
+.searchbox {
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    padding: 10px;
+    border: none;
+    font-size: 20px;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.filter {
+    cursor: pointer;
+}
+
+.languageFilter {
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+}
+
+.languageFilterIcon {
+    padding: 10px;
+    cursor: pointer;
+}

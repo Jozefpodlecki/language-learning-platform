@@ -33,6 +33,7 @@ const MemoryGame: FunctionComponent<Props> = ({
     items,
     title,
     remainingSeconds,
+    isCompleted,
     onNextOne,
     onQuit,
 }) => {

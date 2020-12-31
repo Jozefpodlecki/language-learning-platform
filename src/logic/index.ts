@@ -34,8 +34,12 @@ const getRandomItemFromDataset = (dataset: Dataset, exclude: Set<number>) => {
     };
 };
 
-const transformObject = (item: Record<string, any>, courseItemMetadata: ExerciseMetadata) => {
-    const transform = courseItemMetadata.transform[0];
+const transformObject = (item: Record<string, any>, courseItemMetadata: ExerciseMetadata, index: number | undefined = undefined) => {
+
+    if(!index) {
+        index = random(0, courseItemMetadata.transform.length);
+    }
+    const transform = courseItemMetadata.transform[index];
 
     return {
         id: item.id,
@@ -50,7 +54,7 @@ const transformObject = (item: Record<string, any>, courseItemMetadata: Exercise
         destinationLanguageId:
             item[transform.destinationLanguageId],
         transcription: item[transform.transcription],
-        canPlayAudio: item[transform.canPlayAudio] || false,
+        canPlayAudio: Boolean(transform.canPlayAudio) || false,
     };
 };
 
@@ -59,7 +63,8 @@ export const getRandomAnswers = (
     rightAnswer: Answer,
     wrongAnswerCount: number,
     dataset: Dataset,
-    courseItemMetadata: ExerciseMetadata
+    courseItemMetadata: ExerciseMetadata,
+    transformIndex: number
 ) => {
     const answers: Answer[] = [];
     const exclude = new Set([rightIndex]);
@@ -71,7 +76,7 @@ export const getRandomAnswers = (
         );
         exclude.add(index);
 
-        const item = transformObject(datasetItem, courseItemMetadata);
+        const item = transformObject(datasetItem, courseItemMetadata, transformIndex);
 
         answers.push({
             id: uuidv4(),
@@ -413,7 +418,9 @@ export const generateMCQItem = (
 ): Result => {
     const { index, datasetItem } = getRandomItemFromDataset(dataset, exclude);
 
-    const item = transformObject(datasetItem, courseItemMetadata);
+    const randomTransform = random(0, courseItemMetadata.transform.length);
+
+    const item = transformObject(datasetItem, courseItemMetadata, randomTransform);
 
     const rightAnswer = {
         id: item.id,
@@ -436,7 +443,8 @@ export const generateMCQItem = (
             rightAnswer,
             2,
             dataset,
-            courseItemMetadata
+            courseItemMetadata,
+            randomTransform
         ),
         question,
         isCorrect: false,

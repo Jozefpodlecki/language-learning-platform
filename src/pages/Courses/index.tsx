@@ -22,7 +22,7 @@ const Courses: FunctionComponent = () => {
     const history = useHistory();
 
     useEffect(() => {
-        if (session.isLoading || courses.isLoading) {
+        if (courses.isLoading) {
             dispatch(actions.getCourses.request());
 
             getCourses({
@@ -31,11 +31,14 @@ const Courses: FunctionComponent = () => {
             }).then((courses) => {
                 dispatch(actions.getCourses.success(courses));
             });
-
+        }
+            
+        if (session.isLoading) {
             getLastSession().then((session) => {
                 dispatch(actions.getLastSession.success(session));
             });
         }
+
     }, [session, courses]);
 
     const {
@@ -72,7 +75,7 @@ const Courses: FunctionComponent = () => {
     if (courses.isLoading === true) {
         return <div>Loading...</div>;
     }
-
+    console.log(courses);
     return (
         <div className={style.courses}>
             <Navbar />

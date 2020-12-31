@@ -20,11 +20,12 @@ export default (state: State, action: Action): State => {
 
     if (action.type === getType(actions.selectAnswer)) {
         const { itemId, answerId } = action.payload;
-
+        
         const answers = state.answers.map((pr) => ({
             ...pr,
-            state: "none",
+            isSelected: false,
         }));
+        
         const answer = answers.find((pr) => pr.id === answerId);
         answer.isSelected = true;
         state.answers = answers;

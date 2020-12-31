@@ -94,7 +94,7 @@ export default (state = initialState, action: Action): State => {
                 exercise = fillTableReducer(exercise, action)
                 break;
             case "multiple choice question":
-                exercise = mcqReducer(exercise, action)
+                exercise = mcqReducer(exercise, action);
                 break;
             case "memory game":
                 exercise = memoryGameReducer(exercise, action)
@@ -165,9 +165,6 @@ export default (state = initialState, action: Action): State => {
 
         return {
             ...state,
-            exercise: {
-                isLoading: true
-            },
             lesson,
         };
     }
@@ -199,7 +196,7 @@ export default (state = initialState, action: Action): State => {
 
             return {
                 ...state,
-                ...session,
+                session,
                 exercise: {
                     ..._exercise,
                     ...defaultState
@@ -209,7 +206,7 @@ export default (state = initialState, action: Action): State => {
 
         return {
             ...state,
-            ...session,
+            session,
             exercise: {
                 ...exercise,
                 ...defaultState
@@ -217,5 +214,8 @@ export default (state = initialState, action: Action): State => {
         };
     }
 
-    return state;
+    return {
+        ...state,
+        exercise
+    };
 };
