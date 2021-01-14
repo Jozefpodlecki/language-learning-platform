@@ -66,7 +66,7 @@ export const getCourses = (options: PageCriteria) => {
     const from = page * pageSize;
     const to = from + pageSize;
 
-    courses.slice(from, to);
+    courses = courses.slice(from, to);
 
     return Promise.resolve(courses);
 };

@@ -8,8 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
     getCourseAsync,
-    getCourseDatasetAsync,
-    getCourseMetadataAsync,
 } from "api";
 import { playAudioWithSpeechSynthesis, random } from "appUtils";
 import { useDispatch } from "react-redux";
@@ -35,90 +33,90 @@ const CourseFlashcards: FunctionComponent = () => {
         indicies: [0],
     });
 
-    useEffect(() => {
-        if (course.isLoading === true || course.id !== courseId) {
-            getCourseAsync(courseId).then((course) => {
-                dispatch(actions.getCourse.success(course));
-            });
-            return;
-        }
+    // useEffect(() => {
+    //     if (course.isLoading === true || course.id !== courseId) {
+    //         getCourseAsync(courseId).then((course) => {
+    //             dispatch(actions.getCourse.success(course));
+    //         });
+    //         return;
+    //     }
 
-        if (metadata.isLoading === true || metadata.courseId !== courseId) {
-            getCourseMetadataAsync(courseId).then((metadata) => {
-                dispatch(actions.getCourseMetadata.success(metadata));
-            });
-        }
+    //     if (metadata.isLoading === true || metadata.courseId !== courseId) {
+    //         getCourseMetadataAsync(courseId).then((metadata) => {
+    //             dispatch(actions.getCourseMetadata.success(metadata));
+    //         });
+    //     }
 
-        if (course.dataset.isLoading === true) {
-            getCourseDatasetAsync(courseId).then((dataset) => {
-                dispatch(actions.getCourseDataset.success(dataset));
-            });
-        }
-    }, [course]);
+    //     if (course.dataset.isLoading === true) {
+    //         getCourseDatasetAsync(courseId).then((dataset) => {
+    //             dispatch(actions.getCourseDataset.success(dataset));
+    //         });
+    //     }
+    // }, [course]);
 
-    if (
-        course.isLoading === true ||
-        course.dataset.isLoading === true ||
-        metadata.isLoading === true
-    ) {
-        return (
-            <div className={style.loader}>
-                <Loader
-                    type="ThreeDots"
-                    color="black"
-                    width={200}
-                    height={200}
-                />
-            </div>
-        );
-    }
+    // if (
+    //     course.isLoading === true ||
+    //     course.dataset.isLoading === true ||
+    //     metadata.isLoading === true
+    // ) {
+    //     return (
+    //         <div className={style.loader}>
+    //             <Loader
+    //                 type="ThreeDots"
+    //                 color="black"
+    //                 width={200}
+    //                 height={200}
+    //             />
+    //         </div>
+    //     );
+    // }
 
-    const onFlip = () => {
-        setState((state) => ({ ...state, flipped: !state.flipped }));
-    };
+    // const onFlip = () => {
+    //     setState((state) => ({ ...state, flipped: !state.flipped }));
+    // };
 
-    const onPrev = () => {
-        if (course.dataset.isLoading === true) {
-            return;
-        }
+    // const onPrev = () => {
+    //     if (course.dataset.isLoading === true) {
+    //         return;
+    //     }
 
-        const newCurrent = current - 1;
+    //     const newCurrent = current - 1;
 
-        setState((state) => ({
-            ...state,
-            flipped: false,
-            current: newCurrent > 0 ? newCurrent : indicies.length - 1,
-        }));
-    };
+    //     setState((state) => ({
+    //         ...state,
+    //         flipped: false,
+    //         current: newCurrent > 0 ? newCurrent : indicies.length - 1,
+    //     }));
+    // };
 
-    const onNext = () => {
-        if (course.dataset.isLoading === true) {
-            return;
-        }
+    // const onNext = () => {
+    //     if (course.dataset.isLoading === true) {
+    //         return;
+    //     }
 
-        const index = random(0, course.dataset.length);
-        setState((state) => ({
-            ...state,
-            flipped: false,
-            current: state.current + 1,
-            indicies: [...state.indicies, index],
-        }));
-    };
+    //     const index = random(0, course.dataset.length);
+    //     setState((state) => ({
+    //         ...state,
+    //         flipped: false,
+    //         current: state.current + 1,
+    //         indicies: [...state.indicies, index],
+    //     }));
+    // };
 
-    const onPlayAudio = () => {
-        const key = item[flashcards.key];
-        playAudioWithSpeechSynthesis("zh", key);
-    };
+    // const onPlayAudio = () => {
+    //     const key = item[flashcards.key];
+    //     playAudioWithSpeechSynthesis("zh", key);
+    // };
 
-    const index = indicies[current];
-    const item = course.dataset[index];
-    const flashcards = metadata.flashcards;
-    const key = item[flashcards.key];
-    const value = item[flashcards.value];
+    // const index = indicies[current];
+    // const item = course.dataset[index];
+    // const flashcards = metadata.flashcards;
+    // const key = item[flashcards.key];
+    // const value = item[flashcards.value];
 
     return (
         <div className={style.container}>
-            <div className={style.header}>{course.name}</div>
+            {/* <div className={style.header}>{course.name}</div>
             <div className={style.content}>
                 <div className={style.bar}>
                     <div className={style.button} onClick={onPrev}>
@@ -166,7 +164,7 @@ const CourseFlashcards: FunctionComponent = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

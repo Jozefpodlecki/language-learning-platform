@@ -12,7 +12,7 @@ import { Dataset } from "models/dataset";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { getCourseAsync, getCourseDatasetAsync } from "api";
+import { getCourseAsync } from "api";
 import { useParams } from "react-router";
 import ChineseRadicalsItemTemplate from "./ChineseRadicalsItemTemplate";
 import FrenchItemTemplate from "./FrenchItemTemplate";
@@ -55,48 +55,48 @@ const CourseAbout: FunctionComponent = () => {
             return;
         }
 
-        if (course.dataset.isLoading === true) {
-            getCourseDatasetAsync(courseId).then((dataset) => {
-                dispatch(actions.getCourseDataset.success(dataset));
-            });
-        }
+        // if (course.dataset.isLoading === true) {
+        //     getCourseDatasetAsync(courseId).then((dataset) => {
+        //         dispatch(actions.getCourseDataset.success(dataset));
+        //     });
+        // }
     }, [course]);
 
-    useEffect(() => {
-        if (course.isLoading === true || course.dataset.isLoading === true) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (course.isLoading === true || course.dataset.isLoading === true) {
+    //         return;
+    //     }
 
-        let items: Dataset = course.dataset;
+    //     let items: Dataset = course.dataset;
 
-        let filter = (pr: any) => pr.meaning.includes(value);
+    //     let filter = (pr: any) => pr.meaning.includes(value);
 
-        if (course.name.includes("HSK")) {
-            filter = (pr: any) => pr.meanings.includes(value);
-        }
+    //     if (course.name.includes("HSK")) {
+    //         filter = (pr: any) => pr.meanings.includes(value);
+    //     }
 
-        if (value) {
-            items = items.filter(filter);
-        }
+    //     if (value) {
+    //         items = items.filter(filter);
+    //     }
 
-        const from = page * pageSize;
-        items = items.slice(from, from + pageSize);
+    //     const from = page * pageSize;
+    //     items = items.slice(from, from + pageSize);
 
-        setState((state) => ({ ...state, items }));
-    }, [course, value]);
+    //     setState((state) => ({ ...state, items }));
+    // }, [course, value]);
 
-    if (course.isLoading === true) {
-        return (
-            <div>
-                <Loader
-                    type="ThreeDots"
-                    color="black"
-                    width={200}
-                    height={200}
-                />
-            </div>
-        );
-    }
+    // if (course.isLoading === true) {
+    //     return (
+    //         <div>
+    //             <Loader
+    //                 type="ThreeDots"
+    //                 color="black"
+    //                 width={200}
+    //                 height={200}
+    //             />
+    //         </div>
+    //     );
+    // }
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.currentTarget.value;
@@ -106,17 +106,17 @@ const CourseAbout: FunctionComponent = () => {
 
     let ItemTemplate: FunctionComponent;
 
-    if (course.name === "Chinese Radicals") {
-        ItemTemplate = ChineseRadicalsItemTemplate;
-    }
+    // if (course.name === "Chinese Radicals") {
+    //     ItemTemplate = ChineseRadicalsItemTemplate;
+    // }
 
-    if (course.name.includes("HSK")) {
-        ItemTemplate = Hsk1ItemTemplate;
-    }
+    // if (course.name.includes("HSK")) {
+    //     ItemTemplate = Hsk1ItemTemplate;
+    // }
 
-    if (course.name.includes("French")) {
-        ItemTemplate = FrenchItemTemplate;
-    }
+    // if (course.name.includes("French")) {
+    //     ItemTemplate = FrenchItemTemplate;
+    // }
 
     return (
         <div>
@@ -126,10 +126,10 @@ const CourseAbout: FunctionComponent = () => {
                     <FontAwesomeIcon icon={faArrowLeft} />
                     <div className={style.backTitle}>Back</div>
                 </Link>
-                <div className={style.title}>{course.name}</div>
+                {/* <div className={style.title}>{course.name}</div> */}
             </div>
             <div className={style.sectionHeader}>Dataset</div>
-            {course.dataset.isLoading === true ? (
+            {/* {course.dataset.isLoading === true ? (
                 <Loader
                     type="ThreeDots"
                     color="black"
@@ -153,7 +153,7 @@ const CourseAbout: FunctionComponent = () => {
                         ))}
                     </div>
                 </>
-            )}
+            )} */}
         </div>
     );
 };

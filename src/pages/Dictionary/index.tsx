@@ -1,5 +1,5 @@
 import * as actions from "actions";
-import { createSession } from "api";
+import { createSession, getPhrases } from "api";
 import { faArrowLeft, faArrowRight, faArrowsAltH, faFilter, faGraduationCap, faRetweet, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
@@ -17,6 +17,19 @@ import React, {
 import style from "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+type Props = {
+
+}
+
+const Item: FunctionComponent<Props> = (props) => {
+
+    
+
+    return <div>
+
+    </div>
+}
+
 const Dictionary: FunctionComponent = () => {
     const dispatch = useDispatch();
     const [{
@@ -33,6 +46,21 @@ const Dictionary: FunctionComponent = () => {
         value: "",
         items: [],
     })
+
+    useEffect(() => {
+        
+
+        getPhrases({
+            text: value,
+            page: 0,
+        }).then(items => {
+            setState(state => ({
+                ...state,
+                items,
+            }))
+        })
+
+    }, [value]);
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.currentTarget;
@@ -118,9 +146,7 @@ const Dictionary: FunctionComponent = () => {
                 </div> : null}
             </div>
             <div className={style.items}>
-                {items.map(pr => <div key={pr.id}>
-
-                </div>)}
+                {items.map(pr => <Item key={pr.id}/>)}
             </div>
         </div>
     );

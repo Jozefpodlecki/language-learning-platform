@@ -1,0 +1,29 @@
+[
+    {
+        "id": "1",
+        "type": "radical",
+        "radical":"末",
+        "meaning":"end"
+    },
+    {
+        "id": "2",
+        "type": "character",
+        "hanzi": "末",
+        "pinyin": "mò",
+        "pinyin1": "mo4",
+        "radicals": [{
+            "radical":"末",
+            "meaning":"end"
+        }],
+        "meanings": [
+            "tip",
+            "end",
+            "final stage",
+            "latter part",
+            "inessential detail",
+            "powder",
+            "dust",
+            "opera role of old man"
+        ]
+    }
+]
