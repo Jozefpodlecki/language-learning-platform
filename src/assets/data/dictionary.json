@@ -25,5 +25,32 @@
             "dust",
             "opera role of old man"
         ]
+    },
+    {
+        "id": "3",
+        "type": "character",
+        "hanzi": "哎哟",
+        "pinyin": "āi yo",
+        "pinyin1": "āi yo",
+        "meanings": [
+            "hey",
+            "ow",
+            "ouch",
+            "interjection of pain or surprise"
+        ]
+    },
+    {	
+        "id": "4",
+        "type": "character",
+        "hanzi": "牛",
+        "pinyin": "niú",
+        "pinyin1": "niú",
+        "meanings": [
+            "ox",
+            "cow",
+            "bull",
+            "(slang) awesome",
+            "surname niu"
+        ]
     }
 ]

@@ -8,7 +8,46 @@
     align-items: center;
 }
 
+.item {
+    display: flex;
+    border: 1px solid lightgray
+}
 
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid lightgray;
+}
+
+.headerCell {
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playIcon {
+    margin-left: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.phrase {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.meaning {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+}
 
 .searchbox {
     display: flex;

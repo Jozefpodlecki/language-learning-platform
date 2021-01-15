@@ -1,6 +1,6 @@
 import * as actions from "actions";
 import { createSession, getPhrases } from "api";
-import { faArrowLeft, faArrowRight, faArrowsAltH, faFilter, faGraduationCap, faRetweet, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faArrowsAltH, faFilter, faGraduationCap, faRetweet, faSearch, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { useSelector } from "hooks/useSelector";
@@ -16,18 +16,41 @@ import React, {
 } from "react";
 import style from "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { playAudioWithSpeechSynthesis } from "appUtils";
 
 type Props = {
-
+    id: string;
+    type: "radical" | "character";
+    radical?: string;
+    meaning?: string;
+    meanings?: string[];
+    hanzi?: string;
+    pinyin?: string;
+    pinyin1?: string;
+    radicals?: string[];
 }
 
 const Item: FunctionComponent<Props> = (props) => {
 
-    
+    const onPlay = () => {
+        playAudioWithSpeechSynthesis("zh", props.hanzi)
+    }
 
-    return <div>
-
-    </div>
+    return <tr className={style.item}>
+        <td className={style.phrase}>
+            {props.radical ? <div>{props.radical}</div> : null}
+            {props.hanzi ? <div>{props.hanzi}</div> : null}
+            <div className={style.playIcon} onClick={onPlay}>
+                <FontAwesomeIcon icon={faVolumeUp}/>
+            </div>
+        </td>
+        <td className={style.meaning}>
+            <div>{props?.meaning}</div>
+            <div>{props?.meanings ? props?.meanings.map(meaning => <div key={meaning}>
+                {meaning}
+            </div>) : null}</div>
+        </td>
+    </tr>
 }
 
 const Dictionary: FunctionComponent = () => {
@@ -145,9 +168,15 @@ const Dictionary: FunctionComponent = () => {
                     </div>
                 </div> : null}
             </div>
-            <div className={style.items}>
-                {items.map(pr => <Item key={pr.id}/>)}
-            </div>
+            <table className={style.items}>
+                <tbody>
+                    <tr className={style.header}>
+                        <td className={style.headerCell}>Phrase</td>
+                        <td className={style.headerCell}>Meaning/meanings</td>
+                    </tr>
+                    {items.map(pr => <Item key={pr.id} {...pr}/>)}
+                </tbody>
+            </table>
         </div>
     );
 };
