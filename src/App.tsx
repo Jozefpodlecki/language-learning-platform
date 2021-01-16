@@ -10,6 +10,7 @@ import React, { FunctionComponent, useEffect } from "react";
 import UnderConstruction from "pages/UnderConstruction";
 import CourseLesson from "pages/CourseLesson";
 import Dictionary from "pages/Dictionary";
+import PhraseDetails from "pages/PhraseDetails";
 
 const App: FunctionComponent = () => {
 
@@ -21,6 +22,11 @@ const App: FunctionComponent = () => {
                 exact
                 path="/dictionary"
                 component={Dictionary}
+            />
+              <Route
+                exact
+                path="/dictionary/:id"
+                component={PhraseDetails}
             />
             <Route
                 exact

@@ -20,6 +20,20 @@
     border: 1px solid lightgray;
 }
 
+.detailsCell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.details {
+    padding: 10px;
+}
+
+.phraseCell {
+    width: 300px;
+}
+
 .headerCell {
     padding: 10px;
     width: 100%;
