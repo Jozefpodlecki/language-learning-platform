@@ -10,118 +10,66 @@ import React, {
 import style from "./index.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Item from "./Item";
+import LanguageFilter from "./LanguageFilter";
+import SearchBox from "./SearchBox";
 
 const Dictionary: FunctionComponent = () => {
     const [{
         filter,
-        value,
         items,
+        isLoading,
     }, setState] = useState({
         filter: {
             direction: "left",
             sourceLanguage: "",
             destinationLanguage: "",
             enabled: false,
+            value: "",
         },
-        value: "",
         items: [],
+        isLoading: false,
     })
 
     useEffect(() => {
-        
+        setState(state => ({...state, isLoading: true}));
 
         getPhrases({
-            text: value,
+            text: filter.value,
             page: 0,
         }).then(items => {
             setState(state => ({
                 ...state,
                 items,
+                isLoading: false,
             }))
         })
 
-    }, [value]);
+    }, [filter.value]);
 
-    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.currentTarget;
-        setState(state => ({...state,
-            [name]: value,
-        }));
-    }
-
-    const onFilter = () => {
+    
+    const onChange = (filter: any) => {
         setState(state => ({
             ...state,
             filter: {
                 ...state.filter,
-                enabled: true
-            }
+                ...filter
+            },
         }));
     }
 
-    const onChangeLanguageFilter = () => {
-        const directions = ["left", "right", "both"];
-        let index = directions.findIndex(pr => pr === filter.direction) + 1
-
-        if(index >= directions.length) {
-            index = 0;
-        }
-        
-        const direction = directions[index];
-
-        setState(state => ({
-            ...state,
-            filter: {
-                ...state.filter,
-                direction,
-            }
-        }));
-    }
-
+   
     return (
         <div className={style.container}>
             <div>
-                <div className={style.searchbox}>
-                    <input
-                        className={style.input}
-                        type="text"
-                        name="value"
-                        value={value}
-                        placeholder="Search..."
-                        onChange={onChange}/>
-                    {filter.enabled ? null : <div className={style.filter} onClick={onFilter}>
-                        <FontAwesomeIcon icon={faFilter}/>
-                    </div>}
-                </div>
+               <SearchBox
+                filter={filter}
+                onChange={onChange}/>
                 {filter.enabled ? <div>
                     <div>
                         <div>Language</div>
-                        <div className={style.languageFilter}>
-                            <div>
-                                <input
-                                    className={style.input}
-                                    type="text"
-                                    name="sourceLanguage"
-                                    value={filter.sourceLanguage}
-                                    placeholder="From language..."
-                                    onChange={onChange}/>
-                            </div>
-                            <div onClick={onChangeLanguageFilter} className={style.languageFilterIcon}>
-                                {filter.direction === "left" ? 
-                                    <FontAwesomeIcon icon={faArrowLeft}/> : filter.direction === "right" ? 
-                                        <FontAwesomeIcon icon={faArrowRight}/> : 
-                                        <FontAwesomeIcon icon={faArrowsAltH}/>}
-                            </div>
-                            <div>
-                                <input
-                                    className={style.input}
-                                    type="text"
-                                    name="destinationLanguage"
-                                    value={filter.destinationLanguage}
-                                    placeholder="To language..."
-                                    onChange={onChange}/>
-                            </div>
-                        </div>
+                        <LanguageFilter
+                            filter={filter}
+                             onChange={onChange}/>
                     </div>
                 </div> : null}
             </div>
@@ -134,7 +82,9 @@ const Dictionary: FunctionComponent = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map(pr => <Item key={pr.id} {...pr}/>)}
+                    {isLoading ? <tr>
+                        <td>Loading...</td>
+                    </tr> : items.map(pr => <Item key={pr.id} {...pr}/>)}
                 </tbody>
             </table>
         </div>

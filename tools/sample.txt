@@ -1,0 +1,4 @@
+https://dictionary.writtenchinese.com/giffile.action?&localfile=true&fileName=%25E5%2593%258E.gif
+https://dictionary.writtenchinese.com/giffile.action?&localfile=true&fileName=%25E5%2593%259F.gif
+
+encodeURI(encodeURI("哎.gif"))

@@ -24,3 +24,9 @@ export const getPhrases = ({page, text}: Criteria) => {
 
     return Promise.resolve(items);
 }
+
+export const getPhrase = (id: string) => {
+    const phrase = _phrases.find(pr => pr.id === id);
+
+    return Promise.resolve(phrase);
+}
