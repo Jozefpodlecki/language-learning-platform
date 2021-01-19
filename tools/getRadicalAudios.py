@@ -52,9 +52,3 @@ with open(radicals_path) as radicals_file:
 
         with open(file_path, 'wb') as file:
             file.write(content)
-
-笔
-Written Chinese Dictionary "笔" Character Details
-
-            https://dictionary.writtenchinese.com/giffile.action?&localfile=true&fileName=%25E7%25AC%2594.gif
-            https://dictionary.writtenchinese.com/giffile.action?&localfile=true&fileName=%25E6%258B%25BF.gif
