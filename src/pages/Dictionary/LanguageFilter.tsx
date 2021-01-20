@@ -1,5 +1,5 @@
 import { getPhrases } from "api";
-import { faArrowLeft, faArrowRight, faArrowsAltH, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faArrowsAltH, faFilter, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import React, {
     ChangeEvent,
@@ -7,9 +7,8 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import style from "./index.scss";
+import style from "./languageFilter.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Item from "./Item";
 
 type Props = {
     filter: {
@@ -22,7 +21,7 @@ type Props = {
 
 const LanguageFilter: FunctionComponent<Props> = ({
     filter,
-    onChange
+    onChange,
 }) => {
     const onChangeLanguageFilter = () => {
         const directions = ["left", "right", "both"];
@@ -42,30 +41,41 @@ const LanguageFilter: FunctionComponent<Props> = ({
         onChange(({[name]: value}));
     }
 
+    const onClose = () => onChange(({enabled: false}));
+
     return <div className={style.languageFilter}>
-        <div>
-            <input
-                className={style.input}
-                type="text"
-                name="sourceLanguage"
-                value={filter.sourceLanguage}
-                placeholder="From language..."
-                onChange={_onChange}/>
+        <div className={style.filterPanel}>
+            <div className={style.languageFilterIcon} onClick={onClose}>
+                <FontAwesomeIcon icon={faTimes}/>
+            </div>
         </div>
-        <div onClick={onChangeLanguageFilter} className={style.languageFilterIcon}>
-            {filter.direction === "left" ? 
-                <FontAwesomeIcon icon={faArrowLeft}/> : filter.direction === "right" ? 
-                    <FontAwesomeIcon icon={faArrowRight}/> : 
-                    <FontAwesomeIcon icon={faArrowsAltH}/>}
-        </div>
-        <div>
-            <input
-                className={style.input}
-                type="text"
-                name="destinationLanguage"
-                value={filter.destinationLanguage}
-                placeholder="To language..."
-                onChange={_onChange}/>
+        <div className={style.content}>
+            <div>
+                <input
+                    className={style.input}
+                    type="text"
+                    name="sourceLanguage"
+                    value={filter.sourceLanguage}
+                    placeholder="From language..."
+                    onChange={_onChange}/>
+            </div>
+            <div className={style.switchPanel}>
+                <div onClick={onChangeLanguageFilter} className={style.languageFilterIcon}>
+                    {filter.direction === "left" ? 
+                        <FontAwesomeIcon icon={faArrowLeft}/> : filter.direction === "right" ? 
+                            <FontAwesomeIcon icon={faArrowRight}/> : 
+                            <FontAwesomeIcon icon={faArrowsAltH}/>}
+                </div>
+            </div>
+            <div>
+                <input
+                    className={style.input}
+                    type="text"
+                    name="destinationLanguage"
+                    value={filter.destinationLanguage}
+                    placeholder="To language..."
+                    onChange={_onChange}/>
+            </div>
         </div>
     </div>
 }

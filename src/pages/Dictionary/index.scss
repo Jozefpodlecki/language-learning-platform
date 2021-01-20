@@ -3,9 +3,23 @@
 
     display: flex;
     flex-direction: column;
+}
 
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.panel {
+    flex: 0;
+    margin: 50px 0;
+}
+
+.results {
+    flex: 1;
 }
 
 .item {
@@ -63,32 +77,6 @@
     width: 300px;
 }
 
-.searchbox {
-    display: flex;
-    align-items: center;
-}
-
-.input {
-    padding: 10px;
-    border: none;
+.label {
     font-size: 20px;
-
-    &:focus {
-        outline: none;
-    }
-}
-
-.filter {
-    cursor: pointer;
-}
-
-.languageFilter {
-    display: flex;
-    align-items: center;
-    border: 1px solid black;
-}
-
-.languageFilterIcon {
-    padding: 10px;
-    cursor: pointer;
 }

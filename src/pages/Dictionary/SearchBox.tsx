@@ -7,7 +7,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import style from "./index.scss";
+import style from "./searchBox.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Item from "./Item";
 

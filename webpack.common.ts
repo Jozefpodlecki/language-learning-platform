@@ -18,7 +18,7 @@ const config: Configuration = {
         filename: "[name].bundle.js"
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".json", ".scss", ".js", "png", "svg", "jpg", "gif", "mp3"],
+        extensions: [".ts", ".tsx", ".json", ".scss", ".js", "png", "svg", "jpg", "webm", "mp3"],
         plugins: [
             new TsconfigPathsPlugin({baseUrl: "src"}),
         ]
@@ -30,7 +30,7 @@ const config: Configuration = {
                 loader: "ts-loader"
             },
             {
-                test: /\.(png|jpe?g|gif|mp3)$/i,
+                test: /\.(png|jpe?g|webm|mp3)$/i,
                 use: [
                     {
                         loader: "file-loader",

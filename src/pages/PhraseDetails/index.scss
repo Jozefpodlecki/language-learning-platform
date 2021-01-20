@@ -5,3 +5,19 @@
 .strokeMoveImage {
     width: 200px;
 }
+
+.player {
+    display: flex;
+}
+
+.playOverlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.strokesList {
+    display: flex;
+}

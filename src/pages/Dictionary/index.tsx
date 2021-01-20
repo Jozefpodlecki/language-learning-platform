@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Item from "./Item";
 import LanguageFilter from "./LanguageFilter";
 import SearchBox from "./SearchBox";
+import Navbar from "pages/Navbar";
 
 const Dictionary: FunctionComponent = () => {
     const [{
@@ -23,7 +24,7 @@ const Dictionary: FunctionComponent = () => {
             direction: "left",
             sourceLanguage: "",
             destinationLanguage: "",
-            enabled: false,
+            enabled: true,
             value: "",
         },
         items: [],
@@ -46,7 +47,6 @@ const Dictionary: FunctionComponent = () => {
 
     }, [filter.value]);
 
-    
     const onChange = (filter: any) => {
         setState(state => ({
             ...state,
@@ -56,37 +56,41 @@ const Dictionary: FunctionComponent = () => {
             },
         }));
     }
-
    
     return (
         <div className={style.container}>
-            <div>
-               <SearchBox
-                filter={filter}
-                onChange={onChange}/>
-                {filter.enabled ? <div>
-                    <div>
-                        <div>Language</div>
-                        <LanguageFilter
-                            filter={filter}
-                             onChange={onChange}/>
-                    </div>
-                </div> : null}
+            <Navbar />
+            <div className={style.content}>
+                <div className={style.panel}>
+                    <SearchBox
+                        filter={filter}
+                        onChange={onChange}/>
+                    {filter.enabled ? <div>
+                        <div>
+                            <div className={style.label}>Filter by language...</div>
+                            <LanguageFilter
+                                filter={filter}
+                                onChange={onChange}/>
+                        </div>
+                    </div> : null}
+                </div>
+                <div className={style.results}>
+                    {!isLoading && items.length ? <table className={style.items}>
+                        <thead>
+                            <tr className={style.header}>
+                                <td className={style.headerCell}>Phrase</td>
+                                <td className={style.headerCell}>Meaning/meanings</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isLoading ? <tr>
+                                <td>Loading...</td>
+                            </tr> : items.map(pr => <Item key={pr.id} {...pr}/>)}
+                        </tbody>
+                    </table> : null}
+                </div>
             </div>
-            <table className={style.items}>
-                <thead>
-                    <tr className={style.header}>
-                        <td className={style.headerCell}>Phrase</td>
-                        <td className={style.headerCell}>Meaning/meanings</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading ? <tr>
-                        <td>Loading...</td>
-                    </tr> : items.map(pr => <Item key={pr.id} {...pr}/>)}
-                </tbody>
-            </table>
         </div>
     );
 };

@@ -28,7 +28,7 @@
     },
     {
         "id": "3",
-        "type": "character",
+        "type": "word",
         "hanzi": "哎哟",
         "pinyin": "āi yo",
         "pinyin1": "āi yo",
@@ -51,6 +51,32 @@
             "bull",
             "(slang) awesome",
             "surname niu"
+        ]
+    },
+    {	
+        "id": "5",
+        "type": "word",
+        "hanzi": "水壶",
+        "pinyin": "shui3 hu2",
+        "pinyin1": "shui3 hu2",
+        "meanings": [
+            "kettle",
+            "canteen",
+            "watering can"
+        ]
+
+    },
+    {	
+        "id": "6",
+        "type": "word",
+        "hanzi": "器械",
+        "pinyin": "qi4 xie4",
+        "pinyin1": "qi4 xie4",
+        "meanings": [
+            "apparatus",
+            "instrument",
+            "equipment",
+            "weapon"
         ]
     }
 ]

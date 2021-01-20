@@ -1,0 +1,18 @@
+.input {
+    padding: 10px;
+    border: none;
+    font-size: 20px;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.searchbox {
+    display: flex;
+    align-items: center;
+}
+
+.filter {
+    cursor: pointer;
+}

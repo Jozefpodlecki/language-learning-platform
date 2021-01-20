@@ -2,15 +2,16 @@ export * from "./course";
 export * from "./courseSession";
 
 import _phrases from "../assets/data/dictionary.json";
+import _sentences from "../assets/data/sentences.json";
 
 type Criteria = {
     page: number;
     text: string;
 }
 
-export const getPhrases = ({page, text}: Criteria) => {
+const pageSize = 5;
 
-    const pageSize = 5;
+export const getPhrases = ({page, text}: Criteria) => {
 
     let items = _phrases
         .filter(pr => pr.meaning
@@ -29,4 +30,23 @@ export const getPhrase = (id: string) => {
     const phrase = _phrases.find(pr => pr.id === id);
 
     return Promise.resolve(phrase);
+}
+
+type SentencesCriteria = {
+    page: number;
+    word: string;
+}
+
+export const getSentences = ({
+    word,
+    page,
+}: SentencesCriteria) => {
+    let items = _sentences.filter(pr => pr.relevant_words.includes(word));
+    
+    const from = page * pageSize;
+    const to = from + pageSize;
+
+    items = items.slice(from, to);
+
+    return Promise.resolve(items);
 }
