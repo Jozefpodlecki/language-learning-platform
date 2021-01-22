@@ -13,6 +13,7 @@ import Item from "./Item";
 import LanguageFilter from "./LanguageFilter";
 import SearchBox from "./SearchBox";
 import Navbar from "pages/Navbar";
+import { playAudioWithSpeechSynthesis } from "appUtils";
 
 const Dictionary: FunctionComponent = () => {
     const [{

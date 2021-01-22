@@ -9,5 +9,26 @@
             "中冒",
             "出了水"
         ]
+    },
+    {
+        "id": "2",
+        "zn": "哎哟!我差点把酒洒了",
+        "breakdown": [
+            {
+                "hanzi": "哎",
+                "pinyin": "āi"
+            },
+            {
+                "hanzi": "哟",
+                "pinyin": "yo"
+            }
+        ],
+        "pinyin": "āi yo wǒ chà diǎn bǎ jiǔ sǎ le ",
+        "en": "Oops! I almost spilled the wine.",
+        "relevant_words": [
+            "哎哟",
+            "差点",
+            "把酒"
+        ]
     }
 ]

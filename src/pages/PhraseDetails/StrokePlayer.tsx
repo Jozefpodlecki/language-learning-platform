@@ -15,10 +15,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
     stroke: string;
+    width: number;
 }
 
 const Player: FunctionComponent<Props> = ({
     stroke,
+    width,
 }) => {
     const [{
         isPlaying
@@ -60,7 +62,7 @@ const Player: FunctionComponent<Props> = ({
     }
 
     return <div ref={playerRef} className={style.player}>
-        <video ref={videoRef} width="200" onEnded={onEnded} onLoadedData={onLoadedData}>
+        <video ref={videoRef} width={width} onEnded={onEnded} onLoadedData={onLoadedData}>
             <source src={stroke}
                 type="video/webm"/>
         </video>

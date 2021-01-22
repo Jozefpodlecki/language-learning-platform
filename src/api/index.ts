@@ -42,7 +42,6 @@ export const getSentences = ({
     page,
 }: SentencesCriteria) => {
     let items = _sentences.filter(pr => pr.relevant_words.includes(word));
-    
     const from = page * pageSize;
     const to = from + pageSize;
 

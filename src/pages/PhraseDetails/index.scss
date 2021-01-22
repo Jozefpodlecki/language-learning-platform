@@ -1,5 +1,10 @@
-.phrase {
+.text {
     font-size: 50px;
+}
+
+.phrase {
+    display: flex;
+    align-items: center;
 }
 
 .strokeMoveImage {
@@ -20,4 +25,27 @@
 
 .strokesList {
     display: flex;
+}
+
+.content {
+    padding: 10px;
+}
+
+.section {
+    font-size: 20px;
+}
+
+.playIcon {
+    margin-left: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sentenceItem {
+    display: flex;
+    align-items: center;
+}
+
+.sentenceText {
+    font-size: 30px;
 }
