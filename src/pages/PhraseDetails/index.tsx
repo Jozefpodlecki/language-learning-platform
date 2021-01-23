@@ -1,4 +1,4 @@
-import { getPhrase, getPhrases, getSentences } from "api";
+import { getPhrase, getPhrases, getSentences, hanziStrokesMoveDict } from "api";
 import { useDispatch } from "react-redux";
 import React, {
     FunctionComponent,
@@ -10,40 +10,25 @@ import style from "./index.scss";
 import { useParams } from "react-router";
 import { encode, decode } from "js-base64";
 import ReactPlayer from 'react-player'
-import { faPlay, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faBackward, faPlay, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StrokePlayer from "./StrokePlayer";
 import Navbar from "pages/Navbar";
 import { playAudioWithSpeechSynthesis } from "appUtils";
-
-const importAsDict = (context: __WebpackModuleApi.RequireContext) => {
-    return context.keys().reduce((acc, key) => {
-        const module = context(key);
-        acc[key] = module.default;
-
-        return acc;
-    }, {} as Record<string, string>);
-};
-
-const hanziStrokesMoveContext = require.context(
-    "/src/assets/hanzi-stroke-move",
-    false,
-    /\.webm$/,
-    "sync"
-);
-
-const hanziStrokesMoveDict = importAsDict(hanziStrokesMoveContext);
+import { Link } from "react-router-dom";
 
 const PhraseDetails: FunctionComponent = () => {
     const [{
         hanzi,
         pinyin,
         meanings,
+        radicals,
         sentences,
     }, setState] = useState({
         hanzi: "",
         pinyin: "",
         meanings: [],
+        radicals: [],
         isLoading: true,
         sentences: [],
     })
@@ -51,7 +36,11 @@ const PhraseDetails: FunctionComponent = () => {
     
     useEffect(() => {
         
-        getPhrase(id)
+        getPhrase({
+            id,
+            sourcelanguageId: "zh",
+            destlanguageId: "en",
+        })
             .then(item => {
             setState(state => ({
                 ...state,
@@ -69,8 +58,9 @@ const PhraseDetails: FunctionComponent = () => {
         }
 
         getSentences({
-            word: hanzi,
-            page: 0,
+            phraseId: id,
+            sourcelanguageId: "zh",
+            destlanguageId: "en",
         })
         .then(sentences => {
             setState(state => ({
@@ -98,6 +88,12 @@ const PhraseDetails: FunctionComponent = () => {
         <div className={style.container}>
             <Navbar />
             <div className={style.content}>
+                <div>
+                    <Link to="/dictionary">
+                        <FontAwesomeIcon icon={faArrowLeft}/>
+                        <span className={style.back}>Back</span>
+                    </Link>
+                </div>
                 <div className={style.phrase}>
                     <div className={style.text}>{hanzi}</div>
                     <div className={style.playIcon} onClick={onPlay}>
@@ -108,6 +104,12 @@ const PhraseDetails: FunctionComponent = () => {
                     <div className={style.section}>Meanings</div>
                     <div>
                         {meanings.map(meaning => <div key={meaning}>{meaning}</div>)}
+                    </div>
+                </div>
+                <div>
+                    <div className={style.section}>Radicals</div>
+                    <div>
+                        {radicals.map(radical => <div key={radical}>{radical}</div>)}
                     </div>
                 </div>
                 <div>

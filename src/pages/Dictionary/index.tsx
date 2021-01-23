@@ -37,6 +37,7 @@ const Dictionary: FunctionComponent = () => {
 
         getPhrases({
             text: filter.value,
+            languageId: "zh",
             page: 0,
         }).then(items => {
             setState(state => ({
