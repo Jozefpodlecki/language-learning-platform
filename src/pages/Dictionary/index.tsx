@@ -14,17 +14,22 @@ import LanguageFilter from "./LanguageFilter";
 import SearchBox from "./SearchBox";
 import Navbar from "pages/Navbar";
 import { playAudioWithSpeechSynthesis } from "appUtils";
+import { Filter } from "./Filter";
 
 const Dictionary: FunctionComponent = () => {
     const [{
         filter,
         items,
         isLoading,
-    }, setState] = useState({
+    }, setState] = useState<{
+        filter: Filter,
+        items: any[],
+        isLoading: boolean
+    }>({
         filter: {
             direction: "left",
-            sourceLanguage: "",
-            destinationLanguage: "",
+            sourceLanguage: undefined,
+            destinationLanguage: undefined,
             enabled: true,
             value: "",
         },
@@ -33,11 +38,16 @@ const Dictionary: FunctionComponent = () => {
     })
 
     useEffect(() => {
-        setState(state => ({...state, isLoading: true}));
+        if(!filter.value) {
+            return;
+        }
 
+        setState(state => ({...state, isLoading: true}));
+        debugger;
         getPhrases({
             text: filter.value,
-            languageId: "zh",
+            sourcelanguageId: "zh",
+            destlanguageId: "en",
             page: 0,
         }).then(items => {
             setState(state => ({
@@ -49,7 +59,7 @@ const Dictionary: FunctionComponent = () => {
 
     }, [filter.value]);
 
-    const onChange = (filter: any) => {
+    const onChange = (filter: Filter) => {
         setState(state => ({
             ...state,
             filter: {

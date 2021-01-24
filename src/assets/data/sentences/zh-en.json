@@ -2,53 +2,57 @@
     {
         "id": "1",
         "languageId": "zh",
-        "zn": "水壶中冒出了水气",
-        "pinyin": "shuǐ hú zhōng mào chū le shuǐ qì ",
-        "en": "Steam is rising from the kettle.",
-        "relevant_words": [
-            {
-                "phraseId": "",
-                "value": "水壶"
-            },
-            {
-                "phraseId": "",
-                "value":  "中冒"
-            },
-            {
-                "phraseId": "",
-                "value": "出了水"
-            }
-        ]
+        "source": "水壶中冒出了水气",
+        "dest": "Steam is rising from the kettle.",
+        "properties": {
+            "pinyin": "shuǐ hú zhōng mào chū le shuǐ qì ",
+            "relevant_words": [
+                {
+                    "phraseId": "",
+                    "value": "水壶"
+                },
+                {
+                    "phraseId": "",
+                    "value":  "中冒"
+                },
+                {
+                    "phraseId": "",
+                    "value": "出了水"
+                }
+            ]
+        }
     },
     {
         "id": "2",
         "languageId": "zh",
-        "zn": "哎哟!我差点把酒洒了",
-        "breakdown": [
-            {
-                "hanzi": "哎",
-                "pinyin": "āi"
-            },
-            {
-                "hanzi": "哟",
-                "pinyin": "yo"
-            }
-        ],
-        "pinyin": "āi yo wǒ chà diǎn bǎ jiǔ sǎ le ",
-        "en": "Oops! I almost spilled the wine.",
-        "relevant_words": [
-            {
-                "phraseId": "",
-                "value": "哎哟"
-            },
-            {
-                "phraseId": "",
-                "value": "差点"
-            },
-            {
-                "phraseId": "",
-                "value": "把酒"
-            }
-        ]
+        "source": "哎哟!我差点把酒洒了",
+        "dest": "Oops! I almost spilled the wine.",
+        "properties": {
+            "pinyin": "āi yo wǒ chà diǎn bǎ jiǔ sǎ le ",
+            "breakdown": [
+                {
+                    "hanzi": "哎",
+                    "pinyin": "āi"
+                },
+                {
+                    "hanzi": "哟",
+                    "pinyin": "yo"
+                }
+            ],
+            "relevant_words": [
+                {
+                    "phraseId": "",
+                    "value": "哎哟"
+                },
+                {
+                    "phraseId": "",
+                    "value": "差点"
+                },
+                {
+                    "phraseId": "",
+                    "value": "把酒"
+                }
+            ]
+        }
     }
 ]

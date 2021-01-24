@@ -9,13 +9,11 @@ import React, {
 } from "react";
 import style from "./languageFilter.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AutoComplete from "components/AutoComplete";
+import { Filter } from "./Filter";
 
 type Props = {
-    filter: {
-        direction: string;
-        sourceLanguage: string;
-        destinationLanguage: string;
-    }
+    filter: Filter;
     onChange(data: any): void;
 }
 
@@ -43,6 +41,8 @@ const LanguageFilter: FunctionComponent<Props> = ({
 
     const onClose = () => onChange(({enabled: false}));
 
+    const onSelect = (item: any, property: string) => onChange(({[property]: item}));
+
     return <div className={style.languageFilter}>
         <div className={style.filterPanel}>
             <div className={style.languageFilterIcon} onClick={onClose}>
@@ -50,15 +50,11 @@ const LanguageFilter: FunctionComponent<Props> = ({
             </div>
         </div>
         <div className={style.content}>
-            <div>
-                <input
-                    className={style.input}
-                    type="text"
-                    name="sourceLanguage"
-                    value={filter.sourceLanguage}
-                    placeholder="From language..."
-                    onChange={_onChange}/>
-            </div>
+            <AutoComplete
+                name="sourceLanguage"
+                placeholder="From language..."
+                item={filter.sourceLanguage}
+                onSelect={onSelect}/>
             <div className={style.switchPanel}>
                 <div onClick={onChangeLanguageFilter} className={style.languageFilterIcon}>
                     {filter.direction === "left" ? 
@@ -68,13 +64,11 @@ const LanguageFilter: FunctionComponent<Props> = ({
                 </div>
             </div>
             <div>
-                <input
-                    className={style.input}
-                    type="text"
+                <AutoComplete
                     name="destinationLanguage"
-                    value={filter.destinationLanguage}
                     placeholder="To language..."
-                    onChange={_onChange}/>
+                    item={filter.destinationLanguage}
+                    onSelect={onSelect}/>
             </div>
         </div>
     </div>

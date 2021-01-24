@@ -1,0 +1,17 @@
+[
+    {
+        "id": "cn",
+        "name": "Chinese",
+        "imageUrl": "./cn.png"
+    },
+    {
+        "id": "en",
+        "name": "English",
+        "imageUrl": "./en.png"
+    },
+    {
+        "id": "fr",
+        "name": "French",
+        "imageUrl": "./fr.png"
+    }
+]

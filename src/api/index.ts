@@ -1,49 +1,10 @@
+import { getPage } from "appUtils";
+import { Language } from "models/Language";
+import { Sentence } from "models/Sentence";
+import { images, languageDictionary, sentencesDict } from "./assets";
+
 export * from "./course";
 export * from "./courseSession";
-
-const importAsDict = (context: __WebpackModuleApi.RequireContext) => {
-    return context.keys().reduce((acc, key) => {
-        const module = context(key);
-        acc[key] = module.default;
-        
-        return acc;
-    }, {} as Record<string, string>);
-};
-
-const importAsTest = (context: __WebpackModuleApi.RequireContext) => {
-    return context.keys().reduce((acc, key) => {
-        const module = context(key);
-        acc[key] = module;
-
-        return acc;
-    }, {} as Record<string, any>);
-};
-
-const hanziStrokesMoveContext = require.context(
-    "/src/assets/hanzi-stroke-move",
-    false,
-    /\.webm$/,
-    "sync"
-);
-
-export const hanziStrokesMoveDict = importAsDict(hanziStrokesMoveContext);
-
-const dictionaryContext = require.context(
-    "/src/assets/data/dictionary",
-    false,
-    /\.json$/,
-    "sync"
-);
-
-const sentencesContext = require.context(
-    "/src/assets/data/dictionary",
-    false,
-    /\.json$/,
-    "sync"
-);
-
-const dictionary = importAsTest(dictionaryContext);
-const sentencesDict = importAsTest(sentencesContext);
 
 type Criteria = {
     page: number;
@@ -56,12 +17,12 @@ const pageSize = 5;
 
 export const getPhrases = ({page, sourcelanguageId, destlanguageId, text}: Criteria) => {
 
-    const phrases = dictionary[`${sourcelanguageId}-${destlanguageId}`];
-    console.log(phrases)
+    const phrases = languageDictionary[`${sourcelanguageId}-${destlanguageId}`] as any[];
+
     let items = phrases
         .filter(pr => pr.meaning
             && pr.meaning.includes(text)
-            || pr.meanings && pr.meanings.some(pr => pr.includes(text)));
+            || pr.meanings && pr.meanings.some((pr: any) => pr.includes(text)));
 
     const from = page * pageSize;
     const to = from + pageSize;
@@ -83,7 +44,7 @@ export const getPhrase = ({
     destlanguageId
 }: PhraseCriteria) => {
 
-    const phrases = dictionary[`./${sourcelanguageId}-${destlanguageId}.json`] as any[];
+    const phrases = languageDictionary[`./${sourcelanguageId}-${destlanguageId}.json`] as any[];
 
     const phrase = phrases.find(pr => pr.id === id);
 
@@ -104,15 +65,37 @@ export const getSentences = ({
     page,
 }: SentencesCriteria) => {
 
-    const phrases = dictionary[`./${sourcelanguageId}-${destlanguageId}.json`];
-    
-    const sentences = sentencesDict[`./${sourcelanguageId}-${destlanguageId}.json`];
+    const sentences = sentencesDict[`./${sourcelanguageId}-${destlanguageId}.json`] as Sentence[];
 
-    let items = sentences.filter(pr => pr.relevant_words.includes(word));
-    const from = page * pageSize;
-    const to = from + pageSize;
+    let items = sentences.filter(pr => pr.properties.relevant_words.some(npr => npr.phraseId === phraseId));
 
-    items = items.slice(from, to);
+    items = getPage(items, page, pageSize);
 
     return Promise.resolve(items);
 }
+
+type LanguagesCriteria = {
+    name?: string;
+    page: number;
+}
+
+export const getLanguages = ({
+    name,
+    page,
+}: LanguagesCriteria) => import("/assets/data/languages.json").then(pr => {
+    let items = pr.default as Language[];
+
+    if(name) {
+        const nameNormalized = name.toLowerCase();
+
+        items = items.filter(pr => pr.name.toLowerCase().includes(nameNormalized));
+    }
+
+    items = getPage(items, page, pageSize);
+    items = items.map(pr => ({
+        ...pr,
+        imageUrl: images[`${pr.imageUrl}`]
+    }))
+
+    return items;
+});

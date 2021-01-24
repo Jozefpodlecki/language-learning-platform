@@ -85,3 +85,10 @@ export const playAudioWithSpeechSynthesis = (language: string, text: string) =>
 
         speechSynthesis.speak(speechSynthesisUtterance);
     });
+
+export const getPage = <T>(arr: Array<T>, page: number, pageSize: number) => {
+    const from = page * pageSize;
+    const to = from + pageSize;
+
+    return arr.slice(from, to);
+}

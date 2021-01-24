@@ -1,0 +1,24 @@
+.suggestionList {
+    position: absolute;
+    background: white;
+    width: 200px;
+}
+
+.suggestion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background .3s;
+
+    &:hover {
+        background: gray;
+    }
+}
+
+.text {
+    margin-left: 10px;
+}
+
+.item {
+    cursor: pointer;
+}

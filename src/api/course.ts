@@ -5,6 +5,7 @@ import _lessonMetadata from "../assets/data/lessonMetadata.json";
 import _courses from "../assets/data/course.json";
 import _lessons from "../assets/data/lesson.json";
 import { Lesson } from "models/Lesson";
+import { courseDatasets, courseImages } from "./assets";
 
 type PageCriteria = {
     page: number;
@@ -15,42 +16,6 @@ const defaultOptions: PageCriteria = {
     page: 0,
     pageSize: 10,
 }
-
-const importImages = (context: __WebpackModuleApi.RequireContext) => {
-    return context.keys().reduce((acc, key) => {
-        const module = context(key);
-
-        acc[key] = module.default;
-
-        return acc;
-    }, {} as Record<string, string>);
-};
-
-const importDatasets = (context: __WebpackModuleApi.RequireContext) => {
-    return context.keys().reduce((acc, key) => {
-        const module = context(key);
-        acc[key] = module;
-
-        return acc;
-    }, {} as Record<string, Dataset>);
-};
-
-const courseImagesContext = require.context(
-    "/src/assets/images",
-    false,
-    /\.(png|jpe?g|svg)$/,
-    "sync"
-);
-
-const courseDatasetContext = require.context(
-    "/src/assets/data/dataset",
-    false,
-    /\.json$/,
-    "sync"
-);
-
-export const courseImages = importImages(courseImagesContext);
-const courseDatasets = importDatasets(courseDatasetContext);
 
 export const getCourses = (options: PageCriteria) => {
     let courses = _courses.map((pr) => ({

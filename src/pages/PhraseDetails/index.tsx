@@ -61,6 +61,7 @@ const PhraseDetails: FunctionComponent = () => {
             phraseId: id,
             sourcelanguageId: "zh",
             destlanguageId: "en",
+            page: 0,
         })
         .then(sentences => {
             setState(state => ({
