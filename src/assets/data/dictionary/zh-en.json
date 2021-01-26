@@ -1,20 +1,17 @@
 [
     {
         "id": "1",
-        "type": "radical",
-        "radical":"末",
-        "meaning":"end"
-    },
-    {
-        "id": "2",
-        "type": "character",
-        "hanzi": "末",
-        "pinyin": "mò",
-        "pinyin1": "mo4",
-        "radicals": [{
-            "radical":"末",
-            "meaning":"end"
-        }],
+        "languageId": "zh",
+        "partofSpeech": ["noun"],
+        "value": "末",
+        "attributes": {
+            "pinyin": "mò",
+            "pinyin1": "mo4",
+            "radicals": [{
+                "radical":"末",
+                "meaning":"end"
+            }]
+        },
         "meanings": [
             "tip",
             "end",
@@ -27,11 +24,14 @@
         ]
     },
     {
-        "id": "3",
-        "type": "word",
-        "hanzi": "哎哟",
-        "pinyin": "āi yo",
-        "pinyin1": "āi yo",
+        "id": "2",
+        "languageId": "zh",
+        "partofSpeech": ["noun"],
+        "value": "哎哟",
+        "attributes": {
+            "pinyin": "āi yo",
+            "pinyin1": "āi yo"
+        },
         "meanings": [
             "hey",
             "ow",
@@ -40,8 +40,9 @@
         ]
     },
     {	
-        "id": "4",
-        "type": "character",
+        "id": "3",
+        "languageId": "zh",
+        "partofSpeech": ["noun"],
         "hanzi": "牛",
         "pinyin": "niú",
         "pinyin1": "niú",
@@ -55,7 +56,8 @@
     },
     {	
         "id": "5",
-        "type": "word",
+        "languageId": "zh",
+        "partofSpeech": ["noun"],
         "hanzi": "水壶",
         "pinyin": "shui3 hu2",
         "pinyin1": "shui3 hu2",
@@ -68,7 +70,8 @@
     },
     {	
         "id": "6",
-        "type": "word",
+        "languageId": ["zh"],
+        "partofSpeech": "noun",
         "hanzi": "器械",
         "pinyin": "qi4 xie4",
         "pinyin1": "qi4 xie4",

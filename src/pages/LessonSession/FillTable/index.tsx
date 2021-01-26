@@ -8,7 +8,7 @@ import {
 import { sendFillTableItems } from "api";
 import { useDispatch } from "react-redux";
 import ActionButton from "components/ActionButton";
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import style from "./index.scss";
 import Item from "./Item";
 
@@ -35,6 +35,14 @@ const FillTable: FunctionComponent<Props> = ({
 }) => {
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [hasChanged]);
+
     const onCheck = () => {
         dispatch(actions.sendFillTableItems.request());
 
@@ -42,6 +50,15 @@ const FillTable: FunctionComponent<Props> = ({
             .then(item => {
                 dispatch(actions.sendFillTableItems.success(item));
             })
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+        const key = event.key;
+
+        if (hasChanged && key === "Enter") {
+            onCheck()
+        }
+    
     };
 
     const onChange = (tableItemId: string, value: string) => {

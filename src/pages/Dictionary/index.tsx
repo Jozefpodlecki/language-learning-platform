@@ -43,7 +43,7 @@ const Dictionary: FunctionComponent = () => {
         }
 
         setState(state => ({...state, isLoading: true}));
-        debugger;
+       
         getPhrases({
             text: filter.value,
             sourcelanguageId: "zh",

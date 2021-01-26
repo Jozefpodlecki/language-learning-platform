@@ -13,12 +13,28 @@ type Criteria = {
     text: string;
 }
 
+type DictionaryCriteria = {
+    sourcelanguageId: string;
+    destlanguageId: string;
+}
+
 const pageSize = 5;
 
+const getDictionary = ({
+    sourcelanguageId,
+    destlanguageId
+}: DictionaryCriteria) => {
+    const dictionaryAsset = `./${sourcelanguageId}-${destlanguageId}.json`;
+
+    const dictionary = languageDictionary[dictionaryAsset] as any[];
+
+    return dictionary;
+}
+
 export const getPhrases = ({page, sourcelanguageId, destlanguageId, text}: Criteria) => {
-
-    const phrases = languageDictionary[`${sourcelanguageId}-${destlanguageId}`] as any[];
-
+   
+    const phrases = getDictionary({sourcelanguageId, destlanguageId});
+    debugger;
     let items = phrases
         .filter(pr => pr.meaning
             && pr.meaning.includes(text)

@@ -5,7 +5,7 @@ import _lessonMetadata from "../assets/data/lessonMetadata.json";
 import _courses from "../assets/data/course.json";
 import _lessons from "../assets/data/lesson.json";
 import { Lesson } from "models/Lesson";
-import { courseDatasets, courseImages } from "./assets";
+import { courseDatasets, images } from "./assets";
 
 type PageCriteria = {
     page: number;
@@ -20,7 +20,7 @@ const defaultOptions: PageCriteria = {
 export const getCourses = (options: PageCriteria) => {
     let courses = _courses.map((pr) => ({
         ...pr,
-        thumbnailUrl: courseImages[pr.thumbnailUrl],
+        thumbnailUrl: images[pr.thumbnailUrl],
     }));
 
     const { page, pageSize } = {
@@ -51,7 +51,7 @@ export const getCourseAsync = (courseId: string) => {
 export const getLessonsByCourseAsync = (courseId: string) => {
     const lessons = _lessons.filter((pr) => pr.courseId === courseId).map((pr) => ({
         ...pr,
-        thumbnailUrl: courseImages[pr.thumbnailUrl],
+        thumbnailUrl: images[pr.thumbnailUrl],
     })) as Lesson[];
 
     return Promise.resolve(lessons);

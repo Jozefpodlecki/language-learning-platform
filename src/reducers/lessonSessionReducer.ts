@@ -86,6 +86,27 @@ export default (state = initialState, action: Action): State => {
         };
     }
 
+    if (action.type === getType(actions.sendFillTableItems.request)) {
+        return {
+            ...state,
+            exercise: {
+                isLoading: true,
+            }
+        };
+    }
+
+    if (action.type === getType(actions.sendFillTableItems.success)) {
+        const exercise = unload(action.payload);
+
+        return {
+            ...state,
+            exercise: {
+                ...defaultState,
+                ...exercise,
+            }
+        };
+    }
+
     let exercise = state.exercise;
 
     if(exercise.isLoading === false) {
@@ -129,6 +150,14 @@ export default (state = initialState, action: Action): State => {
         } = action.payload;
 
         const session = unload(_session);
+
+        if(!_exercise) {
+            return {
+                ...state,
+                ...session,
+            };
+        }
+
         const exercise = unload(_exercise);
 
         if (exercise.type === "memory game") {

@@ -1,0 +1,11 @@
+[
+    {
+        "id": "1",
+        "languageId": "fr",
+        "partofSpeech": ["verb"],
+        "value": "attendre",
+        "meanings": [
+            "to wait"
+        ]
+    }
+]

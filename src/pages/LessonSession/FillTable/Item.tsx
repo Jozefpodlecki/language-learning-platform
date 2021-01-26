@@ -1,3 +1,5 @@
+import { faLightbulb, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FillTableItemItem } from "models/Exercise";
 import React, { ChangeEvent, FunctionComponent } from "react";
 import style from "./item.scss";
@@ -25,7 +27,15 @@ const Item: FunctionComponent<Props> = ({
     }
 
     return <div className={style.item}>
-        <div className={style.cell}>{source}</div>
+        <div className={style.descCell}>
+            <div>{source}</div>
+            <div className={style.clickableIcon}>
+                <FontAwesomeIcon icon={faLightbulb} />
+            </div>
+            <div className={style.clickableIcon}>
+                <FontAwesomeIcon icon={faVolumeUp} />
+            </div>
+        </div>
         <div className={`${style.cell} ${isCompleted ? isCorrect ? style.right : style.wrong : null}`}>
             <input
                 data-id={id}

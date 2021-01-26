@@ -27,7 +27,7 @@ export const nextExercise = createAsyncAction(
     "nextExercise.error"
 )<void, {
     session: LessonSession;
-    exercise: Exercise;
+    exercise?: Exercise;
 }, void>();
 
 export const startSession = createAsyncAction(

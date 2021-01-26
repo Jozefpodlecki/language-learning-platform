@@ -1,4 +1,4 @@
-import { getPhrase, getPhrases, getSentences, hanziStrokesMoveDict } from "api";
+import { getPhrase, getPhrases, getSentences } from "api";
 import { useDispatch } from "react-redux";
 import React, {
     FunctionComponent,
@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import style from "./index.scss";
 import { useParams } from "react-router";
-import { encode, decode } from "js-base64";
+
 import ReactPlayer from 'react-player'
 import { faArrowLeft, faBackward, faPlay, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +16,7 @@ import StrokePlayer from "./StrokePlayer";
 import Navbar from "pages/Navbar";
 import { playAudioWithSpeechSynthesis } from "appUtils";
 import { Link } from "react-router-dom";
+import { getStrokes } from "api/assets";
 
 const PhraseDetails: FunctionComponent = () => {
     const [{
@@ -72,9 +73,7 @@ const PhraseDetails: FunctionComponent = () => {
 
     }, [hanzi]);
 
-    const strokes = Array.from(hanzi)
-        .map(pr => encode(pr))
-        .map(pr => hanziStrokesMoveDict[`./${pr}.webm`]);
+    const strokes = getStrokes(hanzi);
     
     const onPlay = () => {
         playAudioWithSpeechSynthesis("zh", hanzi)

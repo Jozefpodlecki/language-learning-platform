@@ -3,7 +3,16 @@
     font-size: 30px;
 }
 
-.cell {
+.clickableIcon {
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.descCell {
+    display: flex;
+}
+
+.descCell, .cell {
     width: 150px;
     padding: 10px;
     border: 2px solid black;

@@ -1,7 +1,7 @@
 import { Dataset } from "models/dataset";
-import { Module } from "models/Module";
+import { encode, decode } from "js-base64";
 
-const importAssets = <T = any>(context: RequireContext, transformModule: (module: any) => T) => {
+const importAssets = <T = any>(context: __WebpackModuleApi.RequireContext, transformModule: (module: any) => T) => {
 
     return context.keys().reduce((acc, key) => {
         const module = context(key);
@@ -42,3 +42,9 @@ export const hanziStrokesMoveDict = importAssets(require.context(
     /\.webm$/,
     "sync"
 ), pr => pr.default);
+
+export const getStrokes = (text: string) => Array.from(text)
+    .map(pr => encode(pr))
+    .map(pr => hanziStrokesMoveDict[`./${pr}.webm`]);
+
+export const getImage = (text: string) => images[`./${text}.png`]

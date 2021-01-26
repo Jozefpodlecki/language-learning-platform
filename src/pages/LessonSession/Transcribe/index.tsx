@@ -1,6 +1,7 @@
 import * as actions from "actions";
 import { TranscribeItem } from "models/Exercise";
-import { courseImages, sendTranscribeText } from "api";
+import { sendTranscribeText } from "api";
+import { getImage } from "api/assets";
 import {
     faArrowRight,
     faCheck,
@@ -61,7 +62,7 @@ const Transcribe: FunctionComponent<Props> = ({
             }
         },
     } = useSelector((state) => state);
-    const languageUrl = useMemo(() => courseImages[`./${sourceLanguageId}.png`], [sourceLanguageId]);
+    const languageUrl = useMemo(() => getImage(sourceLanguageId), [sourceLanguageId]);
 
     if(exercise.isLoading === true) {
         return;
