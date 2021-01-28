@@ -83,7 +83,7 @@ export const getSentences = ({
 
     const sentences = sentencesDict[`./${sourcelanguageId}-${destlanguageId}.json`] as Sentence[];
 
-    let items = sentences.filter(pr => pr.properties.relevant_words.some(npr => npr.phraseId === phraseId));
+    let items = sentences.filter(pr => pr.properties.relevant_words.some((npr: any) => npr.phraseId === phraseId));
 
     items = getPage(items, page, pageSize);
 

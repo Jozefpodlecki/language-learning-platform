@@ -1,7 +1,10 @@
 import { faLightbulb, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { playAudioWithSpeechSynthesis } from "appUtils";
 import { FillTableItemItem } from "models/Exercise";
 import React, { ChangeEvent, FunctionComponent } from "react";
+import { useDispatch } from "react-redux";
+import * as actions from "actions";
 import style from "./item.scss";
 
 type Props = FillTableItemItem & {
@@ -18,7 +21,8 @@ const Item: FunctionComponent<Props> = ({
     isCompleted,
     onChange
 }) => {
-
+    const dispatch = useDispatch();
+    
     const _onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const element = event.currentTarget;
         const value = element.value;
@@ -26,13 +30,24 @@ const Item: FunctionComponent<Props> = ({
         onChange(id, value);
     }
 
+    const onHint = () => {
+        dispatch(actions.getHint(id));
+    }
+
+
+    const onPlay = () => {
+        playAudioWithSpeechSynthesis("zh", source).then((pr) => {
+            
+        });
+    }
+
     return <div className={style.item}>
         <div className={style.descCell}>
             <div>{source}</div>
-            <div className={style.clickableIcon}>
+            <div onClick={onHint} className={style.clickableIcon}>
                 <FontAwesomeIcon icon={faLightbulb} />
             </div>
-            <div className={style.clickableIcon}>
+            <div onClick={onPlay} className={style.clickableIcon}>
                 <FontAwesomeIcon icon={faVolumeUp} />
             </div>
         </div>

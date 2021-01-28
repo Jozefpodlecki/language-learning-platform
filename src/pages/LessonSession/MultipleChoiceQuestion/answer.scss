@@ -18,6 +18,14 @@
 .text {
     border: 1px dashed gray;
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playIcon {
+    margin-left: 20px;
+    font-size: 20px;
 }
 
 .key {

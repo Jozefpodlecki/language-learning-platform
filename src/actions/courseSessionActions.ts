@@ -48,6 +48,10 @@ export const sendData = createAsyncAction(
     "sendData.error"
 )<void, Exercise, void>();
 
+export const getHint = createAction(
+    "getHint",
+)<string>();
+
 export const sendFillTableItems = createAsyncAction(
     "sendFillTableItems.request",
     "sendFillTableItems.success",

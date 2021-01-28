@@ -6,10 +6,12 @@
 .clickableIcon {
     cursor: pointer;
     margin: 0 5px;
+    font-size: 20px;
 }
 
 .descCell {
     display: flex;
+    align-items: center;
 }
 
 .descCell, .cell {

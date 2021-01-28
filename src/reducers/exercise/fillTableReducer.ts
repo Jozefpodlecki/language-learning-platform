@@ -10,6 +10,13 @@ type State = FillTableItem & ExercisePageState;
 
 export default (state: State, action: Action): State => {
 
+    if (action.type === getType(actions.getHint)) {
+        const id = action.payload;
+        debugger;
+
+        return state;
+    }
+
     if (action.type === getType(actions.fillTable)) {
         const { itemId, tableItemId, value } = action.payload;
 
